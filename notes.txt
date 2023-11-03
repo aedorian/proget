@@ -1,0 +1,59 @@
+### DOSSIER ###
+
+proget
+  [code .c]
+  dossier .h?
+  dossier images
+
+### STRUCTS ###
+
+struct game
+  balles []   # ou deux listes?
+  joueurs []
+  ennemis []
+  taille n utilisée pour les 3
+
+struct ennemi
+  vie
+  hitbox
+  transform
+
+struct joueur
+  transform
+  vie
+  arme
+  hitbox
+
+struct balle
+  hitbox
+  transform
+  damage
+  estJoueur?
+
+
+
+### FICHIERS ###
+
+"game manager" (manip save)
+  charger game
+  nouvelle game (retourne un game?)
+  save game
+  réorganiser_file(balle* file_balle[BALLES_MAX], int* taille_file)
+
+"affichage"
+  afficher joueurs
+  afficher ennemi(s?)
+  afficher balle(s?)
+
+"collisions"
+
+### MISC ###
+
+loop collisions:
+  si dans grille autour d'entité
+    si balle ou ennemi
+      mettre à 0 dans la file si la balle est dead
+  appeler fonction réorganiser la file
+
+# mettre format avec division et modulo dans un fichier binaire pour l'état?
+# afficher petite icône arme sur le côté?
