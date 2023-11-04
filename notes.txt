@@ -7,27 +7,27 @@ proget
 
 ### STRUCTS ###
 
+typedef struct { int x; int y; } couple;
 struct transform
   couple pos
   couple dir
-typedef struct { int x; int y; } couple;
 
 struct game
-  balles []   # ou deux listes?
-  joueurs []
-  ennemis []
+  balle* balles []   # ou deux listes?
+  joueur* joueurs []
+  ennemi* ennemis []
   taille n utilisée pour les 3
 
 struct ennemi
-  vie
+  int vie
   hitbox
-  transform
+  transform transform
 
 struct joueur
-  transform
-  vie
-  arme
-  hitbox
+  transform transform
+  int vie
+  arme* arme;    # arme courante
+  couple hitbox
 
 struct balle
   hitbox hitbox
@@ -51,6 +51,9 @@ struct arme
   nouvelle game (retourne un game?)
   save game
   réorganiser_file(balle* file_balle[BALLES_MAX], int* taille_file)
+  ajouter_balle_file(balle* balle, balle file[]);
+  ajouter_joueur_file(joueur* joueur, joueur file[]);
+  ajouter_ennemi_file(ennemi* ennemi, ennemi file[]);
 
 "affichage"
   afficher joueurs
@@ -62,11 +65,20 @@ struct arme
   int hitbox_touche(hitbox* hb1, couple* pos1, hitbox* hb2, couple* pos2)
 
 "création"
-  balle creer_balle(couple* pos, couple* dir, int vitesse, int damage, MLV_Image image)
+  balle creer_balle(couple* pos, couple* dir, int vitesse, int damage, MLV_Image image) {
+    balle b;
+    b.pos.x = pos.x; b.pos.y = pos.y;
+    b.dir.x = dir.x; b.dir.y = dir.y;
+    b.vitesse = vitesse; b.damage = damage;
+    b.image = image;
+    return b;
+}
 
 "instantiation"
   void tirer_arme(arme* arme, couple* pos) { regarde le type de tir pour faire instances }
-  void instantiate_balle(balle* balle)
+  void instantiate_balle(game* game, balle* balle) {
+    ajouter_balle_file(game.balles, balle);    # ou just game? prendre .balles dans la fonction?
+  }
 
 "interactions?"
   fonction pour avoir touches
@@ -81,6 +93,7 @@ déplacement
 tir
   touche appuyée (1 frame)
   touche continuellement appuyée
+pause
 
 ### MISC ###
 
@@ -94,3 +107,8 @@ loop collisions:
 # afficher petite icône arme sur le côté?
 
 # directement struct entité (transform et hitbox)?
+
+### QUESTIONS ###
+# mieux de faire un struct couple pour hitboxs et pos et dir?
+# menu accessible en jeu? écran titre?
+# .h dans dossier spécifique headers?
