@@ -7,6 +7,11 @@ proget
 
 ### STRUCTS ###
 
+struct transform
+  couple pos
+  couple dir
+typedef struct { int x; int y; } couple;
+
 struct game
   balles []   # ou deux listes?
   joueurs []
@@ -25,12 +30,19 @@ struct joueur
   hitbox
 
 struct balle
-  hitbox
-  transform
-  damage
-  estJoueur?
+  hitbox hitbox
+  transform transform
+  int/float damage
+  int estJoueur?
+  int/float vitesse
+  MLV_Image image
 
-
+enum MODE_TIR { STRAIGHT, CONE, TRIPLE };    # forme du tir
+enum TYPE_TIR { SINGLE, CONTINOUS };         # mode activation
+struct arme
+  balle
+  MODE_TIR mode_tir
+  TYPE_TIR type_tir
 
 ### FICHIERS ###
 
@@ -44,8 +56,31 @@ struct balle
   afficher joueurs
   afficher ennemi(s?)
   afficher balle(s?)
+  debug collisions (afficher hitboxs)
 
 "collisions"
+  int hitbox_touche(hitbox* hb1, couple* pos1, hitbox* hb2, couple* pos2)
+
+"création"
+  balle creer_balle(couple* pos, couple* dir, int vitesse, int damage, MLV_Image image)
+
+"instantiation"
+  void tirer_arme(arme* arme, couple* pos) { regarde le type de tir pour faire instances }
+  void instantiate_balle(balle* balle)
+
+"interactions?"
+  fonction pour avoir touches
+
+### TYPES D'EVENEMENTS ###
+
+déplacement
+  haut
+  bas
+  gauche
+  droite
+tir
+  touche appuyée (1 frame)
+  touche continuellement appuyée
 
 ### MISC ###
 
@@ -57,3 +92,5 @@ loop collisions:
 
 # mettre format avec division et modulo dans un fichier binaire pour l'état?
 # afficher petite icône arme sur le côté?
+
+# directement struct entité (transform et hitbox)?
