@@ -28,10 +28,12 @@ proget
 typedef struct { float x; float y; } couple;
 
 struct game
-  balle* balles []   # ou deux listes?
-  joueur* joueurs []
-  ennemi* ennemis []
-  taille n utilisée pour les 3
+  balle* balles[]   # ou deux listes?
+  joueur* joueurs[]
+  ennemi* ennemis[]
+  int n_balles;
+  int n_joueurs;
+  int n_ennemis;
 
 struct ennemi
   int vie
@@ -67,7 +69,15 @@ struct arme
   int hitbox_touche(hitbox* hb1, couple* pos1, hitbox* hb2, couple* pos2)
 
 "évènements"
-  move_balles(game* game)
+  void move_balles(game* game) {
+    int n;
+    int i;
+    n = game -> n_balles;
+    for (i=0; i < n; i++) {
+      move_pos(game -> balles[i] -> pos, game -> balles[i] -> dir);
+    }
+    # utiliser même fonction plus longue pour bouger toutes les entités?
+  }
 
 "création"
   # FAIRE UNE NOUVELLE BALLE
@@ -90,7 +100,6 @@ struct arme
   #define BALLE_JOUEUR 1;
   #define BALLE_ENNEMI 0;
   void tirer_arme(game* game, arme* arme, couple* pos) {
-    balle balle;
     switch (arme -> type_tir) {
       case STRAIGHT: # voire en défaut
         instantiate_balle(game, arme -> balle, pos, new_couple(0, 1), BALLE_JOUEUR);
@@ -116,15 +125,19 @@ struct arme
 
 "interactions?"
   fonction pour avoir touches
+  # regarder touches pressées
+  # (dir à 0)
+  # en fonction de ça on modifie le dir (ou avec 0 si rien)
+  # appel fonction bouger plus tard
 
-  void move_player(joueur* joueur, int x, int y) { # utiliser dir pour changer de dir à chaque frame et update dir en fonction des touches
-    joueur -> pos.x += x;
-    if (joueur -> pos.x < 0 || joueur -> pos.x > ECRAN_W) {
-        joueur -> pos.x -= x;
+  void move_pos(couple pos*, couple dir*) { # utiliser dir pour changer de dir à chaque frame et update dir en fonction des touches
+    pos -> x += dir -> x;
+    if (pos -> x < 0 || pos -> x > ECRAN_W) {
+        pos -> x -= dir -> x;
     }
-    joueur -> pos.y += y;
-    if (joueur -> pos.y < 0 || joueur -> pos.y > ECRAN_H) {
-        joueur -> pos.y -= y;
+    pos -> y += dir -> y;
+    if (pos -> y < 0 || pos -> y > ECRAN_H) {
+        pos -> y -= dir -> y;
     }
   }
 
@@ -185,4 +198,4 @@ loop collisions:
 # mieux de faire un struct couple pour hitboxs et pos et dir?
 # menu accessible en jeu? écran titre?
 # .h dans dossier spécifique headers?
-# possible de tirer et bouger en même temps? "au plus un évènement clavier"
+# possible de tirer et bouger en même temps? sens de "au plus un évènement clavier" (MLV ou touche pressée?)
