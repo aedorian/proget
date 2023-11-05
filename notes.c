@@ -12,9 +12,9 @@ proget
   nouvelle game (retourne un game?)
   save game
   réorganiser_file(balle* file_balle[BALLES_MAX], int* taille_file)
-  ajouter_balle_file(balle* balle, balle file[]);
-  ajouter_joueur_file(joueur* joueur, joueur file[]);
-  ajouter_ennemi_file(ennemi* ennemi, ennemi file[]);
+  ajouter_balle_file(game* game, balle* balle);
+  ajouter_joueur_file(game* game, joueur* joueur);
+  ajouter_ennemi_file(game* game, ennemi* ennemi);
 
 "affichage" CONVERTIR EN INT QUAND AFFICHER POS
   #define ECRAN_W 400
@@ -34,6 +34,7 @@ struct game
   int n_balles;
   int n_joueurs;
   int n_ennemis;
+  int frames;
 
 struct ennemi
   int vie
