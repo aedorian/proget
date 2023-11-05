@@ -5,45 +5,6 @@ proget
   dossier .h?
   dossier images
 
-### STRUCTS ###
-
-typedef struct { int x; int y; } couple;
-struct transform
-  couple pos
-  couple dir
-
-struct game
-  balle* balles []   # ou deux listes?
-  joueur* joueurs []
-  ennemi* ennemis []
-  taille n utilisée pour les 3
-
-struct ennemi
-  int vie
-  hitbox
-  transform transform
-
-struct joueur
-  transform transform
-  int vie
-  arme* arme;    # arme courante
-  couple hitbox
-
-struct balle
-  hitbox hitbox
-  transform transform
-  int/float damage
-  int estJoueur?
-  int/float vitesse
-  MLV_Image image
-
-enum MODE_TIR { STRAIGHT, CONE, TRIPLE };    # forme du tir
-enum TYPE_TIR { SINGLE, CONTINOUS };         # mode activation
-struct arme
-  balle
-  MODE_TIR mode_tir
-  TYPE_TIR type_tir
-
 ### FICHIERS ###
 
 "game manager" (manip save)
@@ -55,45 +16,157 @@ struct arme
   ajouter_joueur_file(joueur* joueur, joueur file[]);
   ajouter_ennemi_file(ennemi* ennemi, ennemi file[]);
 
-"affichage"
+"affichage" CONVERTIR EN INT QUAND AFFICHER POS
+  #define ECRAN_W 400
+  #define ECRAN_H 600
   afficher joueurs
   afficher ennemi(s?)
   afficher balle(s?)
   debug collisions (afficher hitboxs)
 
+"types" OU DOUBLE?
+typedef struct { float x; float y; } couple;
+
+struct game
+  balle* balles []   # ou deux listes?
+  joueur* joueurs []
+  ennemi* ennemis []
+  taille n utilisée pour les 3
+
+struct ennemi
+  int vie
+  hitbox
+  couple pos
+  couple dir
+
+struct joueur
+  transform transform
+  int vie
+  arme* arme;    # arme courante
+  couple hitbox
+  couple pos
+
+struct balle
+  hitbox hitbox;
+  couple pos
+  couple dir
+  int/float damage;
+  int/float vitesse;
+  int estJoueur?;
+  MLV_Image* image; # stocker une seule fois dans la mémoire et fairre pointeur?
+
+enum MODE_TIR { STRAIGHT, CONE, TRIPLE };    # forme du tir
+enum TYPE_TIR { SINGLE, CONTINOUS };         # mode activation
+struct arme
+  balle* balle;
+  MODE_TIR mode_tir;
+  TYPE_TIR type_tir;
+  int cadence; /* en frames */
+
 "collisions"
   int hitbox_touche(hitbox* hb1, couple* pos1, hitbox* hb2, couple* pos2)
 
+"évènements"
+  move_balles(game* game)
+
 "création"
-  balle creer_balle(couple* pos, couple* dir, int vitesse, int damage, MLV_Image image) {
+  # FAIRE UNE NOUVELLE BALLE
+  balle new_balle(int hitbox_w, int hitbox_h, int vitesse, int damage, MLV_Image image) {
     balle b;
-    b.pos.x = pos.x; b.pos.y = pos.y;
-    b.dir.x = dir.x; b.dir.y = dir.y;
-    b.vitesse = vitesse; b.damage = damage;
+    b.hitbox = new_couple(hitbox_w, hitbox_h);
+    b.vitesse = vitesse;
+    b.damage = damage;
     b.image = image;
     return b;
-}
+  }
+
+  couple new_couple(int x, int y) {
+    couple c;
+    c.x = x; c.y = y;
+    return c;
+  }
 
 "instantiation"
-  void tirer_arme(arme* arme, couple* pos) { regarde le type de tir pour faire instances }
-  void instantiate_balle(game* game, balle* balle) {
-    ajouter_balle_file(game.balles, balle);    # ou just game? prendre .balles dans la fonction?
+  #define BALLE_JOUEUR 1;
+  #define BALLE_ENNEMI 0;
+  void tirer_arme(game* game, arme* arme, couple* pos) {
+    balle balle;
+    switch (arme -> type_tir) {
+      case STRAIGHT: # voire en défaut
+        instantiate_balle(game, arme -> balle, pos, new_couple(0, 1), BALLE_JOUEUR);
+        break;
+    }
+  }
+
+  # FAIRE UNE BALLE POUR AJOUTER A LA LISTE
+  void instantiate_balle(game* game, balle* balle_base, couple* pos, couple* dir, int est_joueur) {
+    balle b;
+    b.hitbox = new_couple(balle_base -> hitbox.w, balle_base -> hitbox.h);
+    b.vitesse = balle_base -> vitesse;
+    b.damage = balle_base -> damage;
+    b.image = balle_base -> image;
+
+    b.pos = pos;
+    b.dir = dir;
+    b.est_joueur = est_joueur;
+
+    ajouter_balle_file(game.balles, balle);
+    # ou just game? prendre .balles dans la fonction?
   }
 
 "interactions?"
   fonction pour avoir touches
 
+  void move_player(joueur* joueur, int x, int y) { # utiliser dir pour changer de dir à chaque frame et update dir en fonction des touches
+    joueur -> pos.x += x;
+    if (joueur -> pos.x < 0 || joueur -> pos.x > ECRAN_W) {
+        joueur -> pos.x -= x;
+    }
+    joueur -> pos.y += y;
+    if (joueur -> pos.y < 0 || joueur -> pos.y > ECRAN_H) {
+        joueur -> pos.y -= y;
+    }
+  }
+
+"main"
+#include <time.h>
+#define FPS 25
+#define NANOS_PAR_S 1000000000
+#define MILLIS 1000000
+int debut, fin;
+int diff;
+float tpf; /* temps par frame */
+tpf = (1.0 * NANOS_PAR_S) / FPS;
+clock_gettime(CLOCK_REALTIME, &debut ); /* gérer si -1 */
+(trucs)
+clock_gettime(CLOCK_REALTIME, &fin );
+diff = fin - debut;
+printf("temps:\t\t%d\tsoit%f%\nsur\t\t%d\n", diff, tpf, tpf/(diff*1.0));
+if (diff < tpf) {
+  MLV_wait_milliseconds(diff / MILLIS); /* pour avoir en millisecondes */
+}
+
 ### TYPES D'EVENEMENTS ###
 
 déplacement
-  haut
-  bas
-  gauche
-  droite
+  #define UP_J1 MLV_KEYBOARD_UP
+  #define DOWN_J1 MLV_KEYBOARD_DOWN
+  #define LEFT_J1 MLV_KEYBOARD_LEFT
+  #define RIGHT_J1 MLV_KEYBOARD_RIGHT
+
+  #define UP_J2 MLV_KEYBOARD_z
+  #define DOWN_J2 MLV_KEYBOARD_s
+  #define LEFT_J2 MLV_KEYBOARD_q
+  #define RIGHT_J2 MLV_KEYBOARD_d
+
+  MLV_get_keyboard_state
 tir
+  #define TIR_J1 MLV_KEYBOARD_KP0
+  #define TIR_J2 MLV_KEYBOARD_SPACE
   touche appuyée (1 frame)
   touche continuellement appuyée
 pause
+  #define PAUSE MLV_KEYBOARD_ESCAPE
 
 ### MISC ###
 
@@ -112,3 +185,4 @@ loop collisions:
 # mieux de faire un struct couple pour hitboxs et pos et dir?
 # menu accessible en jeu? écran titre?
 # .h dans dossier spécifique headers?
+# possible de tirer et bouger en même temps? "au plus un évènement clavier"
