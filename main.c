@@ -4,6 +4,7 @@
 #include <MLV/MLV_all.h>
 #include "headers/types.h"
 #include "headers/affichage.h"
+#include "headers/collision.h"
 
 #define FPS 25                /* frames par seconde */
 #define NANO_S 1000000000     /* valeurs à utiliser dans les calculs de temps
