@@ -25,31 +25,30 @@ proget
   debug collisions (afficher hitboxs)
 
 "types" OU DOUBLE?
-typedef struct { float x; float y; } couple;
+X typedef struct { float x; float y; } couple;
 
-struct game
+X struct game
   balle* balles[]   # ou deux listes?
   joueur* joueurs[]
   ennemi* ennemis[]
   int n_balles;
   int n_joueurs;
   int n_ennemis;
-  int frames;
 
-struct ennemi
+X struct ennemi
   int vie
   hitbox
   couple pos
   couple dir
 
-struct joueur
+X struct joueur
   transform transform
   int vie
   arme* arme;    # arme courante
   couple hitbox
   couple pos
 
-struct balle
+X struct balle
   hitbox hitbox;
   couple pos
   couple dir
@@ -196,7 +195,8 @@ loop collisions:
 # directement struct entité (transform et hitbox)?
 
 ### QUESTIONS ###
-# mieux de faire un struct couple pour hitboxs et pos et dir?
+# mieux de faire un struct couple pour hitboxs et pos et dir? ou chacun?
+# mettre dans un transform?
 # menu accessible en jeu? écran titre?
 # .h dans dossier spécifique headers?
 # possible de tirer et bouger en même temps? sens de "au plus un évènement clavier" (MLV ou touche pressée?)
