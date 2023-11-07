@@ -12,22 +12,22 @@
 typedef struct {
   float x;
   float y;
-} couple;
+} vect;
 
 /* joueur */
 typedef struct {
-  couple hitbox;
-  couple pos;
-  couple dir;
+  vect hitbox;
+  vect pos;
+  vect dir;
   int vie;
   /* arme* arme; arme courante du joueur */
 } joueur;
 
 /* balle */
 typedef struct {
-  couple hitbox;
-  couple pos;
-  couple dir;
+  vect hitbox;
+  vect pos;
+  vect dir;
   int damage;
   float vitesse;
   int estJoueur; /* 1 si la balle provient d'un joueur, 0 si elle provient d'un ennemi */
@@ -36,14 +36,14 @@ typedef struct {
 
 /* ennemi */
 typedef struct {
-  couple hitbox;
-  couple pos;
-  couple dir;
+  vect hitbox;
+  vect pos;
+  vect dir;
   int vie;
   /* arme... */
 } ennemi;
 
-/* structure pour gérer les entités du jeu */
+/* game, structure pour gérer les entités du jeu */
 typedef struct {
   balle* balles[BALLES_MAX]; /* files pour gérer les entités présentes dans le jeu */
   joueur* joueurs[JOUEURS_MAX];

@@ -1,6 +1,6 @@
 #ifndef _COLLISION_H_
 #define _COLLISION_H_
 
-int collision_rectangles(couple pos1, couple hitbox1, couple pos2, couple hitbox2);
+int collision_rectangles(vect pos1, vect hitbox1, vect pos2, vect hitbox2);
 
-#endif
+#endif /* _COLLISION_H_ */

@@ -5,6 +5,10 @@
 #include "headers/types.h"
 #include "headers/affichage.h"
 #include "headers/collision.h"
+#include "headers/gamemanager.h"
+#include "headers/evenement.h"
+#include "headers/mouvement.h"
+#include "headers/creation.h"
 
 #define FPS 25                /* frames par seconde */
 #define NANO_S 1000000000     /* valeurs à utiliser dans les calculs de temps
@@ -12,6 +16,8 @@
 #define MILLI_S 1000000       /* nombre de millisecondes en 1 seconde */
 
 int main() {
+  game game;
+  joueur test_joueur;
   /* struct timespec t_debut, t_fin; UTILISER LONG?
   struct timespec t_diff; */
   long tpf;                  /* temps que doit prendre chaque frame */
@@ -21,14 +27,36 @@ int main() {
 
   printf("Début exec %ld\n", tpf);
 
+
+  
+  /* création des joueurs */
+
+  game = new_game();
+
+  test_joueur = new_joueur(new_vect(200, 300), new_vect(1, 1));
+
+  creer_joueur(&test_joueur, &game);
+
   creer_fenetre();
   
+
+
   /* boucle principale */
   while (!quitter) {
     /* clock_gettime(CLOCK_REALTIME, &t_debut); GERER SI -1 */
     /**/
 
-    printf("%d\n", quitter);
+    /* AFFICHAGE IMAGE COURANTE */
+    afficher_et_actualiser(&game);
+
+    /* RECUPERATION EVENEMENT CLAVIER */
+
+    /* RESOLUTION EVENEMENTS */
+
+    /* DEPLACEMENT DES OBJETS (en fonction de dir) */
+    move_entites(&game);
+
+    /* RESOLUTION DES COLLISIONS */
 
     /* if (MLV_get_keyboard_state(MLV_KEYBOARD_ESCAPE)) quitter = 1; */
     
@@ -42,7 +70,7 @@ int main() {
     }
     */
 
-    MLV_wait_milliseconds(80);
+    MLV_wait_milliseconds(50);
   }
   
 
