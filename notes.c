@@ -68,8 +68,8 @@ struct arme
 "collisions"
   int hitbox_touche(hitbox* hb1, couple* pos1, hitbox* hb2, couple* pos2)
 
-"évènements"
-  void move_balles(game* game) {
+"mouvement"
+  X void move_balles(game* game) {
     int n;
     int i;
     n = game -> n_balles;
@@ -88,12 +88,6 @@ struct arme
     b.damage = damage;
     b.image = image;
     return b;
-  }
-
-  couple new_couple(int x, int y) {
-    couple c;
-    c.x = x; c.y = y;
-    return c;
   }
 
 "instantiation"
@@ -129,17 +123,6 @@ struct arme
   # (dir à 0)
   # en fonction de ça on modifie le dir (ou avec 0 si rien)
   # appel fonction bouger plus tard
-
-  void move_pos(couple pos*, couple dir*) { # utiliser dir pour changer de dir à chaque frame et update dir en fonction des touches
-    pos -> x += dir -> x;
-    if (pos -> x < 0 || pos -> x > ECRAN_W) {
-        pos -> x -= dir -> x;
-    }
-    pos -> y += dir -> y;
-    if (pos -> y < 0 || pos -> y > ECRAN_H) {
-        pos -> y -= dir -> y;
-    }
-  }
 
 "main"
 #include <time.h>
