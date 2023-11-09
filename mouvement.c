@@ -21,7 +21,7 @@ void move_balles(game* game) {
   n = game -> n_balles;    /* nombre de balles, pour éviter d'y accéder à
 			      chaque tour de boucle */
   for (i=0; i < n; i++) {
-    move_pos(&(game -> balles[i] -> pos), &(game -> balles[i] -> dir));
+    move_pos(&(game -> balles[i].pos), &(game -> balles[i].dir));
   }
 }
 
@@ -32,7 +32,7 @@ void move_joueurs(game* game) {
   for (i=0; i < n; i++) {
     printf("mouvement du J%d\n", i+1);
 
-    move_pos(&(game -> joueurs[i] -> pos), &(game -> joueurs[i] -> dir));
+    move_pos(&(game -> joueurs[i].pos), &(game -> joueurs[i].dir));
   }
 }
 

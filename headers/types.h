@@ -46,9 +46,9 @@ typedef struct {
 
 /* game, structure pour gérer les entités du jeu */
 typedef struct {
-  balle* balles[BALLES_MAX]; /* files pour gérer les entités présentes dans le jeu */
-  joueur* joueurs[JOUEURS_MAX];
-  ennemi* ennemis[ENNEMIS_MAX];
+  balle balles[BALLES_MAX]; /* files pour gérer les entités présentes dans le jeu */
+  joueur joueurs[JOUEURS_MAX];
+  ennemi ennemis[ENNEMIS_MAX];
   int n_balles; /* tailles de chacune des trois files */
   int n_joueurs;
   int n_ennemis;

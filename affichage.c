@@ -17,7 +17,7 @@ void afficher_joueurs(game* game) {
 
   for (i=0; i < n; i++) {
     printf("affichage du joueur %d\n", i+1);
-    j = game -> joueurs[i];
+    j = &(game -> joueurs[i]);
 
     /* affichage d'un joueur */
     MLV_draw_filled_rectangle(j -> pos.x, j -> pos.y, 20, 20, MLV_COLOR_RED);
