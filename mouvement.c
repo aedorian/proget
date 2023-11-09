@@ -8,9 +8,9 @@ void move_pos(vect* pos, vect* dir) {
   if (pos -> x < 0 || pos -> x > ECRAN_W) { /* si ça dépasse */
     pos -> x -= dir -> x;
   }
-  pos -> y += dir -> y;
+  pos -> y -= dir -> y; /* axe y inversé */
   if (pos -> y < 0 || pos -> y > ECRAN_H) {
-    pos -> y -= dir -> y;
+    pos -> y += dir -> y;
   }
 }
 

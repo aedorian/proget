@@ -33,7 +33,7 @@ int main() {
 
   game = new_game();
 
-  test_joueur = new_joueur(new_vect(200, 300), new_vect(1, 1));
+  test_joueur = new_joueur(new_vect(200, 300), new_vect(0, 0), 5);
 
   creer_joueur(&test_joueur, &game);
 
@@ -50,6 +50,7 @@ int main() {
     afficher_et_actualiser(&game);
 
     /* RECUPERATION EVENEMENT CLAVIER */
+    gerer_evenements_clavier(&game);
 
     /* RESOLUTION EVENEMENTS */
 
@@ -70,7 +71,7 @@ int main() {
     }
     */
 
-    MLV_wait_milliseconds(50);
+    MLV_wait_milliseconds(20);
   }
   
 

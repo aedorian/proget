@@ -19,11 +19,12 @@ game new_game() {
 }
 
 /* créer un struct de type joueur (ne le crée pas dans le jeu) */
-joueur new_joueur(vect pos_init, vect dir_init) {
+joueur new_joueur(vect pos_init, vect dir_init, int vitesse) {
   joueur j;
   j.hitbox.x = J_HITBOX_W; j.hitbox.y = J_HITBOX_H;
   j.pos.x = pos_init.x;    j.pos.y = pos_init.y;
   j.dir.x = dir_init.x;    j.dir.y = dir_init.y;
+  j.vitesse = vitesse;
   j.vie = J_VIE_INIT;
   
   return j;

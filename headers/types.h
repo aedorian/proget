@@ -19,6 +19,7 @@ typedef struct {
   vect hitbox;
   vect pos;
   vect dir;
+  int vitesse;
   int vie;
   /* arme* arme; arme courante du joueur */
 } joueur;

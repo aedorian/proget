@@ -1,6 +1,8 @@
 #ifndef _EVENEMENT_H_
 #define _EVENEMENT_H_
 
+#include "types.h"
+
 /* définition de toutes les touches */
 #define J1_UP MLV_KEYBOARD_UP
 #define J1_DOWN MLV_KEYBOARD_DOWN
@@ -12,6 +14,7 @@
 #define J2_LEFT MLV_KEYBOARD_q
 #define J2_RIGHT MLV_KEYBOARD_d
 
-void gerer_evenements_clavier();
+void gerer_evenements_clavier(game* game);
+void obtenir_deplacement_joueur(joueur* joueur, int numJoueur);
 
 #endif
