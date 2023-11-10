@@ -3,13 +3,13 @@
 #include "headers/affichage.h"
 
 
-void move_pos(vect* pos, vect* dir) {
+void move_pos(vect* pos, vect* dir, vect* hitbox) {
   pos -> x += dir -> x;
-  if (pos -> x < 0 || pos -> x > ECRAN_W) { /* si ça dépasse */
+  if (pos -> x < 0 || pos -> x > ECRAN_W - hitbox -> x) { /* si ça dépasse */
     pos -> x -= dir -> x;
   }
   pos -> y -= dir -> y; /* axe y inversé */
-  if (pos -> y < 0 || pos -> y > ECRAN_H) {
+  if (pos -> y < 0 || pos -> y > ECRAN_H - hitbox -> y) {
     pos -> y += dir -> y;
   }
 }
@@ -21,7 +21,7 @@ void move_balles(game* game) {
   n = game -> n_balles;    /* nombre de balles, pour éviter d'y accéder à
 			      chaque tour de boucle */
   for (i=0; i < n; i++) {
-    move_pos(&(game -> balles[i].pos), &(game -> balles[i].dir));
+      move_pos(&(game -> balles[i].pos), &(game -> balles[i].dir), &(game -> joueurs[i].hitbox));
   }
 }
 
@@ -30,14 +30,12 @@ void move_joueurs(game* game) {
   n = game -> n_joueurs;
 
   for (i=0; i < n; i++) {
-    printf("mouvement du J%d\n", i+1);
 
-    move_pos(&(game -> joueurs[i].pos), &(game -> joueurs[i].dir));
+    move_pos(&(game -> joueurs[i].pos), &(game -> joueurs[i].dir), &(game -> joueurs[i].hitbox));
   }
 }
 
 void move_entites(game* game) {
-  printf("MOUVEMENT GENERAL\n");
 
   move_balles(game);
   move_joueurs(game);

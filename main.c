@@ -33,7 +33,8 @@ int main() {
 
   game = new_game();
 
-  test_joueur = new_joueur(new_vect(200, 300), new_vect(0, 0), 5);
+  test_joueur = new_joueur(new_vect(200, 300), new_vect(0, 0), 5,
+      game.armes_obj[1]);
 
   creer_joueur(&test_joueur, &game);
 

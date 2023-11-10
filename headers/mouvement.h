@@ -3,7 +3,7 @@
 
 #include "types.h"
 
-void move_pos(vect* pos, vect* dir);
+void move_pos(vect* pos, vect* dir, vect* hitbox);
 
 void move_balles(game* game);
 

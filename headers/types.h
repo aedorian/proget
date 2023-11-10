@@ -14,23 +14,13 @@ typedef struct {
   float y;
 } vect;
 
-/* joueur */
-typedef struct {
-  vect hitbox;
-  vect pos;
-  vect dir;
-  int vitesse;
-  int vie;
-  /* arme* arme; arme courante du joueur */
-} joueur;
-
 /* balle */
 typedef struct {
   vect hitbox;
   vect pos;
   vect dir;
   int damage;
-  float vitesse;
+  int vitesse;
   int estJoueur; /* 1 si la balle provient d'un joueur, 0 si elle provient d'un ennemi */
   MLV_Image* image; /* image de la balle à afficher */
 } balle;
@@ -44,14 +34,44 @@ typedef struct {
   /* arme... */
 } ennemi;
 
+enum type_tir {
+    STRAIGHT,
+    CONE
+};
+typedef enum type_tir type_tir;
+
+typedef struct {
+    balle balle;
+    type_tir type_tir;
+    int cadence; /* en frames, temps à attendre avant de pouvoir tirer */
+    int cadence_act; /* cadence actuelle */
+} arme;
+
+/* joueur */
+typedef struct {
+  vect hitbox;
+  vect pos;
+  vect dir;
+  int vitesse;
+  int vie;
+    arme arme;
+} joueur;
+
 /* game, structure pour gérer les entités du jeu */
 typedef struct {
-  balle balles[BALLES_MAX]; /* files pour gérer les entités présentes dans le jeu */
-  joueur joueurs[JOUEURS_MAX];
-  ennemi ennemis[ENNEMIS_MAX];
-  int n_balles; /* tailles de chacune des trois files */
-  int n_joueurs;
-  int n_ennemis;
+    balle balles[BALLES_MAX]; /* files pour gérer les entités présentes dans le jeu */
+    joueur joueurs[JOUEURS_MAX];
+    ennemi ennemis[ENNEMIS_MAX];
+    int n_balles; /* tailles de chacune des trois files */
+    int n_joueurs;
+    int n_ennemis;
+    /* objets possibles dans le jeu */
+    balle balles_obj[50];
+    arme armes_obj[50];
+    ennemi ennemi_obj[50];
+    int n_balles_obj;
+    int n_armes_obj;
+    int n_ennemis_obj;
 } game;
 
 #endif /* _TYPES_H_ */
