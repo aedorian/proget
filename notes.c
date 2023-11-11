@@ -194,9 +194,15 @@ loop collisions:
 
 # directement struct entité (transform et hitbox)?
 
-### QUESTIONS ###
-# mieux de faire un struct couple pour hitboxs et pos et dir? ou chacun?
-# mettre dans un transform?
-# menu accessible en jeu? écran titre?
-# .h dans dossier spécifique headers?
-# possible de tirer et bouger en même temps? sens de "au plus un évènement clavier" (MLV ou touche pressée?)
+### TYPES ARMES ###
+- tout droit (1 balle)
+- tout droit (2 balles)
+- triple (3 balles)
+### TYPES ARMES ENNEMIS ###
+- tout droit
+- cible, oriente sur joueur (à choisir?)
+- gros random, n'importe quelle direction
+      -> petites balles (beaucoup), grosses balles ou normales
+- dans les 8 directions
+- balle qui explose en 4 ou 8 balles?
+-----> ne pas faire deux joueurs parce que fuck?
