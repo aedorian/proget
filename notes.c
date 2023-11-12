@@ -40,6 +40,7 @@ X struct ennemi
   hitbox
   couple pos
   couple dir
+  move_pattern move_patterns[]
 
 X struct joueur
   transform transform
@@ -200,9 +201,26 @@ loop collisions:
 - triple (3 balles)
 ### TYPES ARMES ENNEMIS ###
 - tout droit
-- cible, oriente sur joueur (à choisir?)
+- cible, oriente sur joueur (à choisir si on a deux joueurs? problème)
+    - trois par trois, puis pause
 - gros random, n'importe quelle direction
       -> petites balles (beaucoup), grosses balles ou normales
 - dans les 8 directions
 - balle qui explose en 4 ou 8 balles?
+- tire en rafale en balayant un demi cercle
 -----> ne pas faire deux joueurs parce que fuck?
+- oiseau qui passe très rapidement sur les côtés en tirant vers le joueur
+
+### SYSTEME ENNEMIS (mouvements, etc) ###
+-> un seul type de tir qui se répète en boucle (ex: tous les N tirs, attendre 5 fois le nombre de frames entre chaque tir (applicable au modèle d'armes pour le joueur))
+-> mouvement défini par séquence de couples (type_mouvement, durée en frames) qui boucle, écrits dans un fichier texte? comme les armes?
+-> pour chaque ennemi: appeler fonction qui gère leur mouvement
+-> à chaque fois appelée, regarder mouvement actuel, puis si compteur == 0 alors mettre compteur à durée du prochain
+-> SOIT change directement la dir de l'ennemi UNE SEULE FOIS, SOIT la change continuellement (pour appeler des sin/cos par exemple)
+style: R 30 D 10 L 30 D 10
+style ex 2: R 30 L 30
+style ex 3: RD 30 RU 30 RD 30 LU 30 LD 30 LU 30
+ex 4: D 20 R 10 U 10 L 10 (carré qui descend)
+(ennemis dead lorsque touche bord bas de l'écran)
+-> définir des ennemis comme un index 0 1 2 3 4 à prendre quelque part dans une liste qui contient toutes les variations
+-> définir des vagues comme des lignes [index_ennemi] [mouvement_lettres frames] <- à lire jusqu'à ce qu'on ne puisse plus
