@@ -41,7 +41,7 @@ void creer_tous_objets(game* game) {
 
 game new_game() {
   game g;
-  /* initialiser les listes? */
+  /* initialiser le nombre d'élément des listes d'entités */
   g.n_balles = 0;
   g.n_joueurs = 0;
   g.n_ennemis = 0;
@@ -49,6 +49,10 @@ game new_game() {
   g.n_balles_obj = 0;
   g.n_armes_obj = 0;
   g.n_ennemis_obj = 0;
+  /* initialiser le nombre d'élément des listes des places vides */
+  g.n_empty_balles = 0;
+  g.n_empty_ennemis = 0;
+	
   creer_tous_objets(&g);
   
   return g;
