@@ -65,6 +65,11 @@ typedef struct {
     int n_balles; /* tailles de chacune des trois files */
     int n_joueurs;
     int n_ennemis;
+    /* listes des places vides dans les listes des entités du jeu */
+    int empty_balles[BALLES_MAX];
+    int empty_ennemis[ENNEMIS_MAX];
+    int n_empty_balles;
+    int n_empty_ennemis;
     /* objets possibles dans le jeu */
     balle balles_obj[50];
     arme armes_obj[50];
