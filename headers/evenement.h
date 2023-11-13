@@ -22,6 +22,8 @@ void gerer_evenements_clavier(game* game);
 void obtenir_deplacement_joueur(joueur* joueur, int numJoueur);
 void obtenir_tir_joueur(game* game, joueur* joueur, int numJoueur);
 void update_cadence_arme(arme* arme);
-void tirer_arme(game* game, joueur* joueur);
+void faire_tirer_ennemis(game* game);
+void tirer_arme_joueur(game* game, joueur* joueur);
+void tirer_arme_ennemi(game* game, ennemi* ennemi);
 
 #endif

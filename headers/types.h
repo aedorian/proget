@@ -25,18 +25,10 @@ typedef struct {
   MLV_Image* image; /* image de la balle à afficher */
 } balle;
 
-/* ennemi */
-typedef struct {
-  vect hitbox;
-  vect pos;
-  vect dir;
-  int vie;
-  /* arme... */
-} ennemi;
-
 enum type_tir {
     STRAIGHT,
-    CONE
+    CONE,
+    BOMB
 };
 typedef enum type_tir type_tir;
 
@@ -47,6 +39,28 @@ typedef struct {
     int cadence_act; /* cadence actuelle */
 } arme;
 
+/* mouvement: couple char (représentant la direction) et durée en frames */
+typedef struct {
+  char movetype;
+  int duree;
+} mouvement;
+
+/* ennemi */
+typedef struct {
+  vect hitbox;
+  vect pos;
+  vect dir;
+  int vitesse;
+  int vie;
+  /* gère le mouvement: liste de directions avec une durée en frames */
+  mouvement mouvements[50];
+  int n_mouvements; /* taille du tableau mouvements */
+  int mouv_count; /* compteur pour changer de type de mouvement */
+  int i_mouv_act; /* indice du mouvement actuel */
+  arme arme;
+  MLV_Image* image;
+} ennemi;
+
 /* joueur */
 typedef struct {
   vect hitbox;
@@ -54,29 +68,33 @@ typedef struct {
   vect dir;
   int vitesse;
   int vie;
-    arme arme;
+  arme arme;
+  MLV_Image* image;
 } joueur;
 
 /* game, structure pour gérer les entités du jeu */
 typedef struct {
-    balle balles[BALLES_MAX]; /* files pour gérer les entités présentes dans le jeu */
+    /* tableaux pour gérer les entités présentes dans le jeu */
+    balle balles[BALLES_MAX];
     joueur joueurs[JOUEURS_MAX];
     ennemi ennemis[ENNEMIS_MAX];
-    int n_balles; /* tailles de chacune des trois files */
+    int n_balles; /* tailles de chacune des trois tableaux */
     int n_joueurs;
     int n_ennemis;
+  
+    /* objets possibles dans le jeu */
+    balle balles_obj[50];
+    arme armes_obj[50];
+    ennemi ennemis_obj[50];
+    int n_balles_obj;
+    int n_armes_obj;
+    int n_ennemis_obj;
+
     /* listes des places vides dans les listes des entités du jeu */
     int empty_balles[BALLES_MAX];
     int empty_ennemis[ENNEMIS_MAX];
     int n_empty_balles;
     int n_empty_ennemis;
-    /* objets possibles dans le jeu */
-    balle balles_obj[50];
-    arme armes_obj[50];
-    ennemi ennemi_obj[50];
-    int n_balles_obj;
-    int n_armes_obj;
-    int n_ennemis_obj;
 } game;
 
 #endif /* _TYPES_H_ */

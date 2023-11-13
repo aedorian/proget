@@ -8,6 +8,8 @@ void creer_fenetre();
 void fermer_fenetre();
 void debug_hitbox(game* game);
 void afficher_joueurs(game* game);
+void afficher_ennemis(game* game);
+void afficher_balles(game* game);
 void afficher_et_actualiser(game* game);
 
 #endif

@@ -31,15 +31,17 @@ int main() {
   
   /* création des joueurs */
 
+  creer_fenetre();
+
   game = new_game();
 
   test_joueur = new_joueur(new_vect(200, 300), new_vect(0, 0), 5,
-      game.armes_obj[1]);
+			   game.armes_obj[0], "img/vache.png");
 
   creer_joueur(&test_joueur, &game);
 
-  creer_fenetre();
-  
+  creer_ennemi(&game.ennemis_obj[0], &game, new_vect(320, 10));
+  creer_ennemi(&game.ennemis_obj[1], &game, new_vect(320, 10));
 
 
   /* boucle principale */
@@ -52,6 +54,8 @@ int main() {
 
     /* RECUPERATION EVENEMENT CLAVIER */
     gerer_evenements_clavier(&game);
+
+    faire_tirer_ennemis(&game);
 
     /* RESOLUTION EVENEMENTS */
 
