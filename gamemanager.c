@@ -10,17 +10,40 @@ void creer_joueur(joueur* joueur, game* game) {
 
 void creer_balle(balle* balle, game* game) {
     /* VERIFIER SI POSSIBLE DE CREER SI NOMBRE EN DESSOUS DE MACRO !!!!!!!! */
-    game -> balles[game -> n_balles] = *balle;
-    (game -> n_balles)++;
+  int i, n;
+  n = game -> n_balles;
+  for (i=0; i < n; i++) { /* on itère balles */
+    if (game -> balles[i].existe == 0) { /* jusqu'à en trouver une qui n'existe plus
+					    (donc un emplacement libre) */
+      game -> balles[i] = *balle;
+      return; /* pour ne pas continuer l'itération */
+    }
+  }
+  /* sinon, tous les emplacements sont déjà pris, alors on en crée un */
+  
+  game -> balles[game -> n_balles] = *balle;
+  (game -> n_balles)++; /* et on ajoute 1 à la taille du tableau balles */
 }
 
 void creer_ennemi(ennemi* ennemi, game* game, vect pos) {
     /* VERIFIER SI POSSIBLE DE CREER SI NOMBRE EN DESSOUS DE MACRO !!!!!!!! */
-    game -> ennemis[game -> n_ennemis] = *ennemi;
-    /* le créer à la position spécifiée */
-    game -> ennemis[game -> n_ennemis].pos.x = pos.x;
-    game -> ennemis[game -> n_ennemis].pos.y = pos.y;
-    (game -> n_ennemis)++;
+  int i, n;
+  n = game -> n_ennemis;
+  for (i=0; i < n; i++) { /* on itère balles */
+    if (game -> ennemis[i].existe == 0) { /* jusqu'à en trouver une qui n'existe plus
+					    (donc un emplacement libre) */
+      game -> ennemis[i] = *ennemi;
+      game -> ennemis[i].pos.x = pos.x; /* le créer à la position spécifiée */
+      game -> ennemis[i].pos.y = pos.y;
+      return; /* pour ne plus itérer */
+    }
+  }
+  /* sinon, tous les emplacements sont déjà pris, alors on en crée un */
+  
+  game -> ennemis[game -> n_ennemis] = *ennemi;
+  game -> ennemis[game -> n_ennemis].pos.x = pos.x; /* le créer à la position spécifiée */
+  game -> ennemis[game -> n_ennemis].pos.y = pos.y;
+  (game -> n_ennemis)++;
 }
 
 /* DEPLACER DANS CREATION.C? */

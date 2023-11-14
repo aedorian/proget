@@ -23,6 +23,8 @@ int main() {
   long tpf;                  /* temps que doit prendre chaque frame */
   int quitter = 0;            /* quitter la boucle principale */
 
+  vect TEST_VECT[4];
+
   tpf = (1.0 * NANO_S) / FPS;
 
   printf("Début exec %ld\n", tpf);
@@ -41,7 +43,18 @@ int main() {
   creer_joueur(&test_joueur, &game);
 
   creer_ennemi(&game.ennemis_obj[0], &game, new_vect(320, 10));
-  creer_ennemi(&game.ennemis_obj[1], &game, new_vect(320, 10));
+     creer_ennemi(&game.ennemis_obj[1], &game, new_vect(320, 100));
+  creer_ennemi(&game.ennemis_obj[3], &game, new_vect(120, 0));
+  creer_ennemi(&game.ennemis_obj[3], &game, new_vect(640 - 120, 0));
+
+
+
+  TEST_VECT[0] = new_vect(10, 10);
+  TEST_VECT[1] = new_vect(0, 0);
+  TEST_VECT[2] = new_vect(11, 11);
+
+  printf("%d\n",
+	 collision_rectangles(&TEST_VECT[0], &TEST_VECT[1], &TEST_VECT[0], &TEST_VECT[2]));
 
 
   /* boucle principale */
@@ -63,6 +76,8 @@ int main() {
     move_entites(&game);
 
     /* RESOLUTION DES COLLISIONS */
+
+    resolution_collisions(&game);
 
     /* if (MLV_get_keyboard_state(MLV_KEYBOARD_ESCAPE)) quitter = 1; */
     

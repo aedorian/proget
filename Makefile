@@ -1,7 +1,7 @@
 CFLAGS = -g -O2 -Wall -Werror `pkg-config --cflags MLV`
 LDLIBS = `pkg-config --libs MLV`
 
-prod: collision.o affichage.o evenement.o mouvement.o creation.o gamemanager.o main.o
+prod: affichage.o evenement.o mouvement.o creation.o gamemanager.o main.o collision.o
 	gcc -W -Wall -std=c89 -pedantic -O2 -o prod main.o affichage.o evenement.o mouvement.o collision.o creation.o gamemanager.o `pkg-config --cflags MLV` `pkg-config --libs-only-other --libs-only-L MLV` `pkg-config --libs-only-l MLV`
 main.o: headers/collision.h headers/affichage.h headers/evenement.h headers/mouvement.h main.c
 	gcc -c -W -Wall -std=c89 -pedantic -O2 -D_POSIX_C_SOURCE=199309L main.c

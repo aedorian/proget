@@ -12,8 +12,8 @@ void gerer_evenements_clavier(game* game) {
     for (i=0; i < n; i++) {
         update_cadence_arme(&(game -> joueurs[i].arme));
       
-      obtenir_deplacement_joueur(&(game -> joueurs[i]), i+1);
-      obtenir_tir_joueur(game, &(game -> joueurs[i]), i+1);
+        obtenir_deplacement_joueur(&(game -> joueurs[i]), i+1);
+        obtenir_tir_joueur(game, &(game -> joueurs[i]), i+1);
     }
 }
 
@@ -60,16 +60,21 @@ void obtenir_tir_joueur(game* game, joueur* joueur, int numJoueur) {
 
 void faire_tirer_ennemis(game* game) {
   int i, n;
+  ennemi* e; /* ennemi courant dans la boucle */
   n = game -> n_ennemis;
 
   for (i=0; i < n; i++) {
-    tirer_arme_ennemi(game, &(game -> ennemis[i]));
+    e = &(game -> ennemis[i]);
 
-    update_cadence_arme(&(game -> ennemis[i].arme));
+    if (e -> existe == 1) {
+      tirer_arme_ennemi(game, &(game -> ennemis[i]));
+
+      update_cadence_arme(&(game -> ennemis[i].arme));
+    }
   }
 }
 
-/* faire descendre la cadence de 1 */
+/* faire descendre la cadence_act de 1 */
 void update_cadence_arme(arme* arme) {
     if (arme -> cadence_act != 0) {
         (arme -> cadence_act)--;
@@ -134,6 +139,11 @@ void tirer_arme_ennemi(game* game, ennemi* ennemi) {
 	    set_balle_dir(&balle_arme, new_vect(1, -1)); 
             creer_balle(&balle_arme, game);
             break;
+	case SIDES:
+	  set_balle_dir(&balle_arme, new_vect(-1, 0)); 
+            creer_balle(&balle_arme, game);
+	    set_balle_dir(&balle_arme, new_vect(1, 0)); 
+            creer_balle(&balle_arme, game);
         }
     }
 }

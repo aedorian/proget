@@ -8,15 +8,16 @@
    différentes balles, ennemis, les deux joueurs... */
 void creer_tous_objets(game* game) {
     /* balles SUPPRIMER OU PAS? */
-  ajouter_balle_obj(game, new_balle(new_vect(12, 12), 2, 10, 1, "img/balle1.png"));
-    ajouter_balle_obj(game, new_balle(new_vect(3, 3), 2, 10, 1, "img/balle2.png"));
-    ajouter_balle_obj(game, new_balle(new_vect(3, 3), 2, 10, 1, "img/balle3.png"));
-    ajouter_balle_obj(game, new_balle(new_vect(3, 3), 2, 10, 1, "img/balle4.png"));
-    ajouter_balle_obj(game, new_balle(new_vect(3, 3), 2, 10, 1, "img/balle5.png"));
-    ajouter_balle_obj(game, new_balle(new_vect(3, 3), 2, 10, 1, "img/balle6.png"));
-    /* balles des ennemis */
-    ajouter_balle_obj(game, new_balle(new_vect(18, 18), 2, 5, 0, "img/balle1.png"));
-    ajouter_balle_obj(game, new_balle(new_vect(18, 18), 2, 5, 0, "img/balle2.png"));
+  ajouter_balle_obj(game, new_balle(new_vect(18, 18), 2, 10, 1, "img/balle1.png")); /* 0 */
+    ajouter_balle_obj(game, new_balle(new_vect(12, 12), 2, 10, 1, "img/balle2.png")); /* 1 */
+    ajouter_balle_obj(game, new_balle(new_vect(9, 9), 2, 10, 1, "img/balle3.png")); /* 2 */
+    ajouter_balle_obj(game, new_balle(new_vect(3, 3), 2, 10, 1, "img/balle4.png")); /* 3 */
+    ajouter_balle_obj(game, new_balle(new_vect(9, 18), 2, 10, 1, "img/balle5.png")); /* 4 */
+    ajouter_balle_obj(game, new_balle(new_vect(3, 3), 2, 10, 1, "img/balle6.png")); /* 5 */
+    /* balles des ennemis (défini par le 0) */
+    ajouter_balle_obj(game, new_balle(new_vect(18, 18), 2, 5, 0, "img/balle1.png")); /* 6 */
+    ajouter_balle_obj(game, new_balle(new_vect(12, 12), 2, 5, 0, "img/balle2.png")); /* 7 */
+    ajouter_balle_obj(game, new_balle(new_vect(9, 9), 2, 5, 0, "img/balle3.png")); /* 8 */
 
     /* armes, 6 armes */
     ajouter_arme_obj(game, new_arme(game -> balles_obj[4], STRAIGHT, 7));
@@ -26,16 +27,23 @@ void creer_tous_objets(game* game) {
     ajouter_arme_obj(game, new_arme(game -> balles_obj[0], CONE, 5));
     ajouter_arme_obj(game, new_arme(game -> balles_obj[0], CONE, 5));
     /* armes des ennemis */
-    ajouter_arme_obj(game, new_arme(game -> balles_obj[7], STRAIGHT, 30));
-    ajouter_arme_obj(game, new_arme(game -> balles_obj[6], BOMB, 20));
+    ajouter_arme_obj(game, new_arme(game -> balles_obj[6], STRAIGHT, 30));
+    ajouter_arme_obj(game, new_arme(game -> balles_obj[7], BOMB, 20));
+    ajouter_arme_obj(game, new_arme(game -> balles_obj[8], SIDES, 30));
 
     printf("ennemi add...\n");
     ajouter_ennemi_obj(game, /* taureau */
-		       new_ennemi(new_vect(10, 10), 3, 10,
+		       new_ennemi(new_vect(33, 33), 3, 10,
 				  game -> armes_obj[7], "D 20 R 60 L 50", "img/taureau.png"));
     ajouter_ennemi_obj(game, /* cochon */
-		       new_ennemi(new_vect(10, 10), 5, 10,
+		       new_ennemi(new_vect(27, 42), 5, 10,
 				  game -> armes_obj[6], "D 10 L 90 D 10 R 90", "img/cochon.png"));
+    ajouter_ennemi_obj(game, /* cochon de test qui ne bouge pas, victime boloss */
+		       new_ennemi(new_vect(27, 42), 5, 10,
+				  game -> armes_obj[6], "N 20", "img/cochon.png"));
+    ajouter_ennemi_obj(game, /* poule */
+		       new_ennemi(new_vect(24, 30), 2, 10,
+				  game -> armes_obj[8], "D 10", "img/poule.png"));
 
 }
 
@@ -50,8 +58,8 @@ game new_game() {
   g.n_armes_obj = 0;
   g.n_ennemis_obj = 0;
   /* initialiser le nombre d'élément des listes des places vides */
-  g.n_empty_balles = 0;
-  g.n_empty_ennemis = 0;
+  g.n_libre_balles = 0;
+  g.n_libre_ennemis = 0;
 	
   creer_tous_objets(&g);
   
@@ -79,6 +87,8 @@ balle new_balle(vect hitbox, int damage, float vitesse, int estJoueur, char* img
     b.vitesse = vitesse;
     b.estJoueur = estJoueur;
     b.image = MLV_load_image(img_path);
+
+    b.existe = 1; /* la balle existe au début */
 
     return b;
 }
@@ -117,19 +127,15 @@ ennemi new_ennemi(vect hitbox, int vitesse, int vie, arme arme, char mouvements[
     m_tmp.movetype = mouvements[i];
     duree_tmp[0] = mouvements[i+2];
     duree_tmp[1] = mouvements[i+3];
-    printf("DUREE TMP: %s\n", duree_tmp);
     m_tmp.duree = atoi(duree_tmp);
 
     e.mouvements[n_mouvements] = m_tmp;
-
-    printf("%c %d\n", e.mouvements[n_mouvements].movetype, e.mouvements[n_mouvements].duree);
     
     i += 5;
     n_mouvements++;
   }
 
   e.n_mouvements = n_mouvements;
-  printf("%d\n", e.n_mouvements);
 
   e.i_mouv_act = 0; /* mouvement actuel est le premier */
   
@@ -137,6 +143,8 @@ ennemi new_ennemi(vect hitbox, int vitesse, int vie, arme arme, char mouvements[
 
   /* initialiser la direction au premier mouvement */
   e.dir = dir_from_char_vit(e.mouvements[0].movetype, vitesse);
+
+  e.existe = 1; /* l'ennemi existe */
 
   return e;
 }

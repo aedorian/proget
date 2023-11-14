@@ -14,24 +14,25 @@ void fermer_fenetre() {
 void debug_hitbox(game* game) {
     joueur* j; /* joueur courant dans la boucle */
     balle* b;
+    ennemi* e;
     int i, n;
     n = game -> n_joueurs;
 
     for (i=0; i < n; i++) {
         j = &(game -> joueurs[i]);
-
-        /* affichage d'un joueur */
         MLV_draw_rectangle(j -> pos.x, j -> pos.y, j -> hitbox.x, j -> hitbox.y, MLV_COLOR_GREEN);
-        /* fin affichage */
     }
 
     n = game -> n_balles;
     for (i=0; i < n; i++) {
         b = &(game -> balles[i]);
-
-        /* affichage d'un joueur */
         MLV_draw_rectangle(b -> pos.x, b -> pos.y, b -> hitbox.x, b -> hitbox.y, MLV_COLOR_GREEN);
-        /* fin affichage */
+    }
+
+    n = game -> n_ennemis;
+    for (i=0; i < n; i++) {
+        e = &(game -> ennemis[i]);
+        MLV_draw_rectangle(e -> pos.x, e -> pos.y, e -> hitbox.x, e -> hitbox.y, MLV_COLOR_GREEN);
     }
 }
 
@@ -43,9 +44,7 @@ void afficher_joueurs(game* game) {
   for (i=0; i < n; i++) {
     j = &(game -> joueurs[i]);
 
-    /* affichage d'un joueur */
     MLV_draw_image(j -> image, j -> pos.x, j -> pos.y);
-    /* fin affichage */
   }
 }
 
@@ -57,9 +56,9 @@ void afficher_ennemis(game* game) {
   for (i=0; i < n; i++) {
     e = &(game -> ennemis[i]);
 
-    /* affichage d'un joueur */
-    MLV_draw_image(e -> image, e -> pos.x, e -> pos.y);
-    /* fin affichage */
+    if (e -> existe == 1) {
+      MLV_draw_image(e -> image, e -> pos.x, e -> pos.y);
+    }
   }
 }
 
@@ -71,9 +70,9 @@ void afficher_balles(game* game) {
   for (i=0; i < n; i++) {
     b = &(game -> balles[i]);
 
-    /* affichage d'un joueur */
-    MLV_draw_image(b -> image, b -> pos.x, b -> pos.y);
-    /* fin affichage */
+    if (b -> existe == 1) {
+      MLV_draw_image(b -> image, b -> pos.x, b -> pos.y);
+    }
   }
 }
 

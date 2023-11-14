@@ -3,7 +3,7 @@
 #include "headers/affichage.h"
 
 
-void move_pos(vect* pos, vect* dir, vect* hitbox) {
+void move_pos_joueur(vect* pos, vect* dir, vect* hitbox, joueur* joueur) {
   pos -> x += dir -> x;
   if (pos -> x < 0 || pos -> x > ECRAN_W - hitbox -> x) { /* si ça dépasse */
     pos -> x -= dir -> x;
@@ -11,6 +11,27 @@ void move_pos(vect* pos, vect* dir, vect* hitbox) {
   pos -> y -= dir -> y; /* axe y inversé */
   if (pos -> y < 0 || pos -> y > ECRAN_H - hitbox -> y) {
     pos -> y += dir -> y;
+  }
+}
+void move_pos_balle(vect* pos, vect* dir, vect* hitbox, balle* balle) {
+  pos -> x += dir -> x;
+  if (pos -> x < 0 || pos -> x > ECRAN_W - hitbox -> x) { /* si ça dépasse */
+    balle -> existe = 0;
+  }
+  pos -> y -= dir -> y; /* axe y inversé */
+  if (pos -> y < 0 || pos -> y > ECRAN_H - hitbox -> y) {
+    balle -> existe = 0;
+  }
+}
+void move_pos_ennemi(vect* pos, vect* dir, vect* hitbox, ennemi* ennemi) {
+  pos -> x += dir -> x;
+  if (pos -> x < 0 || pos -> x > ECRAN_W - hitbox -> x) { /* si ça dépasse */
+    pos -> x -= dir -> x;
+  }
+  
+  pos -> y -= dir -> y; /* axe y inversé */
+  if (pos -> y > ECRAN_H - hitbox -> y) {
+    ennemi -> existe = 0;
   }
 }
 
@@ -21,7 +42,7 @@ void move_balles(game* game) {
   n = game -> n_balles;    /* nombre de balles, pour éviter d'y accéder à
 			      chaque tour de boucle */
   for (i=0; i < n; i++) {
-    move_pos(&(game -> balles[i].pos), &(game -> balles[i].dir), &(game -> joueurs[i].hitbox));
+    move_pos_balle(&(game -> balles[i].pos), &(game -> balles[i].dir), &(game -> joueurs[i].hitbox), &(game -> balles[i]));
   }
 }
 
@@ -31,21 +52,8 @@ void move_joueurs(game* game) {
 
   for (i=0; i < n; i++) {
 
-    move_pos(&(game -> joueurs[i].pos), &(game -> joueurs[i].dir), &(game -> joueurs[i].hitbox));
+    move_pos_joueur(&(game -> joueurs[i].pos), &(game -> joueurs[i].dir), &(game -> joueurs[i].hitbox), &(game -> joueurs[i]));
   }
-}
-
-/* obtenir une direction (vect) en fonction d'un char la représentant et d'une vitesse v */
-vect dir_from_char_vit(char c, int vit) { /* vitesse v */
-  vect v;
-  switch (c) {
-  case 'R': v.x = 1 * vit;     v.y = 0; break;
-  case 'L': v.x = -1 * vit;    v.y = 0; break;
-  case 'U': v.x = 0;           v.y = 1 * vit; break;
-  case 'D': v.x = 0;           v.y = -1 * vit; break;
-  default: v.x = 1 * vit;      v.y = 0; break; /* par défaut à droite mais normalement pas nécessaire */
-  }
-  return v;
 }
 
 void move_ennemis(game* game) {
@@ -72,8 +80,22 @@ void move_ennemis(game* game) {
     (e -> mouv_count)++;
 
     /* dans tous les cas, effectuer le move_pos */
-    move_pos(&(game -> ennemis[i].pos), &(game -> ennemis[i].dir), &(game -> ennemis[i].hitbox));
+    move_pos_ennemi(&(game -> ennemis[i].pos), &(game -> ennemis[i].dir), &(game -> ennemis[i].hitbox), &(game -> ennemis[i]));
   }
+}
+
+/* obtenir une direction (vect) en fonction d'un char la représentant et d'une vitesse v */
+vect dir_from_char_vit(char c, int vit) { /* vitesse v */
+  vect v;
+  switch (c) {
+  case 'R': v.x = 1 * vit;     v.y = 0; break;
+  case 'L': v.x = -1 * vit;    v.y = 0; break;
+  case 'U': v.x = 0;           v.y = 1 * vit; break;
+  case 'D': v.x = 0;           v.y = -1 * vit; break;
+  case 'N': v.x = 0;           v.y = 0; break;
+  default: v.x = 1 * vit;      v.y = 0; break; /* par défaut à droite mais normalement pas nécessaire */
+  }
+  return v;
 }
 
 void move_entites(game* game) {

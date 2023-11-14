@@ -29,7 +29,8 @@ typedef struct {
 enum type_tir {
     STRAIGHT,
     CONE,
-    BOMB
+    BOMB,
+    SIDES
 };
 typedef enum type_tir type_tir;
 
@@ -57,7 +58,7 @@ typedef struct {
   mouvement mouvements[50];
   int n_mouvements; /* taille du tableau mouvements */
   int mouv_count; /* compteur pour changer de type de mouvement */
-  int i_mouv_act; /* indice du mouvement actuel */
+  int i_mouv_act; /* indice du mouvement actuel dans le tableau de mouvements */
   arme arme;
   MLV_Image* image;
   int existe;
@@ -95,8 +96,8 @@ typedef struct {
     /* listes des places vides dans les listes des entités du jeu */
     int libre_balles[BALLES_MAX];
     int libre_ennemis[ENNEMIS_MAX];
-    int n_empty_balles;
-    int n_empty_ennemis;
+    int n_libre_balles;
+    int n_libre_ennemis;
 } game;
 
 #endif /* _TYPES_H_ */
