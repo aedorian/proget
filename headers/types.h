@@ -23,6 +23,7 @@ typedef struct {
   int vitesse;
   int estJoueur; /* 1 si la balle provient d'un joueur, 0 si elle provient d'un ennemi */
   MLV_Image* image; /* image de la balle à afficher */
+  int existe; /* 1 si la balle existe (affichée à l'écran et collisions gérées), 0 si elle a touché quelque chose et qu'elle n'existe plus */
 } balle;
 
 enum type_tir {
@@ -59,6 +60,7 @@ typedef struct {
   int i_mouv_act; /* indice du mouvement actuel */
   arme arme;
   MLV_Image* image;
+  int existe;
 } ennemi;
 
 /* joueur */
@@ -91,8 +93,8 @@ typedef struct {
     int n_ennemis_obj;
 
     /* listes des places vides dans les listes des entités du jeu */
-    int empty_balles[BALLES_MAX];
-    int empty_ennemis[ENNEMIS_MAX];
+    int libre_balles[BALLES_MAX];
+    int libre_ennemis[ENNEMIS_MAX];
     int n_empty_balles;
     int n_empty_ennemis;
 } game;
