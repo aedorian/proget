@@ -46,10 +46,18 @@ int main() {
   creer_joueur(&joueur1, &game);
   creer_joueur(&joueur2, &game);
 
-  /* creer_ennemi(&game.ennemis_obj[0], &game, new_vect(320, 10)); */
+  creer_ennemi(&game.ennemis_obj[0], &game, new_vect(320, 10));
   creer_ennemi(&game.ennemis_obj[2], &game, new_vect(320, 100));
-  /* creer_ennemi(&game.ennemis_obj[3], &game, new_vect(120, 0));
-  creer_ennemi(&game.ennemis_obj[3], &game, new_vect(640 - 120, 0)); */
+  creer_ennemi(&game.ennemis_obj[3], &game, new_vect(120, 0));
+  creer_ennemi(&game.ennemis_obj[3], &game, new_vect(640 - 120, 0));
+  creer_ennemi(&game.ennemis_obj[0], &game, new_vect(100, 10));
+  creer_ennemi(&game.ennemis_obj[2], &game, new_vect(320, 100));
+  creer_ennemi(&game.ennemis_obj[3], &game, new_vect(80, 0));
+  creer_ennemi(&game.ennemis_obj[3], &game, new_vect(400 - 120, 0));
+  creer_ennemi(&game.ennemis_obj[0], &game, new_vect(400, 10));
+  creer_ennemi(&game.ennemis_obj[2], &game, new_vect(320, 100));
+  creer_ennemi(&game.ennemis_obj[3], &game, new_vect(120, 0));
+  creer_ennemi(&game.ennemis_obj[3], &game, new_vect(400 - 120, 0));
 
 
 
@@ -64,7 +72,7 @@ int main() {
   /* boucle principale */
   while (!quitter) {
     switch (game.etat_ecran) {
-    case 3:
+    case 3: /* JEU PRINCIPAL */
       clock_gettime(CLOCK_REALTIME, &t_debut);
       /**/
 
@@ -100,8 +108,19 @@ int main() {
 
 
 
-    case 0:
+    case 0: /* ECRAN TITRE */
       faire_evenements_menu(&game);
+      break;
+
+    case 1: /* MENU SAVE */
+      /* problème: comment savoir de là où on vient pour savoir si on doit
+	 sauvegarder ou charger la partie? faire deux menus save? */
+      faire_evenements_menu(&game);
+      break;
+
+    case 2: /* MENU PAUSE */
+      faire_evenements_menu(&game);
+      break;
     }
     
   }
