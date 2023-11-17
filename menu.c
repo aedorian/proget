@@ -59,6 +59,26 @@ void afficher_menu_actuel(menu* menu) {
       case 3: MLV_draw_text_with_font(40, 40 + 60 * i, "Quitter", police_1, MLV_COLOR_WHITE); break;
       }
     }
+    case 1: /* écran save */
+      printf("save\n");
+      switch (i) {
+      case 0: MLV_draw_text_with_font(40, 40 + 60 * i, "Slot 1", police_1, MLV_COLOR_WHITE); break;
+      case 1: MLV_draw_text_with_font(40, 40 + 60 * i, "Slot 2", police_1, MLV_COLOR_WHITE); break;
+      case 2: MLV_draw_text_with_font(40, 40 + 60 * i, "Slot 3", police_1, MLV_COLOR_WHITE); break;
+      case 3: MLV_draw_text_with_font(40, 40 + 60 * i, "... Revenir", police_1, MLV_COLOR_WHITE); break;
+        /* REVENIR doit avoir la possibilité de revenir soit à l'écran titre, soit à l'écran de pause (dans le main?
+           recevoir les fonctions des menus dans la boucle while (!quitter) pour les gérer et changer de game.etat_ecran? 
+      }
+    }
+  case 2: /* écran pause */
+      printf("pause\n");
+      switch (i) {
+      case 0: MLV_draw_text_with_font(40, 40 + 60 * i, "Reprendre", police_1, MLV_COLOR_WHITE); break;
+      case 1: MLV_draw_text_with_font(40, 40 + 60 * i, "Sauvegarder partie", police_1, MLV_COLOR_WHITE); break;
+      case 2: MLV_draw_text_with_font(40, 40 + 60 * i, "High scores", police_1, MLV_COLOR_WHITE); break;
+      case 3: MLV_draw_text_with_font(40, 40 + 60 * i, "Quitter", police_1, MLV_COLOR_WHITE); break;
+      }
+    }
     printf("%d\n", i);
   }
 
