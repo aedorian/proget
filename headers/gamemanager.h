@@ -10,4 +10,6 @@ void ajouter_balle_obj(game* game, balle balle);
 void ajouter_arme_obj(game* game, arme arme);
 void ajouter_ennemi_obj(game* game, ennemi ennemi);
 
+void init_partie_(game* game, int nb_joueurs);
+
 #endif

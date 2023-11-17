@@ -1,4 +1,5 @@
 #include "headers/gamemanager.h"
+#include "headers/creation.h"
 #include "headers/types.h"
 #include <MLV/MLV_all.h>
 
@@ -9,7 +10,6 @@ void creer_joueur(joueur* joueur, game* game) {
 }
 
 void creer_balle(balle* balle, game* game) {
-    /* VERIFIER SI POSSIBLE DE CREER SI NOMBRE EN DESSOUS DE MACRO !!!!!!!! */
   int i, n;
   n = game -> n_balles;
   for (i=0; i < n; i++) { /* on itère balles */
@@ -29,7 +29,6 @@ void creer_balle(balle* balle, game* game) {
 }
 
 void creer_ennemi(ennemi* ennemi, game* game, vect pos) {
-    /* VERIFIER SI POSSIBLE DE CREER SI NOMBRE EN DESSOUS DE MACRO !!!!!!!! */
   int i, n;
   n = game -> n_ennemis;
   for (i=0; i < n; i++) { /* on itère balles */
@@ -63,4 +62,24 @@ void ajouter_arme_obj(game* game, arme arme) {
 void ajouter_ennemi_obj(game* game, ennemi ennemi) {
     game -> ennemis_obj[game -> n_ennemis_obj] = ennemi;
     (game -> n_ennemis_obj)++;
+}
+
+/* POUR TOUT CE QUI EST GERER PARTIE */
+void init_partie(game* game, int nb_joueurs) {
+  joueur joueur1, joueur2;
+
+  /* *game = new_game(); */
+
+  /* créer les joueurs */
+  /* voir arme par défaut? */
+  joueur1 = new_joueur(new_vect(150, 550), new_vect(0, 0), 5,
+		       game -> armes_obj[0], "img/vache.png");
+  creer_joueur(&joueur1, game);
+  if (nb_joueurs == 2) {
+    joueur2 = new_joueur(new_vect(480, 550), new_vect(0, 0), 5,
+			 game -> armes_obj[0], "img/vache.png");
+    creer_joueur(&joueur2, game);
+  }
+
+  game -> etat_ecran = 3; /* commencer la partie en basculant sur l'écran de jeu */
 }

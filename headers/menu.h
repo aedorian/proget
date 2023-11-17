@@ -6,7 +6,7 @@
 #include "evenement.h"
 
 void faire_evenements_menu(game* game);
-void attendre_clavier_menu(menu* menu);
+void attendre_clavier_menu(game* game, menu* menu);
 void afficher_menu_actuel(menu* menu);
 
 #endif /* _MENU_H_ */

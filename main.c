@@ -18,7 +18,6 @@
 
 int main() {
   game game;
-  joueur joueur1, joueur2;
   struct timespec t_debut, t_fin;
   long t_diff;
   long tpf;                  /* temps que doit prendre chaque frame en fonction des fps*/
@@ -38,35 +37,11 @@ int main() {
 
   game = new_game();
 
-  joueur1 = new_joueur(new_vect(200, 300), new_vect(0, 0), 5,
-			   game.armes_obj[0], "img/vache.png");
-  joueur2 = new_joueur(new_vect(200, 300), new_vect(0, 0), 5,
-			   game.armes_obj[0], "img/vache.png");
-
-  creer_joueur(&joueur1, &game);
-  creer_joueur(&joueur2, &game);
-
   creer_ennemi(&game.ennemis_obj[0], &game, new_vect(320, 10));
   creer_ennemi(&game.ennemis_obj[2], &game, new_vect(320, 100));
   creer_ennemi(&game.ennemis_obj[3], &game, new_vect(120, 0));
   creer_ennemi(&game.ennemis_obj[3], &game, new_vect(640 - 120, 0));
-  creer_ennemi(&game.ennemis_obj[0], &game, new_vect(100, 10));
-  creer_ennemi(&game.ennemis_obj[2], &game, new_vect(320, 100));
-  creer_ennemi(&game.ennemis_obj[3], &game, new_vect(80, 0));
-  creer_ennemi(&game.ennemis_obj[3], &game, new_vect(400 - 120, 0));
-  creer_ennemi(&game.ennemis_obj[0], &game, new_vect(400, 10));
-  creer_ennemi(&game.ennemis_obj[2], &game, new_vect(320, 100));
-  creer_ennemi(&game.ennemis_obj[3], &game, new_vect(120, 0));
-  creer_ennemi(&game.ennemis_obj[3], &game, new_vect(400 - 120, 0));
 
-
-
-  TEST_VECT[0] = new_vect(10, 10);
-  TEST_VECT[1] = new_vect(0, 0);
-  TEST_VECT[2] = new_vect(11, 11);
-
-  printf("%d\n",
-	 collision_rectangles(&TEST_VECT[0], &TEST_VECT[1], &TEST_VECT[0], &TEST_VECT[2]));
 
 
   /* boucle principale */

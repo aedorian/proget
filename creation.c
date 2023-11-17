@@ -20,7 +20,7 @@ void creer_tous_objets(game* game) {
     ajouter_balle_obj(game, new_balle(new_vect(9, 9), 2, 5, 0, "img/balle3.png")); /* 8 */
 
     /* armes, 6 armes */
-    ajouter_arme_obj(game, new_arme(game -> balles_obj[4], STRAIGHT, 7));
+    ajouter_arme_obj(game, new_arme(game -> balles_obj[4], STRAIGHT, 8)); /* balle joueur */
     ajouter_arme_obj(game, new_arme(game -> balles_obj[0], CONE, 5));
     ajouter_arme_obj(game, new_arme(game -> balles_obj[0], CONE, 5));
     ajouter_arme_obj(game, new_arme(game -> balles_obj[0], CONE, 5));
@@ -61,7 +61,7 @@ game new_game() {
   g.etat_ecran = 0; /* commence sur l'écran titre */
   /* menus - écran titre*/
   g.menu_titre.opt_act = 0;
-  g.menu_titre.nb_opt = 4;
+  g.menu_titre.nb_opt = 5;
   g.menu_titre.type_menu = 0;
   /* écran de save */
   g.menu_save.opt_act = 0;

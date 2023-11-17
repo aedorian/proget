@@ -2,6 +2,7 @@
 #include "headers/types.h"
 #include "headers/evenement.h"
 #include "headers/affichage.h"
+#include "headers/gamemanager.h"
 #include <MLV/MLV_all.h>
 
 void faire_evenements_menu(game* game) {
@@ -47,10 +48,11 @@ void attendre_clavier_menu(game* game, menu* menu) {
     switch (menu -> type_menu) {
     case 0:
       switch (menu -> opt_act) {
-      case 0: game -> etat_ecran = 3; break; /* aller au jeu */
-      case 1: game -> etat_ecran = 1; break;
-      case 2: break;
+      case 0: init_partie(game, 1); break; /* aller au jeu */
+      case 1: init_partie(game, 2); break;
+      case 2: game -> etat_ecran = 1; break;
       case 3: break;
+      case 4: break;
       }
       break;
     case 1:
@@ -88,10 +90,11 @@ void afficher_menu_actuel(menu* menu) {
       MLV_draw_image(ecran_titre, 0, 0);
       
       switch (i) {
-      case 0: MLV_draw_text_with_font(50, 40 + 60 * i, "Nouvelle partie", police_1, MLV_COLOR_WHITE); break;
-      case 1: MLV_draw_text_with_font(50, 40 + 60 * i, "Charger partie", police_1, MLV_COLOR_WHITE); break;
-      case 2: MLV_draw_text_with_font(50, 40 + 60 * i, "High scores", police_1, MLV_COLOR_WHITE); break;
-      case 3: MLV_draw_text_with_font(50, 40 + 60 * i, "Quitter", police_1, MLV_COLOR_WHITE); break;
+      case 0: MLV_draw_text_with_font(50, 40 + 60 * i, "Nouvelle partie (1 joueur)", police_1, MLV_COLOR_WHITE); break;
+      case 1: MLV_draw_text_with_font(50, 40 + 60 * i, "Nouvelle partie (2 joueurs)", police_1, MLV_COLOR_WHITE); break;
+      case 2: MLV_draw_text_with_font(50, 40 + 60 * i, "Charger partie", police_1, MLV_COLOR_WHITE); break;
+      case 3: MLV_draw_text_with_font(50, 40 + 60 * i, "High scores", police_1, MLV_COLOR_WHITE); break;
+      case 4: MLV_draw_text_with_font(50, 40 + 60 * i, "Quitter", police_1, MLV_COLOR_WHITE); break;
       }
       break;
 

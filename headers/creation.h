@@ -5,7 +5,7 @@
 
 #define J_HITBOX_W 30 /* taille en pixels de la largeur de la hitbox du joueur */
 #define J_HITBOX_H 42 /* et de la hauteur */
-#define J_VIE_INIT 100 /* vie de départ */
+#define J_VIE_INIT 20 /* vie de départ */
 
 void creer_tous_objets(game* game);
 game new_game();

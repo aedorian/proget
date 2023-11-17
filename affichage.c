@@ -76,6 +76,11 @@ void afficher_balles(game* game) {
   }
 }
 
+/* afficher l'interface utilisateur: scores, vie... */
+void afficher_ui(game* game) {
+  MLV_draw_filled_rectangle(0, 615, ECRAN_W, ECRAN_H, MLV_COLOR_BLACK);
+}
+
 void afficher_et_actualiser(game* game) {
 
   /* affichage du fond 94,120,140 */
@@ -87,6 +92,8 @@ void afficher_et_actualiser(game* game) {
   /* afficher ennemis... */
 
   debug_hitbox(game);
+
+  afficher_ui(game);
 
   MLV_actualise_window();
 }
