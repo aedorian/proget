@@ -34,16 +34,16 @@ void creer_tous_objets(game* game) {
     printf("ennemi add...\n");
     ajouter_ennemi_obj(game, /* taureau */
 		       new_ennemi(new_vect(33, 33), 3, 10,
-				  game -> armes_obj[7], "D 20 R 60 L 50", "img/taureau.png"));
+				  game -> armes_obj[7], "D 20 R 60 L 50 ", "img/taureau.png"));
     ajouter_ennemi_obj(game, /* cochon */
 		       new_ennemi(new_vect(27, 42), 5, 10,
-				  game -> armes_obj[6], "D 10 L 90 D 10 R 90", "img/cochon.png"));
+				  game -> armes_obj[6], "D 10 L 90 D 10 R 90 ", "img/cochon.png"));
     ajouter_ennemi_obj(game, /* cochon de test qui ne bouge pas, victime boloss */
 		       new_ennemi(new_vect(27, 42), 5, 10,
-				  game -> armes_obj[6], "N 20", "img/cochon.png"));
+				  game -> armes_obj[6], "N 20 ", "img/cochon.png"));
     ajouter_ennemi_obj(game, /* poule */
-		       new_ennemi(new_vect(24, 30), 2, 10,
-				  game -> armes_obj[8], "D 10", "img/poule.png"));
+		       new_ennemi(new_vect(24, 30), 2, 4,
+				  game -> armes_obj[8], "D 10 ", "img/poule.png"));
 
 }
 
@@ -57,9 +57,20 @@ game new_game() {
   g.n_balles_obj = 0;
   g.n_armes_obj = 0;
   g.n_ennemis_obj = 0;
-  /* initialiser le nombre d'élément des listes des places vides */
-  g.n_libre_balles = 0;
-  g.n_libre_ennemis = 0;
+
+  g.etat_ecran = 0; /* commence sur l'écran titre */
+  /* menus - écran titre*/
+  g.menu_titre.opt_act = 0;
+  g.menu_titre.nb_opt = 4;
+  g.menu_titre.type_menu = 0;
+  /* écran de save */
+  g.menu_save.opt_act = 0;
+  g.menu_save.nb_opt = 4;
+  g.menu_save.type_menu = 1;
+  /* écran de pause */
+  g.menu_pause.opt_act = 0;
+  g.menu_pause.nb_opt = 2;
+  g.menu_pause.type_menu = 2;
 	
   creer_tous_objets(&g);
   
@@ -103,7 +114,7 @@ arme new_arme(balle balle, type_tir type_tir, int cadence) {
     return a;
 }
 
-ennemi new_ennemi(vect hitbox, int vitesse, int vie, arme arme, char mouvements[50], char* img_path) {
+ennemi new_ennemi(vect hitbox, int vitesse, int vie, arme arme, char* mouvements, char* img_path) {
   int i;
   int n_mouvements; /* nombre de mouvements différents, donc d'éléments dans e.mouvements */
   mouvement m_tmp; /* mouvement temporaire à insérer dans le tableau e.mouvements */

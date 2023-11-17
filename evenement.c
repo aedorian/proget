@@ -12,7 +12,7 @@ void gerer_evenements_clavier(game* game) {
     for (i=0; i < n; i++) {
         update_cadence_arme(&(game -> joueurs[i].arme));
       
-        obtenir_deplacement_joueur(&(game -> joueurs[i]), i+1);
+        obtenir_deplacement_joueur(&(game -> joueurs[i]), i+1); /* i+1 pour le numéro du joueur, 1 ou 2 */
         obtenir_tir_joueur(game, &(game -> joueurs[i]), i+1);
     }
 }
@@ -39,9 +39,9 @@ void obtenir_deplacement_joueur(joueur* joueur, int numJoueur) {
             joueur -> dir.y = -(MLV_get_keyboard_state(J2_DOWN) == MLV_PRESSED);
 	
         if (MLV_get_keyboard_state(J2_RIGHT) == MLV_PRESSED)
-            joueur -> dir.y = 1;
+            joueur -> dir.x = 1;
         else
-            joueur -> dir.y = -(MLV_get_keyboard_state(J2_LEFT) == MLV_PRESSED);
+            joueur -> dir.x = -(MLV_get_keyboard_state(J2_LEFT) == MLV_PRESSED);
     }
 
     /* appliquer la vitesse */
@@ -53,6 +53,11 @@ void obtenir_tir_joueur(game* game, joueur* joueur, int numJoueur) {
     /* REMPLACER PAR OU? */
     if (numJoueur == 1) {
         if (MLV_get_keyboard_state(J1_TIR) == MLV_PRESSED) {
+            tirer_arme_joueur(game, joueur);
+        }
+    }
+    if (numJoueur == 2) {
+        if (MLV_get_keyboard_state(J2_TIR) == MLV_PRESSED) {
             tirer_arme_joueur(game, joueur);
         }
     }
@@ -92,8 +97,8 @@ void tirer_arme_joueur(game* game, joueur* joueur) {
 
     if (joueur -> arme.cadence_act == 0) {
         joueur -> arme.cadence_act = joueur -> arme.cadence;
-        balle_arme.pos.x = joueur -> pos.x;
-        balle_arme.pos.y = joueur -> pos.y;
+        balle_arme.pos.x = joueur -> pos.x + (joueur -> hitbox.x)/2;
+        balle_arme.pos.y = joueur -> pos.y + (joueur -> hitbox.y)/2;
         switch (joueur -> arme.type_tir) {
         case STRAIGHT:
             set_balle_dir(&balle_arme, new_vect(0, 1)); 
@@ -114,8 +119,8 @@ void tirer_arme_ennemi(game* game, ennemi* ennemi) {
 
     if (ennemi -> arme.cadence_act == 0) {
         ennemi -> arme.cadence_act = ennemi -> arme.cadence;
-        balle_arme.pos.x = ennemi -> pos.x;
-        balle_arme.pos.y = ennemi -> pos.y;
+        balle_arme.pos.x = ennemi -> pos.x + (ennemi -> hitbox.x) / 2;
+        balle_arme.pos.y = ennemi -> pos.y + (ennemi -> hitbox.y) / 2;
         switch (ennemi -> arme.type_tir) {
         case STRAIGHT:
             set_balle_dir(&balle_arme, new_vect(0, -1)); 

@@ -9,18 +9,19 @@
 #include "headers/evenement.h"
 #include "headers/mouvement.h"
 #include "headers/creation.h"
+#include "headers/menu.h"
 
-#define FPS 25                /* frames par seconde */
+#define FPS 40                /* frames par seconde */
 #define NANO_S 1000000000     /* valeurs à utiliser dans les calculs de temps
 				 ici le nombre de nanosecondes en 1 seconde */
 #define MILLI_S 1000000       /* nombre de millisecondes en 1 seconde */
 
 int main() {
   game game;
-  joueur test_joueur;
-  /* struct timespec t_debut, t_fin; UTILISER LONG?
-  struct timespec t_diff; */
-  long tpf;                  /* temps que doit prendre chaque frame */
+  joueur joueur1, joueur2;
+  struct timespec t_debut, t_fin;
+  long t_diff;
+  long tpf;                  /* temps que doit prendre chaque frame en fonction des fps*/
   int quitter = 0;            /* quitter la boucle principale */
 
   vect TEST_VECT[4];
@@ -37,15 +38,18 @@ int main() {
 
   game = new_game();
 
-  test_joueur = new_joueur(new_vect(200, 300), new_vect(0, 0), 5,
+  joueur1 = new_joueur(new_vect(200, 300), new_vect(0, 0), 5,
+			   game.armes_obj[0], "img/vache.png");
+  joueur2 = new_joueur(new_vect(200, 300), new_vect(0, 0), 5,
 			   game.armes_obj[0], "img/vache.png");
 
-  creer_joueur(&test_joueur, &game);
+  creer_joueur(&joueur1, &game);
+  creer_joueur(&joueur2, &game);
 
-  creer_ennemi(&game.ennemis_obj[0], &game, new_vect(320, 10));
-     creer_ennemi(&game.ennemis_obj[1], &game, new_vect(320, 100));
-  creer_ennemi(&game.ennemis_obj[3], &game, new_vect(120, 0));
-  creer_ennemi(&game.ennemis_obj[3], &game, new_vect(640 - 120, 0));
+  /* creer_ennemi(&game.ennemis_obj[0], &game, new_vect(320, 10)); */
+  creer_ennemi(&game.ennemis_obj[2], &game, new_vect(320, 100));
+  /* creer_ennemi(&game.ennemis_obj[3], &game, new_vect(120, 0));
+  creer_ennemi(&game.ennemis_obj[3], &game, new_vect(640 - 120, 0)); */
 
 
 
@@ -59,39 +63,47 @@ int main() {
 
   /* boucle principale */
   while (!quitter) {
-    /* clock_gettime(CLOCK_REALTIME, &t_debut); GERER SI -1 */
-    /**/
+    switch (game.etat_ecran) {
+    case 3:
+      clock_gettime(CLOCK_REALTIME, &t_debut);
+      /**/
 
-    /* AFFICHAGE IMAGE COURANTE */
-    afficher_et_actualiser(&game);
+      /* AFFICHAGE IMAGE COURANTE */
+      afficher_et_actualiser(&game);
 
-    /* RECUPERATION EVENEMENT CLAVIER */
-    gerer_evenements_clavier(&game);
+      /* RECUPERATION EVENEMENT CLAVIER */
+      gerer_evenements_clavier(&game);
 
-    faire_tirer_ennemis(&game);
+      faire_tirer_ennemis(&game);
 
-    /* RESOLUTION EVENEMENTS */
+      /* RESOLUTION EVENEMENTS */
 
-    /* DEPLACEMENT DES OBJETS (en fonction de dir) */
-    move_entites(&game);
+      /* DEPLACEMENT DES OBJETS (en fonction de dir) */
+      move_entites(&game);
 
-    /* RESOLUTION DES COLLISIONS */
+      /* RESOLUTION DES COLLISIONS */
 
-    resolution_collisions(&game);
+      resolution_collisions(&game);
 
-    /* if (MLV_get_keyboard_state(MLV_KEYBOARD_ESCAPE)) quitter = 1; */
+      /* if (MLV_get_keyboard_state(MLV_KEYBOARD_ESCAPE)) quitter = 1; */
     
-    /**/
-    /* clock_gettime(CLOCK_REALTIME, &t_fin);
+      /**/
+      clock_gettime(CLOCK_REALTIME, &t_fin);
 
-    t_diff = t_fin.tv_nsec - t_debut.tv_nsec;
-    printf("temps:\t\t%d\tsoit%fsur\t\t%f\n", t_diff, tpf, tpf/(t_diff*1.0));
-    if (t_diff < tpf) {
-      MLV_wait_milliseconds(t_diff / MILLI_S); pour l'avoir en millisecondes
+      t_diff = t_fin.tv_nsec - t_debut.tv_nsec; /* temps qu'a prit une frame */
+      /* printf("temps:\t\t %ld \t soit %ld sur \t\t%f\n", t_diff, tpf, (t_diff*1.0)/tpf); */
+      if (t_diff < tpf && t_diff > 0) {
+	/* printf("%ld\n", (tpf - t_diff) / MILLI_S); */
+	MLV_wait_milliseconds((tpf - t_diff) / MILLI_S); /* pour l'avoir en millisecondes */
+      }
+      break;
+
+
+
+    case 0:
+      faire_evenements_menu(&game);
     }
-    */
-
-    MLV_wait_milliseconds(20);
+    
   }
   
 

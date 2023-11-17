@@ -73,6 +73,7 @@ void move_ennemis(game* game) {
       
       (e -> i_mouv_act)++; /* on change le mouvement actuel */
       (e -> i_mouv_act) %= (e -> n_mouvements); /* on revient à 0 si on a atteint le dernier */
+      printf("%d\n", e -> n_mouvements);
       
       e -> dir = dir_from_char_vit(e -> mouvements[e -> i_mouv_act].movetype, e -> vitesse);
     }
@@ -93,7 +94,7 @@ vect dir_from_char_vit(char c, int vit) { /* vitesse v */
   case 'U': v.x = 0;           v.y = 1 * vit; break;
   case 'D': v.x = 0;           v.y = -1 * vit; break;
   case 'N': v.x = 0;           v.y = 0; break;
-  default: v.x = 1 * vit;      v.y = 0; break; /* par défaut à droite mais normalement pas nécessaire */
+  default: v.x = -1 * vit;      v.y = 0; break; /* par défaut à droite mais normalement pas nécessaire */
   }
   return v;
 }

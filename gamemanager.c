@@ -20,9 +20,12 @@ void creer_balle(balle* balle, game* game) {
     }
   }
   /* sinon, tous les emplacements sont déjà pris, alors on en crée un */
-  
-  game -> balles[game -> n_balles] = *balle;
-  (game -> n_balles)++; /* et on ajoute 1 à la taille du tableau balles */
+
+  if (game -> n_balles < BALLES_MAX) {
+    printf("nb balles: %d\n", game -> n_balles);
+    game -> balles[game -> n_balles] = *balle;
+    (game -> n_balles)++; /* et on ajoute 1 à la taille du tableau balles */
+  }
 }
 
 void creer_ennemi(ennemi* ennemi, game* game, vect pos) {

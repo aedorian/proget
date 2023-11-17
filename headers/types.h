@@ -75,6 +75,14 @@ typedef struct {
   MLV_Image* image;
 } joueur;
 
+typedef struct {
+  int opt_act; /* option actuelle */
+  int nb_opt; /* nombre d'options (option maximum, inclusive) */
+  int type_menu; /* type du menu: 0 = écran titre,
+		                  1 = high scores,
+                                  2 = menu de pause */
+} menu;
+
 /* game, structure pour gérer les entités du jeu */
 typedef struct {
     /* tableaux pour gérer les entités présentes dans le jeu */
@@ -93,11 +101,12 @@ typedef struct {
     int n_armes_obj;
     int n_ennemis_obj;
 
-    /* listes des places vides dans les listes des entités du jeu */
-    int libre_balles[BALLES_MAX];
-    int libre_ennemis[ENNEMIS_MAX];
-    int n_libre_balles;
-    int n_libre_ennemis;
+  /* écran courant du jeu: menu, jeu, pause */
+  int etat_ecran; /* 0 = écran titre, 1 = écran save, 2 = écran pause, 3 = jeu */
+  int est_en_pause; /* 0 ou 1 */
+  menu menu_titre; /* a type_menu = 0 */
+  menu menu_save; /* a type_menu = 1 */
+  menu menu_pause; /* a type_menu = 2 */
 } game;
 
 #endif /* _TYPES_H_ */
