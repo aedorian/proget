@@ -87,7 +87,7 @@ void afficher_menu_actuel(menu* menu) {
     switch (menu -> type_menu) {
     case 0: /* écran titre */
       ecran_titre = MLV_load_image("img/ecrantitre.png");
-      MLV_draw_image(ecran_titre, 0, 0);
+      MLV_draw_image(ecran_titre, 0, 70);
       
       switch (i) {
       case 0: MLV_draw_text_with_font(50, 40 + 60 * i, "Nouvelle partie (1 joueur)", police_1, MLV_COLOR_WHITE); break;

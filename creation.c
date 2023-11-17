@@ -30,6 +30,8 @@ void creer_tous_objets(game* game) {
     ajouter_arme_obj(game, new_arme(game -> balles_obj[6], STRAIGHT, 30));
     ajouter_arme_obj(game, new_arme(game -> balles_obj[7], BOMB, 20));
     ajouter_arme_obj(game, new_arme(game -> balles_obj[8], SIDES, 30));
+    ajouter_arme_obj(game, new_arme(game -> balles_obj[6], THREE, 30));
+    ajouter_arme_obj(game, new_arme(game -> balles_obj[6], VISE, 30));
 
     printf("ennemi add...\n");
     ajouter_ennemi_obj(game, /* taureau */
@@ -44,6 +46,12 @@ void creer_tous_objets(game* game) {
     ajouter_ennemi_obj(game, /* poule */
 		       new_ennemi(new_vect(24, 30), 2, 4,
 				  game -> armes_obj[8], "D 10 ", "img/poule.png"));
+    ajouter_ennemi_obj(game, /* mouton 1 */
+		       new_ennemi(new_vect(24, 30), 6, 10,
+				  game -> armes_obj[9], "R 30 N 30 R 30 N 30 R 30 N 30 D 10 N 10 L 30 N 30 L 30 N 30 L 30 N 30 D 10 N 10 ", "img/mouton.png"));
+    ajouter_ennemi_obj(game, /* mouton 2 */
+		       new_ennemi(new_vect(24, 30), 6, 10,
+				  game -> armes_obj[10], "R 30 N 30 R 30 N 30 R 30 N 30 D 10 N 10 L 30 N 30 L 30 N 30 L 30 N 30 D 10 N 10 ", "img/mouton.png"));
 
 }
 

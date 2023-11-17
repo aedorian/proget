@@ -23,7 +23,7 @@ int main() {
   long tpf;                  /* temps que doit prendre chaque frame en fonction des fps*/
   int quitter = 0;            /* quitter la boucle principale */
 
-  vect TEST_VECT[4];
+  int debug_ennemi = 1;
 
   tpf = (1.0 * NANO_S) / FPS;
 
@@ -37,10 +37,21 @@ int main() {
 
   game = new_game();
 
-  creer_ennemi(&game.ennemis_obj[0], &game, new_vect(320, 10));
+  switch (debug_ennemi) {
+  case 0:
+    creer_ennemi(&game.ennemis_obj[4], &game, new_vect(50, 10));
+    break;
+  case 1:
+    creer_ennemi(&game.ennemis_obj[5], &game, new_vect(320, 10));
+    break;
+  case 2:
+    creer_ennemi(&game.ennemis_obj[0], &game, new_vect(320, 10));
+    break;
+  }
+  /* creer_ennemi(&game.ennemis_obj[0], &game, new_vect(320, 10));
   creer_ennemi(&game.ennemis_obj[2], &game, new_vect(320, 100));
   creer_ennemi(&game.ennemis_obj[3], &game, new_vect(120, 0));
-  creer_ennemi(&game.ennemis_obj[3], &game, new_vect(640 - 120, 0));
+  creer_ennemi(&game.ennemis_obj[3], &game, new_vect(640 - 120, 0)); */
 
 
 

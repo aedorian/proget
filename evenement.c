@@ -3,6 +3,7 @@
 #include "headers/gamemanager.h"
 #include "headers/types.h"
 #include <MLV/MLV_all.h>
+#include <math.h>
 
 /* fonction générale pour obtenir et gérer tous les évènements clavier */
 void gerer_evenements_clavier(game* game) {
@@ -92,6 +93,21 @@ void set_balle_dir(balle* balle, vect dir) {
     balle -> dir.y *= balle -> vitesse;
 }
 
+/* définit la direction de la balle en fonction d'un angle entre 0 et 2*pi */
+void set_balle_angle_dir(balle* balle, float angle) {
+  balle -> dir = new_vect(floor(cos(angle) * balle -> vitesse),
+			  floor(sin(angle) * balle -> vitesse)); /* METTRE DES POINTEURS POUR OPTI */
+}
+
+/* renvoie un angle en radians (entre 0 et 2*pi) de l'ennemi vers le joueur */
+float get_angle_to_joueur(game* game, ennemi* ennemi) {
+  joueur *j;
+  vect a, b;
+  j = &(game -> joueurs[0]);
+
+  return 4;
+}
+
 void tirer_arme_joueur(game* game, joueur* joueur) {
     balle balle_arme = joueur -> arme.balle;
 
@@ -149,6 +165,20 @@ void tirer_arme_ennemi(game* game, ennemi* ennemi) {
             creer_balle(&balle_arme, game);
 	    set_balle_dir(&balle_arme, new_vect(1, 0)); 
             creer_balle(&balle_arme, game);
+	    break;
+	case THREE:
+	  set_balle_dir(&balle_arme, new_vect(-1, -1)); 
+            creer_balle(&balle_arme, game);
+	    set_balle_dir(&balle_arme, new_vect(0, -1)); 
+            creer_balle(&balle_arme, game);
+	    set_balle_dir(&balle_arme, new_vect(1, -1)); 
+            creer_balle(&balle_arme, game);
+	    break;
+	case VISE:
+	  set_balle_angle_dir(&balle_arme,
+			      get_angle_to_joueur(game, ennemi));
+	  creer_balle(&balle_arme, game);
+	  break;
         }
     }
 }

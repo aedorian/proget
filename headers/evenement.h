@@ -23,6 +23,9 @@ void obtenir_deplacement_joueur(joueur* joueur, int numJoueur);
 void obtenir_tir_joueur(game* game, joueur* joueur, int numJoueur);
 void update_cadence_arme(arme* arme);
 void faire_tirer_ennemis(game* game);
+void set_balle_dir(balle* balle, vect dir);
+void set_balle_angle_dir(balle* balle, float angle);
+float get_angle_to_joueur(game* game, ennemi* ennemi);
 void tirer_arme_joueur(game* game, joueur* joueur);
 void tirer_arme_ennemi(game* game, ennemi* ennemi);
 

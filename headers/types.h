@@ -30,7 +30,9 @@ enum type_tir {
     STRAIGHT,
     CONE,
     BOMB,
-    SIDES
+    SIDES,
+    THREE,
+    VISE
 };
 typedef enum type_tir type_tir;
 
