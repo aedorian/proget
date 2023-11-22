@@ -99,15 +99,6 @@ void set_balle_angle_dir(balle* balle, float angle) {
 			  floor(sin(angle) * balle -> vitesse)); /* METTRE DES POINTEURS POUR OPTI */
 }
 
-/* renvoie un angle en radians (entre 0 et 2*pi) de l'ennemi vers le joueur */
-float get_angle_to_joueur(game* game, ennemi* ennemi) {
-  joueur *j;
-  vect a, b;
-  j = &(game -> joueurs[0]);
-
-  return 4;
-}
-
 void tirer_arme_joueur(game* game, joueur* joueur) {
     balle balle_arme = joueur -> arme.balle;
 
@@ -126,6 +117,8 @@ void tirer_arme_joueur(game* game, joueur* joueur) {
             set_balle_dir(&balle_arme, new_vect(1, 1)); 
             creer_balle(&balle_arme, game);
             break;
+	default:
+	  break;
         }
     }
 }
@@ -176,8 +169,15 @@ void tirer_arme_ennemi(game* game, ennemi* ennemi) {
 	    break;
 	case VISE:
 	  set_balle_angle_dir(&balle_arme,
-			      get_angle_to_joueur(game, ennemi));
+			      (rand() % (314) + 314) * 0.01);
 	  creer_balle(&balle_arme, game);
+	  break;
+
+	case RANDOM:
+	  set_balle_angle_dir(&balle_arme,
+			      (rand() % (628)) * 0.01);
+	  creer_balle(&balle_arme, game);
+	default:
 	  break;
         }
     }

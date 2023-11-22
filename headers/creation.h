@@ -12,7 +12,7 @@ game new_game();
 joueur new_joueur(vect pos_init, vect dir_init, int vitesse, arme arme, char* img_path);
 balle new_balle(vect hitbox, int damage, float vitesse, int estJoueur, char* img_path);
 arme new_arme(balle balle, type_tir type_tir, int cadence);
-ennemi new_ennemi(vect hitbox, int vitesse, int vie, arme arme, char* mouvements, char* img_path);
+ennemi new_ennemi(vect hitbox, int vitesse, int vie, arme arme, char* img_path);
 vect new_vect(int x, int y);
 
 #endif

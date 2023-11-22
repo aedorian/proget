@@ -1,9 +1,10 @@
 #include "headers/mouvement.h"
 #include "headers/types.h"
 #include "headers/affichage.h"
+#include "headers/collision.h"
 
 
-void move_pos_joueur(vect* pos, vect* dir, vect* hitbox, joueur* joueur) {
+void move_pos_joueur(vect* pos, vect* dir, vect* hitbox) {
   pos -> x += dir -> x;
   if (pos -> x < 0 || pos -> x > ECRAN_W - hitbox -> x) { /* si ça dépasse */
     pos -> x -= dir -> x;
@@ -13,17 +14,19 @@ void move_pos_joueur(vect* pos, vect* dir, vect* hitbox, joueur* joueur) {
     pos -> y += dir -> y;
   }
 }
-void move_pos_balle(vect* pos, vect* dir, vect* hitbox, balle* balle) {
+void move_pos_balle(vect* pos, vect* dir, vect* hitbox, balle* balle, game *game) {
   pos -> x += dir -> x;
   if (pos -> x < 0 || pos -> x > ECRAN_W - hitbox -> x) { /* si ça dépasse */
-    balle -> existe = 0;
+    balle -> existe = 0; /* supprimer la balle */
+    reduction_tableau(game, 1);
   }
   pos -> y -= dir -> y; /* axe y inversé */
   if (pos -> y < 0 || pos -> y > ECRAN_H - hitbox -> y) {
-    balle -> existe = 0;
+    balle -> existe = 0; /* supprimer la balle */
+    reduction_tableau(game, 1);
   }
 }
-void move_pos_ennemi(vect* pos, vect* dir, vect* hitbox, ennemi* ennemi) {
+void move_pos_ennemi(vect* pos, vect* dir, vect* hitbox, ennemi* ennemi, game *game) {
   pos -> x += dir -> x;
   if (pos -> x < 0 || pos -> x > ECRAN_W - hitbox -> x) { /* si ça dépasse */
     pos -> x -= dir -> x;
@@ -32,6 +35,7 @@ void move_pos_ennemi(vect* pos, vect* dir, vect* hitbox, ennemi* ennemi) {
   pos -> y -= dir -> y; /* axe y inversé */
   if (pos -> y > ECRAN_H - hitbox -> y) {
     ennemi -> existe = 0;
+    reduction_tableau(game, 0);
   }
 }
 
@@ -42,7 +46,9 @@ void move_balles(game* game) {
   n = game -> n_balles;    /* nombre de balles, pour éviter d'y accéder à
 			      chaque tour de boucle */
   for (i=0; i < n; i++) {
-    move_pos_balle(&(game -> balles[i].pos), &(game -> balles[i].dir), &(game -> joueurs[i].hitbox), &(game -> balles[i]));
+    if (game -> balles[i].existe == 1) {
+      move_pos_balle(&(game -> balles[i].pos), &(game -> balles[i].dir), &(game -> joueurs[i].hitbox), &(game -> balles[i]), game);
+    }
   }
 }
 
@@ -52,7 +58,7 @@ void move_joueurs(game* game) {
 
   for (i=0; i < n; i++) {
 
-    move_pos_joueur(&(game -> joueurs[i].pos), &(game -> joueurs[i].dir), &(game -> joueurs[i].hitbox), &(game -> joueurs[i]));
+    move_pos_joueur(&(game -> joueurs[i].pos), &(game -> joueurs[i].dir), &(game -> joueurs[i].hitbox));
   }
 }
 
@@ -64,7 +70,8 @@ void move_ennemis(game* game) {
   for (i=0; i < n; i++) {
     e = &(game -> ennemis[i]);
     
-    /* pour chaque ennemi, regarder si le compteur mouv_count est égal à la durée du mouvement
+    if (e -> existe == 1) {
+      /* pour chaque ennemi, regarder si le compteur mouv_count est égal à la durée du mouvement
        actuel. si oui, alors changer la direction */
 
     /* si l'ennemi a parcouru (durée de son mouvement actuel) frames */
@@ -73,7 +80,7 @@ void move_ennemis(game* game) {
       
       (e -> i_mouv_act)++; /* on change le mouvement actuel */
       (e -> i_mouv_act) %= (e -> n_mouvements); /* on revient à 0 si on a atteint le dernier */
-      printf("%d\n", e -> n_mouvements);
+      /* printf("%d\n", e -> n_mouvements); */
       
       e -> dir = dir_from_char_vit(e -> mouvements[e -> i_mouv_act].movetype, e -> vitesse);
     }
@@ -81,7 +88,8 @@ void move_ennemis(game* game) {
     (e -> mouv_count)++;
 
     /* dans tous les cas, effectuer le move_pos */
-    move_pos_ennemi(&(game -> ennemis[i].pos), &(game -> ennemis[i].dir), &(game -> ennemis[i].hitbox), &(game -> ennemis[i]));
+    move_pos_ennemi(&(game -> ennemis[i].pos), &(game -> ennemis[i].dir), &(game -> ennemis[i].hitbox), &(game -> ennemis[i]), game);
+    }
   }
 }
 

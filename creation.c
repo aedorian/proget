@@ -31,32 +31,36 @@ void creer_tous_objets(game* game) {
     ajouter_arme_obj(game, new_arme(game -> balles_obj[7], BOMB, 20));
     ajouter_arme_obj(game, new_arme(game -> balles_obj[8], SIDES, 30));
     ajouter_arme_obj(game, new_arme(game -> balles_obj[6], THREE, 30));
-    ajouter_arme_obj(game, new_arme(game -> balles_obj[6], VISE, 30));
+    ajouter_arme_obj(game, new_arme(game -> balles_obj[6], VISE, 5));
+    ajouter_arme_obj(game, new_arme(game -> balles_obj[6], RANDOM, 2));
 
+    /* ennemis de BASE: une arme et un sprite */
     printf("ennemi add...\n");
     ajouter_ennemi_obj(game, /* taureau */
 		       new_ennemi(new_vect(33, 33), 3, 10,
-				  game -> armes_obj[7], "D 20 R 60 L 50 ", "img/taureau.png"));
+				  game -> armes_obj[7], "img/taureau.png"));
     ajouter_ennemi_obj(game, /* cochon */
 		       new_ennemi(new_vect(27, 42), 5, 10,
-				  game -> armes_obj[6], "D 10 L 90 D 10 R 90 ", "img/cochon.png"));
+				  game -> armes_obj[6], "img/cochon.png"));
     ajouter_ennemi_obj(game, /* cochon de test qui ne bouge pas, victime boloss */
 		       new_ennemi(new_vect(27, 42), 5, 10,
-				  game -> armes_obj[6], "N 20 ", "img/cochon.png"));
+				  game -> armes_obj[6], "img/cochon.png"));
     ajouter_ennemi_obj(game, /* poule */
 		       new_ennemi(new_vect(24, 30), 2, 4,
-				  game -> armes_obj[8], "D 10 ", "img/poule.png"));
+				  game -> armes_obj[8], "img/poule.png"));
     ajouter_ennemi_obj(game, /* mouton 1 */
-		       new_ennemi(new_vect(24, 30), 6, 10,
-				  game -> armes_obj[9], "R 30 N 30 R 30 N 30 R 30 N 30 D 10 N 10 L 30 N 30 L 30 N 30 L 30 N 30 D 10 N 10 ", "img/mouton.png"));
+		       new_ennemi(new_vect(33, 33), 4, 6,
+				  game -> armes_obj[6], "img/mouton.png"));
     ajouter_ennemi_obj(game, /* mouton 2 */
-		       new_ennemi(new_vect(24, 30), 6, 10,
-				  game -> armes_obj[10], "R 30 N 30 R 30 N 30 R 30 N 30 D 10 N 10 L 30 N 30 L 30 N 30 L 30 N 30 D 10 N 10 ", "img/mouton.png"));
+		       new_ennemi(new_vect(33, 33), 6, 10,
+				  game -> armes_obj[11], "img/mouton.png"));
+    /* ENNEMI BOSS QUI TOURNE EN CARRE AU MILIEU ET QUI ENVOIE DU RANDOM */
 
 }
 
 game new_game() {
   game g;
+    printf("ok\n");
   /* initialiser le nombre d'élément des listes d'entités */
   g.n_balles = 0;
   g.n_joueurs = 0;
@@ -79,8 +83,17 @@ game new_game() {
   g.menu_pause.opt_act = 0;
   g.menu_pause.nb_opt = 2;
   g.menu_pause.type_menu = 2;
+
+  /* waves */
+  g.wc = 0;
+  g.wave_act = 0;
+  g.w_i = 0;
+
+  printf("ok\n");
 	
   creer_tous_objets(&g);
+
+  printf("ok\n");
   
   return g;
 }
@@ -122,11 +135,7 @@ arme new_arme(balle balle, type_tir type_tir, int cadence) {
     return a;
 }
 
-ennemi new_ennemi(vect hitbox, int vitesse, int vie, arme arme, char* mouvements, char* img_path) {
-  int i;
-  int n_mouvements; /* nombre de mouvements différents, donc d'éléments dans e.mouvements */
-  mouvement m_tmp; /* mouvement temporaire à insérer dans le tableau e.mouvements */
-  char duree_tmp[3]; /* durée (2 chiffres, plus 1 pour le '\0') à extraire de mouvements */
+ennemi new_ennemi(vect hitbox, int vitesse, int vie, arme arme, char* img_path) {
   ennemi e;
   /* pos d'où le mettre? */
   e.hitbox.x = hitbox.x; e.hitbox.y = hitbox.y;
@@ -134,34 +143,6 @@ ennemi new_ennemi(vect hitbox, int vitesse, int vie, arme arme, char* mouvements
   e.vie = vie;
   e.arme = arme;
   e.image = MLV_load_image(img_path);
-
-  /* la chaîne mouvements est sous la forme "R 10 L 30 U 10 R 40", c'est à dire
-     un caractère et un entier. la suite de la fonction parcourt la chaîne.
-     les abréviations sont: R = right, L = left; U = up; D = down */
-  i = 0;
-  n_mouvements = 0;
-  duree_tmp[2] = '\0'; /* terminer par '\0' au préalable, ce caractère ne sera pas changé */
-  while (mouvements[i] != '\0') {
-    /* char 1 = caractère symbolisant la direction du mouvement */
-    m_tmp.movetype = mouvements[i];
-    duree_tmp[0] = mouvements[i+2];
-    duree_tmp[1] = mouvements[i+3];
-    m_tmp.duree = atoi(duree_tmp);
-
-    e.mouvements[n_mouvements] = m_tmp;
-    
-    i += 5;
-    n_mouvements++;
-  }
-
-  e.n_mouvements = n_mouvements;
-
-  e.i_mouv_act = 0; /* mouvement actuel est le premier */
-  
-  e.mouv_count = 0; /* initialiser le compteur à 0, aucun lien avec mouvements pour le moment */
-
-  /* initialiser la direction au premier mouvement */
-  e.dir = dir_from_char_vit(e.mouvements[0].movetype, vitesse);
 
   e.existe = 1; /* l'ennemi existe */
 
@@ -175,7 +156,3 @@ vect new_vect(int x, int y) {
     c.x = x;     c.y = y;
     return c;
 }
-
-
-
-/* \Ö/ chokbar de bz */

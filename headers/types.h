@@ -6,6 +6,8 @@
 #define JOUEURS_MAX 2 /* joueurs max, taille maximale de la file associée */
 #define BALLES_MAX 500 /* balles maximum affichables à l'écran */
 #define ENNEMIS_MAX 100 /* ennemis maximum sur l'écran */
+#define WAVES_MAX 20
+#define WAVES_INSTR_MAX 30
 
 /* couple de deux flottants */
 /* utilisé pour pos, dir, dimensions de la hitbox... */
@@ -32,7 +34,8 @@ enum type_tir {
     BOMB,
     SIDES,
     THREE,
-    VISE
+    VISE,
+    RANDOM
 };
 typedef enum type_tir type_tir;
 
@@ -57,7 +60,7 @@ typedef struct {
   int vitesse;
   int vie;
   /* gère le mouvement: liste de directions avec une durée en frames */
-  mouvement mouvements[50];
+  mouvement mouvements[20];
   int n_mouvements; /* taille du tableau mouvements */
   int mouv_count; /* compteur pour changer de type de mouvement */
   int i_mouv_act; /* indice du mouvement actuel dans le tableau de mouvements */
@@ -77,6 +80,22 @@ typedef struct {
   MLV_Image* image;
 } joueur;
 
+/* instruction dans un fichier de vague d'ennemis */
+typedef struct {
+  char type_instr; /* S pour créer un ennemi, ou W pour attendre */
+  int pos_x; /* utilisé pour créer l'ennemi à telle position,
+		mais aussi pour attendre si l'instruction est
+		de type W (wait) */
+  int pos_y;
+  ennemi ennemi;
+} wave_instr;
+
+/* int id_t;
+  char mouvements[100];
+  int pos_x;
+  int pos_y; */
+
+/* menus */
 typedef struct {
   int opt_act; /* option actuelle */
   int nb_opt; /* nombre d'options (option maximum, inclusive) */
@@ -87,21 +106,32 @@ typedef struct {
 
 /* game, structure pour gérer les entités du jeu */
 typedef struct {
-    /* tableaux pour gérer les entités présentes dans le jeu */
-    balle balles[BALLES_MAX];
-    joueur joueurs[JOUEURS_MAX];
-    ennemi ennemis[ENNEMIS_MAX];
-    int n_balles; /* tailles de chacune des trois tableaux */
-    int n_joueurs;
-    int n_ennemis;
+  int score; /* score actuel */
+  int debut_partie; /* en millisecondes, pour pouvoir calculer le temps de jeu */
+
+  /* POUR LES WAVES */
+  wave_instr waves[WAVES_MAX][WAVES_INSTR_MAX];
+  int wc; /* wave compteur: compteur d'attente des vagues, utilisé dans gerer_waves() */
+  int wave_act; /* identifiant de la vague actuelle
+		   commence à 0 mais sera à wave_act + 1 dans l'affichage*/
+  int w_i; /* instruction actuelle de la vague actuelle */
+  int wave_act_est_finie;
   
-    /* objets possibles dans le jeu */
-    balle balles_obj[50];
-    arme armes_obj[50];
-    ennemi ennemis_obj[50];
-    int n_balles_obj;
-    int n_armes_obj;
-    int n_ennemis_obj;
+  /* tableaux pour gérer les entités présentes dans le jeu */
+  balle balles[BALLES_MAX];
+  joueur joueurs[JOUEURS_MAX];
+  ennemi ennemis[ENNEMIS_MAX];
+  int n_balles; /* tailles de chacune des trois tableaux */
+  int n_joueurs;
+  int n_ennemis;
+  
+  /* objets possibles dans le jeu */
+  balle balles_obj[50];
+  arme armes_obj[50];
+  ennemi ennemis_obj[50];
+  int n_balles_obj;
+  int n_armes_obj;
+  int n_ennemis_obj;
 
   /* écran courant du jeu: menu, jeu, pause */
   int etat_ecran; /* 0 = écran titre, 1 = écran save, 2 = écran pause, 3 = jeu */

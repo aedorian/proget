@@ -10,6 +10,11 @@ void ajouter_balle_obj(game* game, balle balle);
 void ajouter_arme_obj(game* game, arme arme);
 void ajouter_ennemi_obj(game* game, ennemi ennemi);
 
-void init_partie_(game* game, int nb_joueurs);
+void init_partie(game* game, int nb_joueurs);
+
+void gerer_waves(game *game, wave_instr waves[WAVES_MAX][WAVES_INSTR_MAX]);
+void analyser_ligne_suivante(char ligne[100], char *type_instr, int *pos_x, int *pos_y, ennemi *e, game *game);
+void charger_waves_dans_tab(game *game, wave_instr waves[WAVES_MAX][WAVES_INSTR_MAX]);
+void charger_mouvement_ennemi(ennemi *e, char* mouvements);
 
 #endif

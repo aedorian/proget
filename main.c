@@ -10,6 +10,7 @@
 #include "headers/mouvement.h"
 #include "headers/creation.h"
 #include "headers/menu.h"
+#include "headers/manip_fich.h"
 
 #define FPS 40                /* frames par seconde */
 #define NANO_S 1000000000     /* valeurs à utiliser dans les calculs de temps
@@ -23,7 +24,7 @@ int main() {
   long tpf;                  /* temps que doit prendre chaque frame en fonction des fps*/
   int quitter = 0;            /* quitter la boucle principale */
 
-  int debug_ennemi = 1;
+  srand(time(NULL));
 
   tpf = (1.0 * NANO_S) / FPS;
 
@@ -35,9 +36,16 @@ int main() {
 
   creer_fenetre();
 
+  printf("preègame\n");
+
+  /* new_game(&game); */
   game = new_game();
 
-  switch (debug_ennemi) {
+  /* PROBLEME: QUAND ON MEURT, REFAIRE UN GAME DANS INIT_PARTIE */
+
+  printf("game cree\n");
+
+  /* switch (debug_ennemi) {
   case 0:
     creer_ennemi(&game.ennemis_obj[4], &game, new_vect(50, 10));
     break;
@@ -48,17 +56,24 @@ int main() {
     creer_ennemi(&game.ennemis_obj[0], &game, new_vect(320, 10));
     break;
   }
-  /* creer_ennemi(&game.ennemis_obj[0], &game, new_vect(320, 10));
+  creer_ennemi(&game.ennemis_obj[0], &game, new_vect(320, 10));
   creer_ennemi(&game.ennemis_obj[2], &game, new_vect(320, 100));
   creer_ennemi(&game.ennemis_obj[3], &game, new_vect(120, 0));
   creer_ennemi(&game.ennemis_obj[3], &game, new_vect(640 - 120, 0)); */
+  
+  /* chargement de toutes les vagues dans la liste */
+  charger_waves_dans_tab(&game, game.waves);
 
+  printf("waves chargées\n");
+
+  /* exit(EXIT_SUCCESS); */
 
 
   /* boucle principale */
   while (!quitter) {
     switch (game.etat_ecran) {
     case 3: /* JEU PRINCIPAL */
+      /* printf("debut frame----------------------\n"); */
       clock_gettime(CLOCK_REALTIME, &t_debut);
       /**/
 
@@ -66,7 +81,15 @@ int main() {
       afficher_et_actualiser(&game);
 
       /* RECUPERATION EVENEMENT CLAVIER */
-      gerer_evenements_clavier(&game);
+      gerer_evenements_clavier(&game); /* déplacements et tirs */
+
+      gerer_waves(&game, game.waves);
+
+      /*
+      for (i=0; i < game.n_ennemis; i++) {
+	printf("ennemi %d ", game.ennemis[i].existe);
+      }
+      printf("\n"); */
 
       faire_tirer_ennemis(&game);
 
@@ -78,6 +101,10 @@ int main() {
       /* RESOLUTION DES COLLISIONS */
 
       resolution_collisions(&game);
+
+      if (game.joueurs[0].vie <= 0) {
+	exit(EXIT_SUCCESS);
+      }
 
       /* if (MLV_get_keyboard_state(MLV_KEYBOARD_ESCAPE)) quitter = 1; */
     
@@ -94,6 +121,13 @@ int main() {
 
 
 
+
+
+
+
+
+
+      
     case 0: /* ECRAN TITRE */
       faire_evenements_menu(&game);
       break;
@@ -106,6 +140,10 @@ int main() {
 
     case 2: /* MENU PAUSE */
       faire_evenements_menu(&game);
+      break;
+
+    case 4: /* HIGH SCORES */
+      afficher_attendre_high_scores(&game);
       break;
     }
     

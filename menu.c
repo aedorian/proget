@@ -18,6 +18,10 @@ void faire_evenements_menu(game* game) {
   case 2:
     menu_act = &(game -> menu_pause);
     break;
+  default:
+    menu_act = &(game -> menu_titre); /* par défaut */
+    printf("Erreur: mauvais etat_ecran\n");
+    break;
   }
 
   /* obtenir les déplacements avec les flèches dans le menu actuel du game */
@@ -51,25 +55,28 @@ void attendre_clavier_menu(game* game, menu* menu) {
       case 0: init_partie(game, 1); break; /* aller au jeu */
       case 1: init_partie(game, 2); break;
       case 2: game -> etat_ecran = 1; break;
-      case 3: break;
+      case 3: game -> etat_ecran = 4; break;
       case 4: break;
       }
       break;
-    case 1:
+    case 1: /* ECRAN SAVE */
       switch (menu -> opt_act) {
       case 0: break;
       case 1: break;
       case 2: break;
-      case 3: break;
+      case 3: game -> etat_ecran = 0; break; /* ATTENTION ICI NE REDIRIGE PAS BIEN */
       }
       break;
-    case 2:
+    case 2: /* ECRAN PAUSE */
       switch (menu -> opt_act) {
       case 0: break;
       case 1: break;
       case 2: break;
-      case 3: break;
+      case 3: game -> etat_ecran = 0; break; /* ATTENTION ICI NE REDIRIGE PAS BIEN */
       }
+      break;
+    default:
+      printf("Erreur: mauvais etat_ecran\n");
       break;
     }
   }
@@ -125,4 +132,18 @@ void afficher_menu_actuel(menu* menu) {
   MLV_draw_image(curseur, 25, 46 + 60 * (menu -> opt_act));
 
   MLV_actualise_window();
+}
+
+void afficher_attendre_high_scores(game *game) {
+  MLV_Font* police_1 = MLV_load_font("font/pixelated.ttf", 24);
+
+  MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(3, 40, 5,255));
+
+  MLV_draw_text_with_font(70, 580, "Appuyer sur n'importe quelle touche pour quitter...", police_1, MLV_COLOR_WHITE);
+
+  MLV_actualise_window();
+
+  /* affichage terminé, on attend une touche du clavier */
+  MLV_wait_keyboard(NULL, NULL, NULL);
+  game -> etat_ecran = 0;
 }

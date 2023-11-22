@@ -1,5 +1,6 @@
 #include "headers/types.h"
 #include "headers/affichage.h"
+#include "headers/creation.h"
 #include <MLV/MLV_all.h>
 
 void creer_fenetre() {
@@ -78,7 +79,26 @@ void afficher_balles(game* game) {
 
 /* afficher l'interface utilisateur: scores, vie... */
 void afficher_ui(game* game) {
-  MLV_draw_filled_rectangle(0, 615, ECRAN_W, ECRAN_H, MLV_COLOR_BLACK);
+  int ratio_j1;
+  int ratio_j2;
+  
+  ratio_j1 = (game -> joueurs[0].vie) / (J_VIE_INIT * 1.0) * 10;
+
+  /* afficher le fond */
+  MLV_draw_filled_rectangle(0, 630, ECRAN_W, ECRAN_H, MLV_COLOR_BLACK);
+  
+  /* afficher la vie du joueur 1*/
+  MLV_draw_filled_rectangle(0, 630, J_VIE_INIT * 10, 10, MLV_rgba(108, 5, 3, 255));
+  MLV_draw_filled_rectangle(0, 630, ratio_j1 * 20, 10, MLV_rgba(223, 34, 59, 255));
+
+  if (game -> n_joueurs > 1) {
+    ratio_j2 = (game -> joueurs[1].vie) / (J_VIE_INIT * 1.0) * 10;
+
+    /* afficher la vie du joueur 2*/
+    MLV_draw_filled_rectangle(ECRAN_W - J_VIE_INIT * 10, 630, ECRAN_W, 10, MLV_rgba(108, 5, 3, 255));
+    MLV_draw_filled_rectangle(ECRAN_W - ratio_j2 * 20, 630,
+			      ECRAN_W, 10, MLV_rgba(223, 34, 59, 255));
+  }
 }
 
 void afficher_et_actualiser(game* game) {
@@ -86,12 +106,12 @@ void afficher_et_actualiser(game* game) {
   /* affichage du fond 94,120,140 */
   MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(29, 122, 55,255));
 
+  /* afficher les entités */
   afficher_balles(game);
   afficher_joueurs(game);
   afficher_ennemis(game);
-  /* afficher ennemis... */
 
-  debug_hitbox(game);
+  /* debug_hitbox(game); */
 
   afficher_ui(game);
 
