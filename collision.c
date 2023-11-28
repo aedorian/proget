@@ -65,7 +65,7 @@ void resolution_collisions(game* game){
 	  jou_prop -> vie -= DAMAGE_COLLISION;
 
 	  /* joueur meurt */
-	  if (jou_prop -> vie == 0){
+	  if (jou_prop -> vie <= 0){
 	    printf("Mort\n");
 	    /* pointeur NULL ? Autre chose ? */
 	  }
@@ -96,7 +96,7 @@ void resolution_collisions(game* game){
 	      reduction_tableau(game, 1);
                               
 	      /* ennemi meurt */
-	      if (enn_prop -> vie == 0){
+	      if (enn_prop -> vie <= 0){
 		(enn_prop -> existe) = 0;
 		reduction_tableau(game, 0);
 	      }

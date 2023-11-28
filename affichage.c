@@ -77,10 +77,21 @@ void afficher_balles(game* game) {
   }
 }
 
+/* afficher un fond particulier en fonction de la wave actuelle */
+void afficher_fond(game* game) {
+  if (game -> wave_act < 2) {
+    MLV_draw_image(game -> img_fonds[0], 0, 0);
+  } else
+  if (game -> wave_act < 5) {
+    MLV_draw_image(game -> img_fonds[1], 0, 0);
+  }
+}
+
 /* afficher l'interface utilisateur: scores, vie... */
 void afficher_ui(game* game) {
   int ratio_j1;
   int ratio_j2;
+  char nom_wave[8] = "Wave 01";
   
   ratio_j1 = (game -> joueurs[0].vie) / (J_VIE_INIT * 1.0) * 10;
 
@@ -99,19 +110,30 @@ void afficher_ui(game* game) {
     MLV_draw_filled_rectangle(ECRAN_W - ratio_j2 * 20, 630,
 			      ECRAN_W, 10, MLV_rgba(223, 34, 59, 255));
   }
+
+  /* afficher le numéro de la wave si il doit être affiché */
+  if (game -> wc < 0) {
+    nom_wave[5] = '0' + (game -> wave_act + 1) / 10;
+    nom_wave[6] = '0' + (game -> wave_act + 1) % 10;
+    MLV_draw_text_with_font(260, 290, nom_wave, game -> police_nom_wave, MLV_COLOR_WHITE);
+  }
+
+  /* afficher le score */
+  MLV_draw_text_with_font(300, 626, "12345678", game -> police_score, MLV_COLOR_WHITE);
 }
 
 void afficher_et_actualiser(game* game) {
 
   /* affichage du fond 94,120,140 */
   MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(29, 122, 55,255));
+  /* afficher_fond(game); */
 
   /* afficher les entités */
   afficher_balles(game);
   afficher_joueurs(game);
   afficher_ennemis(game);
 
-  /* debug_hitbox(game); */
+  debug_hitbox(game);
 
   afficher_ui(game);
 

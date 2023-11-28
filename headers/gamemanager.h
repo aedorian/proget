@@ -3,6 +3,8 @@
 
 #include "types.h"
 
+#define NB_WAVES 20
+
 void creer_joueur(joueur* joueur, game* game);
 void creer_balle(balle* balle, game* game);
 void creer_ennemi(ennemi* ennemi, game* game, vect pos);

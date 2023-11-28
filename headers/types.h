@@ -4,9 +4,9 @@
 #include <MLV/MLV_all.h>
 
 #define JOUEURS_MAX 2 /* joueurs max, taille maximale de la file associée */
-#define BALLES_MAX 500 /* balles maximum affichables à l'écran */
-#define ENNEMIS_MAX 100 /* ennemis maximum sur l'écran */
-#define WAVES_MAX 20
+#define BALLES_MAX 250 /* balles maximum affichables à l'écran */
+#define ENNEMIS_MAX 20 /* ennemis maximum sur l'écran */
+#define WAVES_MAX 30
 #define WAVES_INSTR_MAX 30
 
 /* couple de deux flottants */
@@ -35,7 +35,8 @@ enum type_tir {
     SIDES,
     THREE,
     VISE,
-    RANDOM
+    RANDOM,
+    RANDOWN
 };
 typedef enum type_tir type_tir;
 
@@ -104,6 +105,12 @@ typedef struct {
                                   2 = menu de pause */
 } menu;
 
+/* définit un type pour un score: est utilisé comme le score actuel */
+typedef struct {
+  int second; /* temps en secondes de la durée de la partie */
+  int score;
+} highscore;
+
 /* game, structure pour gérer les entités du jeu */
 typedef struct {
   int score; /* score actuel */
@@ -126,9 +133,9 @@ typedef struct {
   int n_ennemis;
   
   /* objets possibles dans le jeu */
-  balle balles_obj[50];
-  arme armes_obj[50];
-  ennemi ennemis_obj[50];
+  balle balles_obj[20];
+  arme armes_obj[20];
+  ennemi ennemis_obj[20];
   int n_balles_obj;
   int n_armes_obj;
   int n_ennemis_obj;
@@ -139,6 +146,11 @@ typedef struct {
   menu menu_titre; /* a type_menu = 0 */
   menu menu_save; /* a type_menu = 1 */
   menu menu_pause; /* a type_menu = 2 */
+  MLV_Font* police_nom_wave; /* police d'affichage de la wave actuelle */
+  MLV_Font* police_score; /* police d'affichage du score */
+  MLV_Image* img_fonds[10]; /* fonds à afficher */
+
+  highscore score_act; /* score actuel */
 } game;
 
 #endif /* _TYPES_H_ */

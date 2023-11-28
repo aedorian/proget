@@ -83,7 +83,7 @@ int main() {
       /* RECUPERATION EVENEMENT CLAVIER */
       gerer_evenements_clavier(&game); /* déplacements et tirs */
 
-      gerer_waves(&game, game.waves);
+      gerer_waves(&game, game.waves); /* avancement des vagues */
 
       /*
       for (i=0; i < game.n_ennemis; i++) {
@@ -105,6 +105,8 @@ int main() {
       if (game.joueurs[0].vie <= 0) {
 	exit(EXIT_SUCCESS);
       }
+
+      
 
       /* if (MLV_get_keyboard_state(MLV_KEYBOARD_ESCAPE)) quitter = 1; */
     

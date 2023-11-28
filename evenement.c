@@ -20,16 +20,22 @@ void gerer_evenements_clavier(game* game) {
 
 /* Change dir de joueur en un vecteur orthonormé */
 void obtenir_deplacement_joueur(joueur* joueur, int numJoueur) {
-    if (numJoueur == 1){
+    if (numJoueur == 1) {
         if (MLV_get_keyboard_state(J1_UP) == MLV_PRESSED)
             joueur -> dir.y = 1;
         else
-            joueur -> dir.y = -(MLV_get_keyboard_state(J1_DOWN) == MLV_PRESSED);
+	  if (MLV_get_keyboard_state(J1_DOWN) == MLV_PRESSED)
+            joueur -> dir.y = -1;
+	  else
+            joueur -> dir.y = 0;
 	
         if (MLV_get_keyboard_state(J1_RIGHT) == MLV_PRESSED)
             joueur -> dir.x = 1;
         else
-            joueur -> dir.x = -(MLV_get_keyboard_state(J1_LEFT) == MLV_PRESSED);
+	  if (MLV_get_keyboard_state(J1_LEFT) == MLV_PRESSED)
+            joueur -> dir.x = -1;
+	  else
+            joueur -> dir.x = 0;
         
         
     }
@@ -87,6 +93,7 @@ void update_cadence_arme(arme* arme) {
     }
 }
 
+/* définit une direction pour la balle en fonction de sa vitesse et d'un vecteur normalisé */
 void set_balle_dir(balle* balle, vect dir) {
     balle -> dir = dir; /* METTRE DES POINTEURS POUR OPTI */
     balle -> dir.x *= balle -> vitesse;
@@ -112,9 +119,11 @@ void tirer_arme_joueur(game* game, joueur* joueur) {
             creer_balle(&balle_arme, game);
             break;
         case CONE:
-            set_balle_dir(&balle_arme, new_vect(-1, 1)); 
+	    set_balle_dir(&balle_arme, new_vect(0, 1)); 
             creer_balle(&balle_arme, game);
-            set_balle_dir(&balle_arme, new_vect(1, 1)); 
+	    set_balle_angle_dir(&balle_arme, 1.396);
+            creer_balle(&balle_arme, game);
+	    set_balle_angle_dir(&balle_arme, 1.645);
             creer_balle(&balle_arme, game);
             break;
 	default:
@@ -167,7 +176,7 @@ void tirer_arme_ennemi(game* game, ennemi* ennemi) {
 	    set_balle_dir(&balle_arme, new_vect(1, -1)); 
             creer_balle(&balle_arme, game);
 	    break;
-	case VISE:
+	case RANDOWN:
 	  set_balle_angle_dir(&balle_arme,
 			      (rand() % (314) + 314) * 0.01);
 	  creer_balle(&balle_arme, game);

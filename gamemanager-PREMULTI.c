@@ -2,7 +2,6 @@
 #include "headers/creation.h"
 #include "headers/types.h"
 #include "headers/mouvement.h"
-#include "headers/affichage.h"
 #include <MLV/MLV_all.h>
 #include <string.h>
 
@@ -26,7 +25,7 @@ void creer_balle(balle* balle, game* game) {
   /* sinon, tous les emplacements sont déjà pris, alors on en crée un */
 
   if (game -> n_balles < BALLES_MAX) {
-    /* printf("nb balles: %d\n", game -> n_balles); */
+    printf("nb balles: %d\n", game -> n_balles);
     game -> balles[game -> n_balles] = *balle;
     (game -> n_balles)++; /* et on ajoute 1 à la taille du tableau balles */
   }
@@ -96,24 +95,23 @@ void gerer_waves(game *game, wave_instr waves[WAVES_MAX][WAVES_INSTR_MAX]) {
   if (game -> wave_act_est_finie == 1) {
     /* on continue seulement si il n'y a plus d'ennemis (ils sont tous morts) */
     if (game -> n_ennemis == 0) {
-      game -> w_i = 0;
       game -> wave_act_est_finie = 0;
       (game -> wave_act)++;
-      game -> wc = NOM_WAVE_T; /* attend 100 frames en affichant le nom de la wave */
-      printf("DEBUT WAVE %d ----------------------\n", game -> wave_act + 1);
     }
     return; /* mais sinon, on s'arrête là */
   }
 
   /* wave_act_est_finie = 0, donc on s'occupe de gérer la wave (spawns, attente...) */
   if (game -> wc == 0) {
+    /* FAIRE QUELQUE CHOSE POUR AFFICHER NOM VAGUE AU DEBUT */
+    /* STYLE "SI AFFICHER_VAGUE == 1" ? */
 
     /* traiter l'évènement */
     /* printf("%d %d %d\n", game -> wc, game -> wave_act, game -> w_i); */
     switch (waves[game -> wave_act][game -> w_i].type_instr) {
     case 'S':
       /* spawn ennemi */
-      printf("debut spawn (de la wave %d)\n", game -> wave_act + 1);
+      printf("debut spawn\n");
       instr_act = &(waves[game -> wave_act][game -> w_i]);
       creer_ennemi(&(instr_act -> ennemi),
 		   game,
@@ -129,7 +127,6 @@ void gerer_waves(game *game, wave_instr waves[WAVES_MAX][WAVES_INSTR_MAX]) {
     case 'E':
       /* fin de la vague, on passe à la suivante */
       game -> wave_act_est_finie = 1; /* la wave actuelle a fini de s'exécuter: tout a spawn, tout a attendu */
-      game -> w_i = 0;
       break;
     }
 
@@ -137,13 +134,8 @@ void gerer_waves(game *game, wave_instr waves[WAVES_MAX][WAVES_INSTR_MAX]) {
     (game -> w_i)++; /* passer au prochain évènement */
   }
   else {
-    /* on utilise le fait que (game -> wc) soit négatif pour afficher le nom de la wave */
-    if (game -> wc < 0) {
-      (game -> wc)++; /* on décrémente wc pour avancer */
-    }
-    else {
-      (game -> wc)--; /* on décrémente wc pour avancer */
-    }
+    /* printf("wait... wc = %d\n", game -> wc); */
+    (game -> wc)--; /* on décrémente wc pour avancer */
   }
 }
 
@@ -164,7 +156,7 @@ void analyser_ligne_suivante(char ligne[100], char *type_instr, int *pos_x, int 
 
   ennemi *e_base;
 
-  /* printf("ligne reçue: %s", ligne); */
+  printf("ligne reçue: %s", ligne);
 
   /* analyse de la ligne */
   *type_instr = ligne[0]; /* instruction */
@@ -184,7 +176,7 @@ void analyser_ligne_suivante(char ligne[100], char *type_instr, int *pos_x, int 
 	strcpy(mouvements_tmp, parse_tmp);
 	break;
       case 4:
-	/* printf("WAVE WAIT: %d\n", atoi(parse_tmp)); */
+	printf("WAVE WAIT: %d\n", atoi(parse_tmp));
         *pos_x = atoi(parse_tmp);
 	break;
       case 5:
@@ -219,68 +211,64 @@ void analyser_ligne_suivante(char ligne[100], char *type_instr, int *pos_x, int 
   /* puis extraire ses mouvements à partir de la chaîne mouvements_tmp */
   charger_mouvement_ennemi(e, mouvements_tmp);
 
-  /* printf("DEBUG ENNEMI\n");
+  printf("DEBUG ENNEMI\n");
 
   for (i=0; i < e -> n_mouvements; i++) {
     printf("%d: %c %d\n", i, e -> mouvements[i].movetype, e -> mouvements[i].duree);
-    } */
+  }
 }
 
 
 
 void charger_waves_dans_tab(game *game, wave_instr waves[WAVES_MAX][WAVES_INSTR_MAX]) {
   int i_w = 0; /* index de l'instruction à charger dans la vague */
-  int wave_act; /* index de la vague courante étant chargée */
+  int wave_act = 0; /* index de la vague courante étant chargée */
 
+  int i_f; /* index du fichier de vague à analyser */
+  int n_waves = 1; /* nombre de vagues */
   FILE * fich_wave;
-  char chemin_fich_wave[16] = "waves/wave00.wv"; /* le chemin d'accès de la vague courante à analyser
-						    commence à 00 pour pouvoir l'incrémenter juste après*/
+  char chemin_fich_wave[16] = "waves/wave04.wv"; /* le chemin d'accès de la vague courante à analyser */
+
   char ligne_tmp[200];
 
   printf("DEBUT CHARGER WAVES --------------\n");
 
   /* FORMAT A LIRE: instruction;id;mouvements;posx;posy; */
 
-  /* NB_WAVES défini dans headers/gamemanager.h */
-  for (wave_act = 0; wave_act < NB_WAVES; wave_act++) {
-    /* génération du prochain chemin d'accès */
-    printf("normal: %d %d\n", (wave_act + 1) / 10, (wave_act + 1) % 10);
-    chemin_fich_wave[10] = '0' + (wave_act + 1) / 10;
-    chemin_fich_wave[11] = '0' + (wave_act + 1) % 10;
-    printf("chars: %c %c\n", chemin_fich_wave[10], chemin_fich_wave[11]);
-    
-    printf("wave_act = %d\n", wave_act);
+  /* TEST SEULEMENT AVEC UNE VAGUE POUR VOIR SI CA MARCHE BIEN */
+  for (i_f = 0; i_f < n_waves; i_f++) {
     fich_wave = fopen(chemin_fich_wave, "r"); /* chemin_fich_wave */
 
     if (fich_wave != NULL) {
-      printf("fichier '%s' ok\n", chemin_fich_wave);
-    } else printf("AAAA\n");
+      printf("fichier ok\n");
+    }
 
     i_w = 0;
     while (fgets(ligne_tmp, 200, fich_wave)) { /* ATTENTION: il y a un \n à la fin */
       /* while (fscanf(fich_wave, "%c;%d;",
 	 &type_instr_tmp, &id_t_tmp) >= 2) { */
 
+      printf("a bien lu ------------------\n");
+
       /* parse la chaîne obtenue */
       analyser_ligne_suivante(ligne_tmp, &waves[wave_act][i_w].type_instr,
 			      &waves[wave_act][i_w].pos_x,
 			      &waves[wave_act][i_w].pos_y,
 			      &waves[wave_act][i_w].ennemi, game);
-      
+				   
+      /* printf("analysé: %c;%d;%s;%d;%d;\n\n", waves[wave_act][i_w].type_instr,
+			      waves[wave_act][i_w].id_t,
+			      waves[wave_act][i_w].mouvements,
+			      waves[wave_act][i_w].pos_x,
+			      waves[wave_act][i_w].pos_y); */
+
       printf("char: %c;pos_x: %d;pos_y: %d;\n", waves[wave_act][i_w].type_instr,
 	 waves[wave_act][i_w].pos_x, waves[wave_act][i_w].pos_y);
 
       i_w++; /* on passe à la prochaine instruction */
     }
 
-    printf("---> instructions chargées: %d dans waves[%d]\n", i_w, wave_act);
-
     fclose(fich_wave);
-  }
-
-  printf("GROS DEBUG\n");
-  for (wave_act = 0; wave_act < NB_WAVES; wave_act++) {
-    
   }
 
   /* on a obtenu toutes les instructions dans waves[][] */
