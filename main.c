@@ -40,6 +40,7 @@ int main() {
 
   /* new_game(&game); */
   game = new_game();
+  game.wave_act = 5;
 
   /* PROBLEME: QUAND ON MEURT, REFAIRE UN GAME DANS INIT_PARTIE */
 
@@ -103,7 +104,7 @@ int main() {
       resolution_collisions(&game);
 
       if (game.joueurs[0].vie <= 0) {
-	exit(EXIT_SUCCESS);
+	/* exit(EXIT_SUCCESS); */
       }
 
       

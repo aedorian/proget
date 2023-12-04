@@ -79,12 +79,34 @@ void afficher_balles(game* game) {
 
 /* afficher un fond particulier en fonction de la wave actuelle */
 void afficher_fond(game* game) {
-  if (game -> wave_act < 2) {
+  if (game -> wave_act < 4) { /* PLAINES */
     MLV_draw_image(game -> img_fonds[0], 0, 0);
+    MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(29, 122, 55, 255));
   } else
-  if (game -> wave_act < 5) {
-    MLV_draw_image(game -> img_fonds[1], 0, 0);
-  }
+    if (game -> wave_act < 8) { /* FORET E0571E */
+      MLV_draw_image(game -> img_fonds[1], 0, 0);
+      MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(79, 50, 13, 255));
+    } else
+      if (game -> wave_act < 12) { /* CAVE */
+	MLV_draw_image(game -> img_fonds[1], 0, 0);
+	MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(65, 61, 69, 255));
+      }
+      else
+      if (game -> wave_act < 16) { /* ILE DESERTE */
+	MLV_draw_image(game -> img_fonds[1], 0, 0);
+	MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(201, 149, 52, 255));
+      }
+  else
+      if (game -> wave_act < 20) { /* VOLCAN */
+	MLV_draw_image(game -> img_fonds[1], 0, 0);
+	MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(166, 51, 33, 255));
+      }
+  else
+      if (game -> wave_act < 24) { /* ESPACE */
+	MLV_draw_image(game -> img_fonds[1], 0, 0);
+	MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(129, 84, 171, 255));
+      }
+  
 }
 
 /* afficher l'interface utilisateur: scores, vie... */
@@ -125,7 +147,7 @@ void afficher_ui(game* game) {
 void afficher_et_actualiser(game* game) {
 
   /* affichage du fond 94,120,140 */
-  MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(29, 122, 55,255));
+  afficher_fond(game);
   /* afficher_fond(game); */
 
   /* afficher les entités */
@@ -133,7 +155,7 @@ void afficher_et_actualiser(game* game) {
   afficher_joueurs(game);
   afficher_ennemis(game);
 
-  debug_hitbox(game);
+  /* debug_hitbox(game); */
 
   afficher_ui(game);
 

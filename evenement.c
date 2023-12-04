@@ -106,6 +106,24 @@ void set_balle_angle_dir(balle* balle, float angle) {
 			  floor(sin(angle) * balle -> vitesse)); /* METTRE DES POINTEURS POUR OPTI */
 }
 
+void set_balle_vise_dir(balle* balle, ennemi* e, game* game) {
+  joueur* j; /* joueur à viser */
+  float angle;
+  int x, y;
+  /* sélectionner un joueur */
+  if (game -> n_joueurs == 1) {
+    j = &(game -> joueurs[0]);
+  } else {
+    j = &(game -> joueurs[rand() % 2]); /* sélectionner le joueur 1 ou le joueur 2 */
+  }
+
+  y = (j -> pos.y + j -> hitbox.y / 2) - (e -> pos.y + e -> hitbox.y);
+  x = (j -> pos.x + j -> hitbox.x / 2) - (e -> pos.x + e -> hitbox.x);
+  angle = atan2(-y, x);
+
+  set_balle_angle_dir(balle, angle);
+}
+
 void tirer_arme_joueur(game* game, joueur* joueur) {
     balle balle_arme = joueur -> arme.balle;
 
@@ -168,6 +186,16 @@ void tirer_arme_ennemi(game* game, ennemi* ennemi) {
 	    set_balle_dir(&balle_arme, new_vect(1, 0)); 
             creer_balle(&balle_arme, game);
 	    break;
+	case CROSS:
+	  set_balle_dir(&balle_arme, new_vect(-1, 0)); 
+            creer_balle(&balle_arme, game);
+	    set_balle_dir(&balle_arme, new_vect(1, 0)); 
+            creer_balle(&balle_arme, game);
+	    set_balle_dir(&balle_arme, new_vect(0, 1)); 
+            creer_balle(&balle_arme, game);
+	    set_balle_dir(&balle_arme, new_vect(0, -1)); 
+            creer_balle(&balle_arme, game);
+	    break;
 	case THREE:
 	  set_balle_dir(&balle_arme, new_vect(-1, -1)); 
             creer_balle(&balle_arme, game);
@@ -186,6 +214,12 @@ void tirer_arme_ennemi(game* game, ennemi* ennemi) {
 	  set_balle_angle_dir(&balle_arme,
 			      (rand() % (628)) * 0.01);
 	  creer_balle(&balle_arme, game);
+	  break;
+
+	case VISE:
+	  set_balle_vise_dir(&balle_arme, ennemi, game);
+	  creer_balle(&balle_arme, game);
+	  break;
 	default:
 	  break;
         }

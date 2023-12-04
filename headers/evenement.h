@@ -25,6 +25,7 @@ void update_cadence_arme(arme* arme);
 void faire_tirer_ennemis(game* game);
 void set_balle_dir(balle* balle, vect dir);
 void set_balle_angle_dir(balle* balle, float angle);
+void set_balle_vise_dir(balle* balle, ennemi* e, game* game);
 void tirer_arme_joueur(game* game, joueur* joueur);
 void tirer_arme_ennemi(game* game, ennemi* ennemi);
 

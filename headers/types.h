@@ -36,7 +36,8 @@ enum type_tir {
     THREE,
     VISE,
     RANDOM,
-    RANDOWN
+    RANDOWN,
+    CROSS
 };
 typedef enum type_tir type_tir;
 
@@ -45,6 +46,11 @@ typedef struct {
     type_tir type_tir;
     int cadence; /* en frames, temps à attendre avant de pouvoir tirer */
     int cadence_act; /* cadence actuelle */
+
+  /* POUR TIRS EN RAFALE AVEC UNE PETITE PAUSE */
+  int rafale_max_tirs;
+  int rafale_tirs_act;
+  int rafale_cadence_max;
 } arme;
 
 /* mouvement: couple char (représentant la direction) et durée en frames */

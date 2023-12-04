@@ -1,0 +1,34 @@
+PLAINES
+1: 3 cochons
+2: moutons
+3: taureau?
+4: 2 moutons d'or
+
+FORET
+5: poules
+6: 
+7: blaireau
+8:
+
+CAVE
+9: coqs
+10: ours
+11:
+12:
+
+VOLCAN
+13: coqs de feu sur les côtés
+14:
+15:
+16:
+
+ILE DESERTE?
+17:
+18:
+19:
+
+20:
+
+ESPACE
+19: boss rush
+20: entité ultra-dimensionnelle d'eldritch
