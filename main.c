@@ -21,26 +21,29 @@ int main() {
   game game;
   struct timespec t_debut, t_fin;
   long t_diff;
-  long tpf;                  /* temps que doit prendre chaque frame en fonction des fps*/
+  long tpf;                  /* temps que doit prendre chaque frame en fonction des fps */
   int quitter = 0;            /* quitter la boucle principale */
+
+  /* toutes les images qui vont être utilisées dans le jeu */
+  MLV_Image* images_balles[IMAGE_MAX];
+  MLV_Image* images_joueurs[IMAGE_MAX];
+  MLV_Image* images_ennemis[IMAGE_MAX];
 
   srand(time(NULL));
 
   tpf = (1.0 * NANO_S) / FPS;
 
   printf("Début exec %ld\n", tpf);
-
-
   
   /* création des joueurs */
 
   creer_fenetre();
 
-  printf("preègame\n");
+  charger_images(images_balles, images_joueurs, images_ennemis);
 
-  /* new_game(&game); */
-  game = new_game();
-  game.wave_act = 5;
+  new_game(&game);
+  /* game = new_game();
+     game.wave_act = 5; */
 
   /* PROBLEME: QUAND ON MEURT, REFAIRE UN GAME DANS INIT_PARTIE */
 
@@ -79,7 +82,7 @@ int main() {
       /**/
 
       /* AFFICHAGE IMAGE COURANTE */
-      afficher_et_actualiser(&game);
+      afficher_et_actualiser(&game, images_balles, images_joueurs, images_ennemis);
 
       /* RECUPERATION EVENEMENT CLAVIER */
       gerer_evenements_clavier(&game); /* déplacements et tirs */
@@ -103,8 +106,13 @@ int main() {
 
       resolution_collisions(&game);
 
-      if (game.joueurs[0].vie <= 0) {
-	/* exit(EXIT_SUCCESS); */
+      /* gestion de la mort */
+      if (game.n_joueurs == 0) {
+	/* on ajoute aux secondes */
+        arreter_temps_game(&game);
+        /* sauvegarde du score seulement lorsqu'on meurt */
+	sauvegarde_highscore(game.score_act.score, game.score_act.second);
+        game.etat_ecran = 4;
       }
 
       
@@ -136,12 +144,11 @@ int main() {
       break;
 
     case 1: /* MENU SAVE */
-      /* problème: comment savoir de là où on vient pour savoir si on doit
-	 sauvegarder ou charger la partie? faire deux menus save? */
       faire_evenements_menu(&game);
       break;
 
     case 2: /* MENU PAUSE */
+      afficher_et_actualiser(&game, images_balles, images_joueurs, images_ennemis);
       faire_evenements_menu(&game);
       break;
 

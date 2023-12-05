@@ -3,6 +3,7 @@
 #include <MLV/MLV_all.h>
 #include "headers/types.h"
 #include "headers/collision.h"
+#include "headers/gamemanager.h"
 
 /* Retourne 1 s'il y a collision entre 2 rectangles
    hitbox.x = largeur, hitbox.y = hauteur */
@@ -23,10 +24,10 @@ int collision_rectangles(vect* hitbox1, vect* pos1, vect* hitbox2, vect* pos2){
 }
 
 /* si est_balle, reduction dans balles, sinon dans ennemis */
-void reduction_tableau(game *game, int est_balle_sinon_ennemi){
+void reduction_tableau(game *game, int quel_tableau){
   int i;
     
-  if (est_balle_sinon_ennemi){
+  if (quel_tableau == 1){
     i = game -> n_balles - 1;
 
     while (game -> balles[i].existe == 0 && i >= 0){
@@ -34,13 +35,29 @@ void reduction_tableau(game *game, int est_balle_sinon_ennemi){
       i--;
     }
         
-  } else {
+  } else if (quel_tableau == 0) {
     i = game -> n_ennemis - 1;
 
     while (game -> ennemis[i].existe == 0 && i >= 0){
       game -> n_ennemis -= 1;
       i--;
     }
+  } else if (quel_tableau == 2) {
+    printf("REDUCTION TABLEAU JOUEURS\n");
+    i = game -> n_joueurs - 1;
+    printf("i=%d\n", i);
+    /* game -> n_joueurs = 0; */
+
+    while (game -> joueurs[i].existe == 0 && i >= 0){
+      /*if (game -> joueurs[i].existe) {
+	game -> n_joueurs += 1;
+      }*/
+      game -> n_joueurs -= 1;
+      printf("etape\n");
+      i--;
+    }
+
+    printf("N_JOUEURS = %d\n", game -> n_joueurs);
   }
 }
 
@@ -61,8 +78,9 @@ void resolution_collisions(game* game){
                 
 	enn_prop = &(game -> ennemis[enn]);
 
-	if (collision_rectangles(&(jou_prop -> hitbox), &(jou_prop -> pos), &(enn_prop -> hitbox), &(enn_prop -> pos))){
-	  jou_prop -> vie -= DAMAGE_COLLISION;
+	if (collision_rectangles(&(jou_prop -> hitbox), &(jou_prop -> pos), &(enn_prop -> hitbox), &(enn_prop -> pos)) && jou_prop -> existe){
+	  /* PLUS DE COLLISIONS AVEC LES ENNEMIS
+	     jou_prop -> vie -= DAMAGE_COLLISION; */
 
 	  /* joueur meurt */
 	  if (jou_prop -> vie <= 0){
@@ -99,6 +117,8 @@ void resolution_collisions(game* game){
 	      if (enn_prop -> vie <= 0){
 		(enn_prop -> existe) = 0;
 		reduction_tableau(game, 0);
+		/* ajouter au score */
+		ajouter_score(game, 100);
 	      }
 	    }
 	  }
@@ -109,16 +129,17 @@ void resolution_collisions(game* game){
 
 	  jou_prop = &(game -> joueurs[jou]);
 
-	  if (collision_rectangles(&(bal_prop -> hitbox), &(bal_prop -> pos), &(jou_prop -> hitbox), &(jou_prop -> pos))){
+	  if (collision_rectangles(&(bal_prop -> hitbox), &(bal_prop -> pos), &(jou_prop -> hitbox), &(jou_prop -> pos)) && jou_prop -> existe){
 	    jou_prop -> vie -= bal_prop -> damage;
 	    printf("joueur vie: %d\n", jou_prop -> vie);
 	    bal_prop -> existe = 0; /* supprimer la balle */
 	    reduction_tableau(game, 1);
 
 	    /* joueur meurt */
-	    if (jou_prop -> vie == 0){
+	    if (jou_prop -> vie <= 0){
+	      (jou_prop -> existe) = 0;
+	      reduction_tableau(game, 2); /* réduire le tableau des joueurs */
 	      printf("Mort\n");
-	      /* pointeur NULL ? Autre chose ? */
 	    }
 	  }
 	}   

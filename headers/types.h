@@ -2,12 +2,14 @@
 #define _TYPES_H_
 
 #include <MLV/MLV_all.h>
+#include <time.h>
 
 #define JOUEURS_MAX 2 /* joueurs max, taille maximale de la file associée */
 #define BALLES_MAX 250 /* balles maximum affichables à l'écran */
 #define ENNEMIS_MAX 20 /* ennemis maximum sur l'écran */
 #define WAVES_MAX 30
 #define WAVES_INSTR_MAX 30
+#define IMAGE_MAX 30 /* maximum d'images différentes pour un type d'image (balles, ennemis...) */
 
 /* couple de deux flottants */
 /* utilisé pour pos, dir, dimensions de la hitbox... */
@@ -24,7 +26,8 @@ typedef struct {
   int damage;
   int vitesse;
   int estJoueur; /* 1 si la balle provient d'un joueur, 0 si elle provient d'un ennemi */
-  MLV_Image* image; /* image de la balle à afficher */
+  int image; /* identifiant de l'image dans la liste des images balles */
+
   int existe; /* 1 si la balle existe (affichée à l'écran et collisions gérées), 0 si elle a touché quelque chose et qu'elle n'existe plus */
 } balle;
 
@@ -37,7 +40,8 @@ enum type_tir {
     VISE,
     RANDOM,
     RANDOWN,
-    CROSS
+    CROSS,
+    DOUBLE
 };
 typedef enum type_tir type_tir;
 
@@ -72,7 +76,8 @@ typedef struct {
   int mouv_count; /* compteur pour changer de type de mouvement */
   int i_mouv_act; /* indice du mouvement actuel dans le tableau de mouvements */
   arme arme;
-  MLV_Image* image;
+  int image; /* identifiant de l'image dans la liste des images ennemis */
+  
   int existe;
 } ennemi;
 
@@ -84,7 +89,9 @@ typedef struct {
   int vitesse;
   int vie;
   arme arme;
-  MLV_Image* image;
+  int image; /* identifiant de l'image dans la liste des images joueurs */
+  
+  int existe;
 } joueur;
 
 /* instruction dans un fichier de vague d'ennemis */
@@ -115,6 +122,12 @@ typedef struct {
 typedef struct {
   int second; /* temps en secondes de la durée de la partie */
   int score;
+  
+  /* pour compter la durée totale d'une portion de la partie:
+     à chaque fois que l'on met en pause ou qu'on meurt, on recalcule t_fin_game
+     et on ajoute (t_fin_game - t_debut_game) à second dans score_act.
+     on recalcule t_debut_game à chaque fois qu'on reprend la partie */
+  struct timespec t_debut_game;
 } highscore;
 
 /* game, structure pour gérer les entités du jeu */
@@ -148,6 +161,7 @@ typedef struct {
 
   /* écran courant du jeu: menu, jeu, pause */
   int etat_ecran; /* 0 = écran titre, 1 = écran save, 2 = écran pause, 3 = jeu */
+  int etat_ecran_precedent; /* l'état d'écran précédent, avant qu'on change le menu */
   int est_en_pause; /* 0 ou 1 */
   menu menu_titre; /* a type_menu = 0 */
   menu menu_save; /* a type_menu = 1 */

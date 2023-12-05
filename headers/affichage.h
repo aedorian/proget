@@ -8,11 +8,11 @@
 void creer_fenetre();
 void fermer_fenetre();
 void debug_hitbox(game* game);
-void afficher_joueurs(game* game);
-void afficher_ennemis(game* game);
-void afficher_balles(game* game);
+void afficher_joueurs(game* game, MLV_Image* images[IMAGE_MAX]);
+void afficher_ennemis(game* game, MLV_Image* images[IMAGE_MAX]);
+void afficher_balles(game* game, MLV_Image* images[IMAGE_MAX]);
 void afficher_fond(game* game);
 void afficher_ui(game* game);
-void afficher_et_actualiser(game* game);
+void afficher_et_actualiser(game* game, MLV_Image* img_balles[IMAGE_MAX], MLV_Image* img_joueurs[IMAGE_MAX], MLV_Image* img_ennemis[IMAGE_MAX]);
 
 #endif

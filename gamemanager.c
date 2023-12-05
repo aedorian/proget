@@ -73,27 +73,49 @@ void ajouter_ennemi_obj(game* game, ennemi ennemi) {
 void init_partie(game* game, int nb_joueurs) {
   joueur joueur1, joueur2;
 
-  /* *game = new_game(); */
+  /* réinitialiser une nouvelle partie */
+  new_game(game);
 
   /* créer les joueurs */
   /* voir arme par défaut? */
   joueur1 = new_joueur(new_vect(150, 550), new_vect(0, 0), 5,
-		       game -> armes_obj[1], "img/vache.png");
+		       game -> armes_obj[0], VACHE_1);
   creer_joueur(&joueur1, game);
   if (nb_joueurs == 2) {
     joueur2 = new_joueur(new_vect(480, 550), new_vect(0, 0), 5,
-			 game -> armes_obj[0], "img/vache.png");
+			 game -> armes_obj[2], VACHE_2);
     creer_joueur(&joueur2, game);
   }
 
+  reprendre_temps_game(game);
   game -> etat_ecran = 3; /* commencer la partie en basculant sur l'écran de jeu */
+}
+
+/* POUR LES SCORES */
+void ajouter_score(game *game, int score) {
+  game -> score_act.score += score;
+}
+
+void arreter_temps_game(game *game) {
+  long diff;
+  struct timespec t_fin_game;
+  clock_gettime(CLOCK_REALTIME, &t_fin_game);
+  
+  /* fait directement la conversion */
+  diff = (t_fin_game.tv_sec - (game -> score_act.t_debut_game.tv_sec));
+  game -> score_act.second += diff;
+}
+void reprendre_temps_game(game *game) {
+  clock_gettime(CLOCK_REALTIME, &(game -> score_act.t_debut_game));
 }
 
 /* POUR LES VAGUES D'ENNEMIS */
 
 void gerer_waves(game *game, wave_instr waves[WAVES_MAX][WAVES_INSTR_MAX]) {
   wave_instr* instr_act;
-  if (game -> wave_act_est_finie == 1) {
+  int i; /* pour itérer sur les joueurs */
+  
+  if (game -> wave_act_est_finie) {
     /* on continue seulement si il n'y a plus d'ennemis (ils sont tous morts) */
     if (game -> n_ennemis == 0) {
       game -> w_i = 0;
@@ -101,6 +123,15 @@ void gerer_waves(game *game, wave_instr waves[WAVES_MAX][WAVES_INSTR_MAX]) {
       (game -> wave_act)++;
       game -> wc = NOM_WAVE_T; /* attend 100 frames en affichant le nom de la wave */
       printf("DEBUT WAVE %d ----------------------\n", game -> wave_act + 1);
+
+      /* remettre les vies des joueurs au max à chaque changement de zone */
+      if (game -> wave_act % 4 == 0) {
+	for (i=0; i < game -> n_joueurs; i++) {
+	  if (game -> joueurs[i].existe) {
+	    game -> joueurs[i].vie = J_VIE_INIT;
+	  }
+	}
+      }
     }
     return; /* mais sinon, on s'arrête là */
   }

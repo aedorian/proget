@@ -3,6 +3,7 @@
 #include "headers/evenement.h"
 #include "headers/affichage.h"
 #include "headers/gamemanager.h"
+#include "headers/manip_fich.h"
 #include <MLV/MLV_all.h>
 
 void faire_evenements_menu(game* game) {
@@ -50,11 +51,14 @@ void attendre_clavier_menu(game* game, menu* menu) {
   /* confirmation */
   if (touche_pressee == MLV_KEYBOARD_RETURN) {
     switch (menu -> type_menu) {
-    case 0:
+    case 0: /* ECRAN TITRE */
       switch (menu -> opt_act) {
       case 0: init_partie(game, 1); break; /* aller au jeu */
-      case 1: init_partie(game, 2); break;
-      case 2: game -> etat_ecran = 1; break;
+      case 1: init_partie(game, 2); break; /* aller au jeu à deux joueurs */
+      case 2:
+	game -> etat_ecran_precedent = 0; /* on était à l'écran titre */
+	game -> etat_ecran = 1;
+	break;
       case 3: game -> etat_ecran = 4; break;
       case 4: break;
       }
@@ -64,19 +68,23 @@ void attendre_clavier_menu(game* game, menu* menu) {
       case 0: break;
       case 1: break;
       case 2: break;
-      case 3: game -> etat_ecran = 0; break; /* ATTENTION ICI NE REDIRIGE PAS BIEN */
+      case 3:
+	game -> etat_ecran = game -> etat_ecran_precedent;
+	break; /* revient soit au menu de pause, soit à l'écran titre */
       }
       break;
     case 2: /* ECRAN PAUSE */
       switch (menu -> opt_act) {
-      case 0: break;
+      case 0:
+	reprendre_temps_game(game); /* on reprend le temps de la partie */
+	game -> etat_ecran = 3;
+	break; /* on revient au jeu */
       case 1: break;
-      case 2: break;
-      case 3: game -> etat_ecran = 0; break; /* ATTENTION ICI NE REDIRIGE PAS BIEN */
+      case 2: game -> etat_ecran = 0; break; /* on revient à l'écran titre */
       }
       break;
     default:
-      printf("Erreur: mauvais etat_ecran\n");
+      printf("Erreur: mauvais etat_ecran. Ceci n'est pas censé arriver\n");
       break;
     }
   }
@@ -88,8 +96,12 @@ void afficher_menu_actuel(menu* menu) {
   MLV_Image* curseur = MLV_load_image("img/curseur.png");
   MLV_Image* ecran_titre;
 
-  MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(3, 40, 5,255));
-  
+  /* afficher le fond seulement si l'on est pas en pause
+     (on affiche le jeu si on est en pause) */
+  if (menu -> type_menu != 2) {
+    MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(3, 40, 5,255));
+  }
+
   for (i=0; i < (menu -> nb_opt); i++) {
     switch (menu -> type_menu) {
     case 0: /* écran titre */
@@ -122,8 +134,7 @@ void afficher_menu_actuel(menu* menu) {
       switch (i) {
       case 0: MLV_draw_text_with_font(50, 40 + 60 * i, "Reprendre", police_1, MLV_COLOR_WHITE); break;
       case 1: MLV_draw_text_with_font(50, 40 + 60 * i, "Sauvegarder partie", police_1, MLV_COLOR_WHITE); break;
-      case 2: MLV_draw_text_with_font(50, 40 + 60 * i, "High scores", police_1, MLV_COLOR_WHITE); break;
-      case 3: MLV_draw_text_with_font(50, 40 + 60 * i, "Quitter", police_1, MLV_COLOR_WHITE); break;
+      case 2: MLV_draw_text_with_font(50, 40 + 60 * i, "... Revenir au menu", police_1, MLV_COLOR_WHITE); break;
       }
       break;
     }
@@ -134,16 +145,51 @@ void afficher_menu_actuel(menu* menu) {
   MLV_actualise_window();
 }
 
+void afficher_highscore(MLV_Font* p_small, MLV_Font* p_large){
+    highscore t[MAX_HIGHSCORE];
+    int n, i;
+    char rang[9], score[11], time[20];
+   
+    /* affichage titre */
+    MLV_draw_text_with_font(260, 20, "Records", p_large, MLV_COLOR_WHITE);
+   
+    /* affichage du tableau de record */
+    MLV_draw_text_with_font(80, 80, "Rang", p_large, MLV_COLOR_WHITE);
+    MLV_draw_text_with_font(280, 80, "Score", p_large, MLV_COLOR_WHITE);
+    MLV_draw_text_with_font(480, 80, "Temps", p_large, MLV_COLOR_WHITE);
+
+    n = charger_highscore(t);
+
+    for (i = 0; i < n; i++){
+        sprintf(rang, "%d", i+1);
+        MLV_draw_text_with_font(100, 150 + i * 42, rang, p_small, MLV_COLOR_WHITE);
+
+        sprintf(score, "%d", t[i].score);
+        MLV_draw_text_with_font(290, 150 + i * 42, score, p_small, MLV_COLOR_WHITE);
+
+        sprintf(time, "%d : %02d", t[i].second/60, t[i].second%60);
+        MLV_draw_text_with_font(490, 150 + i * 42, time, p_small, MLV_COLOR_WHITE);
+    }
+}
+
 void afficher_attendre_high_scores(game *game) {
   MLV_Font* police_1 = MLV_load_font("font/pixelated.ttf", 24);
+  MLV_Font* police_2 = MLV_load_font("font/pixelated.ttf", 34);
+  MLV_Keyboard_button touche; /* touche pressée */
 
   MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(3, 40, 5,255));
 
-  MLV_draw_text_with_font(70, 580, "Appuyer sur n'importe quelle touche pour quitter...", police_1, MLV_COLOR_WHITE);
+  afficher_highscore(police_1, police_2);
+
+  MLV_draw_text_with_font(150, 580, "Appuyer sur <echap> pour quitter...", police_1, MLV_COLOR_WHITE);
 
   MLV_actualise_window();
 
   /* affichage terminé, on attend une touche du clavier */
-  MLV_wait_keyboard(NULL, NULL, NULL);
+  while (touche != MLV_KEYBOARD_ESCAPE) {
+    MLV_wait_event(&touche, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+  }
+  printf("retour\n");
+  /* MLV_wait_keyboard(NULL, NULL, NULL); */
   game -> etat_ecran = 0;
 }

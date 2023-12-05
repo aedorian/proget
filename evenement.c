@@ -11,10 +11,18 @@ void gerer_evenements_clavier(game* game) {
     n = game -> n_joueurs;
 
     for (i=0; i < n; i++) {
-        update_cadence_arme(&(game -> joueurs[i].arme));
+      if (game -> joueurs[i].existe) {
+	update_cadence_arme(&(game -> joueurs[i].arme));
       
         obtenir_deplacement_joueur(&(game -> joueurs[i]), i+1); /* i+1 pour le numéro du joueur, 1 ou 2 */
         obtenir_tir_joueur(game, &(game -> joueurs[i]), i+1);
+      }
+    }
+
+    /* si l'on veut être en pause */
+    if (MLV_get_keyboard_state(PAUSE) == MLV_PRESSED) {
+      arreter_temps_game(game);
+      game -> etat_ecran = 2;
     }
 }
 
@@ -144,6 +152,13 @@ void tirer_arme_joueur(game* game, joueur* joueur) {
 	    set_balle_angle_dir(&balle_arme, 1.645);
             creer_balle(&balle_arme, game);
             break;
+	case DOUBLE:
+	  balle_arme.pos.x -= 10;
+	  set_balle_dir(&balle_arme, new_vect(0, 1)); 
+	  creer_balle(&balle_arme, game);
+	  balle_arme.pos.x += 12;
+	  creer_balle(&balle_arme, game);
+	  break;
 	default:
 	  break;
         }

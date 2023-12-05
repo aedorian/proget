@@ -5,7 +5,7 @@
 
 int collision_rectangles(vect* hitbox1, vect* pos1, vect* hitbox2, vect* pos2);
 
-void reduction_tableau(game *game, int est_balle_sinon_ennemi);
+void reduction_tableau(game *game, int quel_tableau);
 
 void resolution_collisions(game* game);
 

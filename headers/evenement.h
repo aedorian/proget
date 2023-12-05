@@ -16,7 +16,7 @@
 #define J2_RIGHT MLV_KEYBOARD_d
 #define J2_TIR MLV_KEYBOARD_SPACE
 
-#define PAUSE MLV_KEYBOARD_ESPACE
+#define PAUSE MLV_KEYBOARD_ESCAPE
 
 void gerer_evenements_clavier(game* game);
 void obtenir_deplacement_joueur(joueur* joueur, int numJoueur);
