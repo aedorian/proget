@@ -4,7 +4,7 @@
 #include "types.h"
 
 void move_pos_joueur(vect* pos, vect* dir, vect* hitbox);
-void move_pos_balle(vect* pos, vect* dir, vect* hitbox, balle* balle, game *game);
+void move_pos_balle(vect* pos, vect* dir, balle* balle, game *game);
 void move_pos_ennemi(vect* pos, vect* dir, vect* hitbox, ennemi* ennemi, game *game);
 
 void move_balles(game* game);

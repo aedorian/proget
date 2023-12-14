@@ -18,24 +18,43 @@ void debug_hitbox(game* game) {
     balle* b;
     ennemi* e;
     int i, n;
+
+    int nb_paexiste = 0;
     n = game -> n_joueurs;
 
     for (i=0; i < n; i++) {
         j = &(game -> joueurs[i]);
-	MLV_draw_rectangle(j -> pos.x, j -> pos.y, j -> hitbox.x, j -> hitbox.y, MLV_COLOR_GREEN);
+	MLV_draw_rectangle(j -> pos.x, j -> pos.y, j -> hitbox.x, j -> hitbox.y, MLV_COLOR_YELLOW);
+    }
+
+    
+    n = game -> n_ennemis;
+    for (i=0; i < n; i++) {
+        e = &(game -> ennemis[i]);
+        MLV_draw_rectangle(e -> pos.x, e -> pos.y, e -> hitbox.x, e -> hitbox.y, MLV_COLOR_BLUE);
     }
 
     n = game -> n_balles;
     for (i=0; i < n; i++) {
         b = &(game -> balles[i]);
-        MLV_draw_rectangle(b -> pos.x, b -> pos.y, b -> hitbox.x, b -> hitbox.y, MLV_COLOR_GREEN);
+	if (b -> existe == 0) {
+	  nb_paexiste++;
+	  if (b -> estJoueur) {
+	    MLV_draw_filled_rectangle(b -> pos.x, b -> pos.y, b -> hitbox.x, b -> hitbox.y, MLV_COLOR_GREEN);
+	  } else {
+	    MLV_draw_filled_rectangle(b -> pos.x, b -> pos.y, b -> hitbox.x, b -> hitbox.y, MLV_COLOR_RED);
+	  }
+	} else {
+	  if (b -> estJoueur) {
+	    MLV_draw_rectangle(b -> pos.x, b -> pos.y, b -> hitbox.x, b -> hitbox.y, MLV_COLOR_GREEN);
+	  } else {
+	    MLV_draw_rectangle(b -> pos.x, b -> pos.y, b -> hitbox.x, b -> hitbox.y, MLV_COLOR_RED);
+	  }
+	}
+	
     }
 
-    n = game -> n_ennemis;
-    for (i=0; i < n; i++) {
-        e = &(game -> ennemis[i]);
-        MLV_draw_rectangle(e -> pos.x, e -> pos.y, e -> hitbox.x, e -> hitbox.y, MLV_COLOR_GREEN);
-    }
+    printf("balles existent pas à la fin d'affichage: %d\n", nb_paexiste);
 }
 
 void afficher_joueurs(game* game, MLV_Image* images[]) {
@@ -173,7 +192,7 @@ void afficher_et_actualiser(game* game, MLV_Image* img_balles[], MLV_Image* img_
   afficher_joueurs(game, img_joueurs);
   afficher_ennemis(game, img_ennemis);
 
-  debug_hitbox(game);
+  /* debug_hitbox(game); */
 
   afficher_ui(game);
 
@@ -184,7 +203,7 @@ void afficher_et_actualiser(game* game, MLV_Image* img_balles[], MLV_Image* img_
 
   /* FOCUS MODE */
   if (MLV_get_keyboard_state(MLV_KEYBOARD_RCTRL) == MLV_PRESSED)
-    MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(0, 0, 0, 10));
+    MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(0, 0, 20, 30));
 
   MLV_actualise_window();
 }

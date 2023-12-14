@@ -29,23 +29,24 @@ int collision_rectangles(vect* hitbox1, vect* pos1, vect* hitbox2, vect* pos2){
 /* si est_balle, reduction dans balles, sinon dans ennemis */
 void reduction_tableau(game *game, int quel_tableau){
   int i;
-    
-  if (quel_tableau == 1){
+
+  if (quel_tableau == L_BAL){
     i = game -> n_balles - 1;
 
+    /* atteint pas la fin de cette boucle? */
     while (game -> balles[i].existe == 0 && i >= 0){
       game -> n_balles -= 1;
       i--;
     }
         
-  } else if (quel_tableau == 0) {
+  } else if (quel_tableau == L_ENN) {
     i = game -> n_ennemis - 1;
 
     while (game -> ennemis[i].existe == 0 && i >= 0){
       game -> n_ennemis -= 1;
       i--;
     }
-  } else if (quel_tableau == 2) {
+  } else if (quel_tableau == L_JOU) {
     printf("REDUCTION TABLEAU JOUEURS\n");
     i = game -> n_joueurs - 1;
     printf("i=%d\n", i);
@@ -83,13 +84,14 @@ void resolution_collisions(game* game){
 	enn_prop = &(game -> ennemis[enn]);
 
 	if (collision_rectangles(&(jou_prop -> hitbox), &(jou_prop -> pos), &(enn_prop -> hitbox), &(enn_prop -> pos)) && jou_prop -> existe){
-	  /* PLUS DE COLLISIONS AVEC LES ENNEMIS
-	     jou_prop -> vie -= DAMAGE_COLLISION; */
 
-	  /* joueur meurt */
-	  if (jou_prop -> vie <= 0){
-	    printf("Mort\n");
-	    /* pointeur NULL ? Autre chose ? */
+	  enn_prop -> vie -= 1;
+	  printf("ennemi vie: %d\n", enn_prop -> vie);
+                              
+	  /* ennemi meurt: ni powerup ni score */
+	  if (enn_prop -> vie <= 0){
+	    (enn_prop -> existe) = 0;
+	    reduction_tableau(game, L_ENN);
 	  }
 	}
       }
@@ -115,14 +117,14 @@ void resolution_collisions(game* game){
 	      enn_prop -> vie -= bal_prop -> damage;
 	      printf("ennemi vie: %d\n", enn_prop -> vie);
 	      bal_prop -> existe = 0; /* supprimer la balle */
-	      reduction_tableau(game, 1);
+	      reduction_tableau(game, L_BAL);
                               
 	      /* ennemi meurt */
 	      if (enn_prop -> vie <= 0){
 	        /* drop un powerup à la position de l'ennemi */
 		drop_powerup(game, enn_prop -> pos.x, enn_prop -> pos.y);
 		(enn_prop -> existe) = 0;
-		reduction_tableau(game, 0);
+		reduction_tableau(game, L_ENN);
 		/* ajouter au score */
 		ajouter_score(game, 100);
 	      }
@@ -153,13 +155,14 @@ void resolution_collisions(game* game){
 	      jou_prop -> vie -= bal_prop -> damage;
 	      printf("joueur vie: %d\n", jou_prop -> vie);
 	    }
+	    
 	    bal_prop -> existe = 0; /* supprimer la balle */
-	    reduction_tableau(game, 1);
+	    reduction_tableau(game, L_BAL);
 
 	    /* joueur meurt */
 	    if (jou_prop -> vie <= 0){
 	      (jou_prop -> existe) = 0;
-	      reduction_tableau(game, 2); /* réduire le tableau des joueurs */
+	      reduction_tableau(game, L_JOU); /* réduire le tableau des joueurs */
 	      printf("Mort\n");
 	      if (game -> n_joueurs == 0) {
 		printf("Tout le monde est dead\n");

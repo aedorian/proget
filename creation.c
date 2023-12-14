@@ -24,7 +24,7 @@ void creer_tous_objets(game* game) {
     ajouter_balle_obj(game, new_balle(new_vect(15, 24), 2, 8, 0, B_ICEPIG)); /* 11 */
     ajouter_balle_obj(game, new_balle(new_vect(24, 24), 2, 4, 0, B_BEAR)); /* 12 : ours */
     ajouter_balle_obj(game, new_balle(new_vect(12, 12), 1, 3, 0, B_COQ)); /* 13 : coq */
-    ajouter_balle_obj(game, new_balle(new_vect(12, 12), 1, 9, 0, B_BEAR)); /* 14 : ours plus vite */
+    ajouter_balle_obj(game, new_balle(new_vect(24, 24), 1, 9, 0, B_BEAR)); /* 14 : ours plus vite */
     ajouter_balle_obj(game, new_balle(new_vect(12, 12), 2, 8, 0, B_POULE)); /* 15 */
     ajouter_balle_obj(game, new_balle(new_vect(18, 18), 2, 5, 0, B_TAUREAU)); /* 16 */
     ajouter_balle_obj(game, new_balle(new_vect(15, 24), 2, 8, 0, B_ICEPIG)); /* 17 */

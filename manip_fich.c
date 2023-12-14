@@ -9,7 +9,7 @@ int charger_highscore(highscore t[]){
     FILE* fich = NULL;
 
     if ((fich = fopen("save/highscore.txt", "r")) == NULL){
-        printf("Erreur ouverture fichier highscore.txt\n");
+        printf("Erreur ouverture fichier highscore\n");
         exit(EXIT_FAILURE);
     }
 
@@ -102,7 +102,9 @@ void charger_sauvegarde(game *game, int num_slot){
     /* game = malloc(sizeof(*game)); */
     s = fread(game, sizeof(*game), 1, fich);
 
-    printf("size: %ld\n", s);
+    if (s != 1){
+        printf("Fichier vide\n");
+    }
 
     /* teste ? */
 
@@ -131,18 +133,19 @@ void ecrire_sauvegarde(game *game, int num_slot){
 
     info_fich[14] = num_slot + 48;
 
-    if ((fich = fopen(info_fich, "w+")) == NULL){
+    if ((fich = fopen(info_fich, "w")) == NULL){
         printf("Erreur ouverture fichier d'info sauvegarde\n");
         exit(EXIT_FAILURE);
     }
 
     fprintf(fich, "%d\n", game -> wave_act);
-    fprintf(fich, "%d", game -> score_act.second);
+    fprintf(fich, "%d\n", game -> score_act.second);
+    fprintf(fich, "%d", game -> n_joueurs);
 
     fclose(fich);
 }
 
-void obtenir_info_save(int num_slot, int *wave_nb, int *second) {
+void obtenir_info_save(int num_slot, int *wave_nb, int *second, int* n_joueurs) {
   FILE *fich = NULL;
   char info_fich[15] = "save/info_save0";
 
@@ -153,7 +156,8 @@ void obtenir_info_save(int num_slot, int *wave_nb, int *second) {
         exit(EXIT_FAILURE);
   }
 
-  if (fscanf(fich, "%d", wave_nb) < 1 || fscanf(fich, "%d", second) < 1) {
+  if (fscanf(fich, "%d", wave_nb) < 1 || fscanf(fich, "%d", second) < 1
+      || fscanf(fich, "%d", n_joueurs) < 1 || *n_joueurs > 2) {
     printf("Erreur lecture fichier d'info sauvegarde\n");
     exit(EXIT_FAILURE);
   }

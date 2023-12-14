@@ -4,6 +4,10 @@
 #define DAMAGE_COLLISION 2
 #define POWERUP_VIE 2
 
+#define L_ENN 0
+#define L_BAL 1
+#define L_JOU 2
+
 int collision_rectangles(vect* hitbox1, vect* pos1, vect* hitbox2, vect* pos2);
 
 void reduction_tableau(game *game, int quel_tableau);

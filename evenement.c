@@ -133,12 +133,24 @@ void set_balle_vise_dir(balle* balle, ennemi* e, game* game) {
 }
 
 void tirer_arme_joueur(game* game, joueur* joueur) {
-    balle balle_arme = joueur -> arme.balle;
+  /* balle balle_arme = joueur -> arme.balle; */
+  balle balle_arme;
 
-    if (joueur -> arme.cadence_act == 0) {
+    if (joueur -> arme.cadence_act <= 0) {
         joueur -> arme.cadence_act = joueur -> arme.cadence;
-        balle_arme.pos.x = joueur -> pos.x + (joueur -> hitbox.x)/2;
-        balle_arme.pos.y = joueur -> pos.y + (joueur -> hitbox.y)/2;
+        /* balle_arme.pos.x = joueur -> pos.x + (joueur -> hitbox.x)/2;
+	   balle_arme.pos.y = joueur -> pos.y + (joueur -> hitbox.y)/2; */
+	balle_arme.pos.x = joueur -> pos.x + 11;
+	balle_arme.pos.y = joueur -> pos.y;
+	balle_arme.hitbox.x = joueur -> arme.balle.hitbox.x;
+	balle_arme.hitbox.y = joueur -> arme.balle.hitbox.y;
+	balle_arme.damage = joueur -> arme.balle.damage;
+	balle_arme.vitesse = joueur -> arme.balle.vitesse;
+	balle_arme.estJoueur = 1;
+	balle_arme.image = joueur -> arme.balle.image;
+	balle_arme.powerup = 0;
+	balle_arme.existe = 1;
+	
         switch (joueur -> arme.type_tir) {
         case STRAIGHT:
             set_balle_dir(&balle_arme, new_vect(0, 1)); 
@@ -153,7 +165,7 @@ void tirer_arme_joueur(game* game, joueur* joueur) {
             creer_balle(&balle_arme, game);
             break;
 	case DOUBLE:
-	  balle_arme.pos.x -= 10;
+	  balle_arme.pos.x -= 6;
 	  set_balle_dir(&balle_arme, new_vect(0, 1)); 
 	  creer_balle(&balle_arme, game);
 	  balle_arme.pos.x += 12;
@@ -170,8 +182,18 @@ void tirer_arme_ennemi(game* game, ennemi* ennemi) {
 
     if (ennemi -> arme.cadence_act == 0) {
         ennemi -> arme.cadence_act = ennemi -> arme.cadence;
-        balle_arme.pos.x = ennemi -> pos.x + (ennemi -> hitbox.x) / 2;
-        balle_arme.pos.y = ennemi -> pos.y + (ennemi -> hitbox.y) / 2;
+
+	balle_arme.pos.x = ennemi -> pos.x + (ennemi -> hitbox.x)/2;
+	balle_arme.pos.y = ennemi -> pos.y + (ennemi -> hitbox.y)/2;
+	balle_arme.hitbox.x = ennemi -> arme.balle.hitbox.x;
+	balle_arme.hitbox.y = ennemi -> arme.balle.hitbox.y;
+	balle_arme.damage = ennemi -> arme.balle.damage;
+	balle_arme.vitesse = ennemi -> arme.balle.vitesse;
+	balle_arme.estJoueur = 0;
+	balle_arme.image = ennemi -> arme.balle.image;
+	balle_arme.powerup = ennemi -> arme.balle.powerup;
+	balle_arme.existe = 1;
+	
         switch (ennemi -> arme.type_tir) {
         case STRAIGHT:
             set_balle_dir(&balle_arme, new_vect(0, -1)); 

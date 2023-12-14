@@ -120,7 +120,7 @@ void attendre_clavier_menu(game* game, menu* menu) {
 
 void afficher_menu_actuel(menu* menu) {
   int i;
-  int wave_nb, second; /* infos sur la save */
+  int wave_nb, second, nb_joueurs; /* infos sur la save */
   char info_wave[] = "wave 00"; /* à afficher */
   char info_duree[20];
   MLV_Font* police_1 = MLV_load_font("font/pixelated.ttf", 24);
@@ -159,30 +159,45 @@ void afficher_menu_actuel(menu* menu) {
       case 0:
         MLV_draw_text_with_font(50, 40 + 60 * i, "Partie 1", police_1, MLV_COLOR_WHITE);
 	/* obtenir les infos de la wave sauvegardée */
-	obtenir_info_save(1, &wave_nb, &second);
+	obtenir_info_save(1, &wave_nb, &second, &nb_joueurs);
         info_wave[5] = '0' + (wave_nb + 1) / 10;
 	info_wave[6] = '0' + (wave_nb + 1) % 10;
 	sprintf(info_duree, "%d : %02d", second/60, second%60);
 	MLV_draw_text_with_font(200, 40 + 60 * i, info_wave, police_1, MLV_COLOR_WHITE);
 	MLV_draw_text_with_font(340, 40 + 60 * i, info_duree, police_1, MLV_COLOR_WHITE);
+	if (nb_joueurs == 1) {
+	  MLV_draw_text_with_font(450, 40 + 60 * i, "1 joueur", police_1, MLV_COLOR_WHITE);
+	} else {
+	  MLV_draw_text_with_font(450, 40 + 60 * i, "2 joueurs", police_1, MLV_COLOR_WHITE);
+	}
 	break;
       case 1: MLV_draw_text_with_font(50, 40 + 60 * i, "Partie 2", police_1, MLV_COLOR_WHITE);
 	/* obtenir les infos de la wave sauvegardée */
-	obtenir_info_save(2, &wave_nb, &second);
+	obtenir_info_save(2, &wave_nb, &second, &nb_joueurs);
         info_wave[5] = '0' + (wave_nb + 1) / 10;
 	info_wave[6] = '0' + (wave_nb + 1) % 10;
 	sprintf(info_duree, "%d : %02d", second/60, second%60);
 	MLV_draw_text_with_font(200, 40 + 60 * i, info_wave, police_1, MLV_COLOR_WHITE);
 	MLV_draw_text_with_font(340, 40 + 60 * i, info_duree, police_1, MLV_COLOR_WHITE);
+	if (nb_joueurs == 1) {
+	  MLV_draw_text_with_font(450, 40 + 60 * i, "1 joueur", police_1, MLV_COLOR_WHITE);
+	} else {
+	  MLV_draw_text_with_font(450, 40 + 60 * i, "2 joueurs", police_1, MLV_COLOR_WHITE);
+	}
 	break;
       case 2: MLV_draw_text_with_font(50, 40 + 60 * i, "Partie 3", police_1, MLV_COLOR_WHITE);
 	/* obtenir les infos de la wave sauvegardée */
-	obtenir_info_save(3, &wave_nb, &second);
+	obtenir_info_save(3, &wave_nb, &second, &nb_joueurs);
         info_wave[5] = '0' + (wave_nb + 1) / 10;
 	info_wave[6] = '0' + (wave_nb + 1) % 10;
 	sprintf(info_duree, "%d : %02d", second/60, second%60);
 	MLV_draw_text_with_font(200, 40 + 60 * i, info_wave, police_1, MLV_COLOR_WHITE);
 	MLV_draw_text_with_font(340, 40 + 60 * i, info_duree, police_1, MLV_COLOR_WHITE);
+	if (nb_joueurs == 1) {
+	  MLV_draw_text_with_font(450, 40 + 60 * i, "1 joueur", police_1, MLV_COLOR_WHITE);
+	} else {
+	  MLV_draw_text_with_font(450, 40 + 60 * i, "2 joueurs", police_1, MLV_COLOR_WHITE);
+	}
 	break;
       case 3: MLV_draw_text_with_font(50, 40 + 60 * i, "... Revenir", police_1, MLV_COLOR_WHITE); break;
         /* REVENIR doit avoir la possibilité de revenir soit à l'écran titre, soit à l'écran de pause (dans le main?

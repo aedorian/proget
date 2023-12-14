@@ -24,8 +24,8 @@ void creer_balle(balle* balle, game* game) {
       return; /* pour ne pas continuer l'itération */
     }
   }
+  
   /* sinon, tous les emplacements sont déjà pris, alors on en crée un */
-
   if (game -> n_balles < BALLES_MAX) {
     /* printf("nb balles: %d\n", game -> n_balles); */
     game -> balles[game -> n_balles] = *balle;
@@ -306,11 +306,10 @@ void charger_waves_dans_tab(game *game, wave_instr waves[WAVES_MAX][WAVES_INSTR_
     printf("chars: %c %c\n", chemin_fich_wave[10], chemin_fich_wave[11]);
     
     printf("wave_act = %d\n", wave_act);
-    fich_wave = fopen(chemin_fich_wave, "r"); /* chemin_fich_wave */
-
-    if (fich_wave != NULL) {
-      printf("fichier '%s' ok\n", chemin_fich_wave);
-    } else printf("AAAA\n");
+    if ((fich_wave = fopen(chemin_fich_wave, "r")) == NULL){ /* chemin_fich_wave */
+        printf("Erreur ouverture fichier de vague, fichier corrompu\n");
+        exit(EXIT_FAILURE);
+    }
 
     i_w = 0;
     while (fgets(ligne_tmp, 200, fich_wave)) { /* ATTENTION: il y a un \n à la fin */

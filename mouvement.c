@@ -10,18 +10,18 @@ void move_pos_joueur(vect* pos, vect* dir, vect* hitbox) {
     pos -> x -= dir -> x;
   }
   pos -> y -= dir -> y; /* axe y inversé */
-  if (pos -> y < 0 || pos -> y > ECRAN_H - hitbox -> y) {
+  if (pos -> y < 0 || pos -> y > ECRAN_H - hitbox -> y - 8) {
     pos -> y += dir -> y;
   }
 }
-void move_pos_balle(vect* pos, vect* dir, vect* hitbox, balle* balle, game *game) {
+void move_pos_balle(vect* pos, vect* dir, balle* balle, game *game) {
   pos -> x += dir -> x;
-  if (pos -> x < 0 || pos -> x > ECRAN_W - hitbox -> x) { /* si ça dépasse */
+  if (pos -> x < 0 || pos -> x > ECRAN_W) { /* si ça dépasse - hitbox -> x*/
     balle -> existe = 0; /* supprimer la balle */
     reduction_tableau(game, 1);
   }
   pos -> y -= dir -> y; /* axe y inversé */
-  if (pos -> y < 0 || pos -> y > ECRAN_H - hitbox -> y) {
+  if (pos -> y < 0 || pos -> y > ECRAN_H) {
     balle -> existe = 0; /* supprimer la balle */
     reduction_tableau(game, 1);
   }
@@ -48,7 +48,7 @@ void move_balles(game* game) {
 			      chaque tour de boucle */
   for (i=0; i < n; i++) {
     if (game -> balles[i].existe == 1) {
-      move_pos_balle(&(game -> balles[i].pos), &(game -> balles[i].dir), &(game -> joueurs[i].hitbox), &(game -> balles[i]), game);
+      move_pos_balle(&(game -> balles[i].pos), &(game -> balles[i].dir), &(game -> balles[i]), game);
     }
   }
 }
