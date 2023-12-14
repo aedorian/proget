@@ -6,7 +6,7 @@ prod: affichage.o evenement.o mouvement.o creation.o gamemanager.o main.o collis
 main.o: headers/collision.h headers/affichage.h headers/evenement.h headers/mouvement.h main.c
 	gcc -c $(FLAGS) main.c
 affichage.o: headers/affichage.h affichage.c
-	gcc -c $(FLAGS) affichage.c
+	gcc -c $(FLAGS) affichage.c -lm
 collision.o: headers/collision.h collision.c
 	gcc -c $(FLAGS) collision.c
 evenement.o: headers/evenement.h evenement.c

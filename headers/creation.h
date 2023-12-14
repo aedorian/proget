@@ -7,7 +7,7 @@
 #define J_HITBOX_H 42 /* et de la hauteur */
 #define J_VIE_INIT 30 /* vie de départ */
 
-/* macros des images (balles, joueurs, ennemis) */
+/* macros des images (balles, powerups, joueurs, ennemis) */
 #define B_VACHE 0
 #define B_PIG 1
 #define B_SHEEP 2
@@ -18,6 +18,12 @@
 #define B_ICEPIG 7
 #define B_BEAR 8
 #define B_COQ 9
+#define B_VACHE_PETITE 10
+#define B_VACHE_GRANDE 11
+#define B_MEDUSE 12
+
+#define PW_COEUR 15
+#define PW_ARME 16
 
 #define VACHE_1 0
 #define VACHE_2 1
@@ -30,6 +36,8 @@
 #define BLAIREAU 5
 #define BEAR 6
 #define COQ 7
+#define ICEPIG 8
+#define MEDUSE 9
 
 void charger_images(MLV_Image* img_balles[], MLV_Image* img_joueurs[], MLV_Image* img_ennemis[]);
 void creer_tous_objets(game* game);

@@ -35,6 +35,7 @@ void faire_evenements_menu(game* game) {
 
 void attendre_clavier_menu(game* game, menu* menu) {
   MLV_Keyboard_button touche_pressee;
+  int opt_act;
   
   MLV_wait_keyboard(&touche_pressee, NULL, NULL);
 
@@ -60,17 +61,41 @@ void attendre_clavier_menu(game* game, menu* menu) {
 	game -> etat_ecran = 1;
 	break;
       case 3: game -> etat_ecran = 4; break;
-      case 4: break;
+      case 4: exit(EXIT_SUCCESS); break;
       }
       break;
     case 1: /* ECRAN SAVE */
       switch (menu -> opt_act) {
-      case 0: break;
-      case 1: break;
-      case 2: break;
+      case 0:
+      case 1:
+      case 2:
+	if (game -> etat_ecran_precedent == 0) {
+	  /* sauvegarder l'opt_act précédent car il est overwrite avec init_partie */
+	  opt_act = menu -> opt_act;
+	  /* si on était à l'écran titre, charger une partie */
+	  init_partie(game, 1); /* initialiser une partie qui va être remplacée */
+	  charger_sauvegarde(game, opt_act + 1);
+	  game -> etat_ecran_precedent = 3; /* pour que l'on revienne au jeu après la pause */
+	  game -> etat_ecran = 2; /* met le jeu en pause */
+
+	  /* recharger les polices et les images, sinon segfault */
+	  game -> img_fonds[0] = MLV_load_image("img/back1.png");
+	  game -> img_fonds[1] = MLV_load_image("img/fond_foret.png");
+	  game -> police_nom_wave = MLV_load_font("font/pixelated.ttf", 40);
+	  game -> police_score = MLV_load_font("font/pixelated.ttf", 16);
+	}
+	else {
+	  /* sinon, on était en pause */
+	  opt_act = menu -> opt_act;
+	  /* init_partie(game, 1); */
+	  ecrire_sauvegarde(game, menu -> opt_act + 1);
+	  game -> etat_ecran = 2;
+	}
+	break;
       case 3:
+	/* revient soit au menu de pause, soit à l'écran titre */
 	game -> etat_ecran = game -> etat_ecran_precedent;
-	break; /* revient soit au menu de pause, soit à l'écran titre */
+	break;
       }
       break;
     case 2: /* ECRAN PAUSE */
@@ -79,7 +104,10 @@ void attendre_clavier_menu(game* game, menu* menu) {
 	reprendre_temps_game(game); /* on reprend le temps de la partie */
 	game -> etat_ecran = 3;
 	break; /* on revient au jeu */
-      case 1: break;
+      case 1:
+	game -> etat_ecran_precedent = 2;
+	game -> etat_ecran = 1; /* bascule sur l'écran de save */
+	break;
       case 2: game -> etat_ecran = 0; break; /* on revient à l'écran titre */
       }
       break;
@@ -92,6 +120,9 @@ void attendre_clavier_menu(game* game, menu* menu) {
 
 void afficher_menu_actuel(menu* menu) {
   int i;
+  int wave_nb, second; /* infos sur la save */
+  char info_wave[] = "wave 00"; /* à afficher */
+  char info_duree[20];
   MLV_Font* police_1 = MLV_load_font("font/pixelated.ttf", 24);
   MLV_Image* curseur = MLV_load_image("img/curseur.png");
   MLV_Image* ecran_titre;
@@ -99,7 +130,7 @@ void afficher_menu_actuel(menu* menu) {
   /* afficher le fond seulement si l'on est pas en pause
      (on affiche le jeu si on est en pause) */
   if (menu -> type_menu != 2) {
-    MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(3, 40, 5,255));
+    MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(21, 41, 26, 255));
   }
 
   for (i=0; i < (menu -> nb_opt); i++) {
@@ -109,20 +140,50 @@ void afficher_menu_actuel(menu* menu) {
       MLV_draw_image(ecran_titre, 0, 70);
       
       switch (i) {
-      case 0: MLV_draw_text_with_font(50, 40 + 60 * i, "Nouvelle partie (1 joueur)", police_1, MLV_COLOR_WHITE); break;
+      case 0: MLV_draw_text_with_font(50, 40 + 60 * i, "Nouvelle partie (1 joueur)", police_1, MLV_COLOR_WHITE);
+	break;
       case 1: MLV_draw_text_with_font(50, 40 + 60 * i, "Nouvelle partie (2 joueurs)", police_1, MLV_COLOR_WHITE); break;
-      case 2: MLV_draw_text_with_font(50, 40 + 60 * i, "Charger partie", police_1, MLV_COLOR_WHITE); break;
+      case 2: MLV_draw_text_with_font(50, 40 + 60 * i, "Charger partie...", police_1, MLV_COLOR_WHITE); break;
       case 3: MLV_draw_text_with_font(50, 40 + 60 * i, "High scores", police_1, MLV_COLOR_WHITE); break;
-      case 4: MLV_draw_text_with_font(50, 40 + 60 * i, "Quitter", police_1, MLV_COLOR_WHITE); break;
+      case 4: MLV_draw_text_with_font(50, 40 + 60 * i, "Quitter", police_1, MLV_COLOR_WHITE);
+	/* MLV_draw_text_with_font(50, 520, "Projet L2 Info", police_1, MLV_COLOR_WHITE);
+	MLV_draw_text_with_font(50, 550, "Tom YUNGMANN", police_1, MLV_COLOR_WHITE);
+	MLV_draw_text_with_font(50, 580, "Adrian AUBE", police_1, MLV_COLOR_WHITE); */
+	break;
       }
       break;
 
       
     case 1: /* écran save */
       switch (i) {
-      case 0: MLV_draw_text_with_font(50, 40 + 60 * i, "Slot 1", police_1, MLV_COLOR_WHITE); break;
-      case 1: MLV_draw_text_with_font(50, 40 + 60 * i, "Slot 2", police_1, MLV_COLOR_WHITE); break;
-      case 2: MLV_draw_text_with_font(50, 40 + 60 * i, "Slot 3", police_1, MLV_COLOR_WHITE); break;
+      case 0:
+        MLV_draw_text_with_font(50, 40 + 60 * i, "Partie 1", police_1, MLV_COLOR_WHITE);
+	/* obtenir les infos de la wave sauvegardée */
+	obtenir_info_save(1, &wave_nb, &second);
+        info_wave[5] = '0' + (wave_nb + 1) / 10;
+	info_wave[6] = '0' + (wave_nb + 1) % 10;
+	sprintf(info_duree, "%d : %02d", second/60, second%60);
+	MLV_draw_text_with_font(200, 40 + 60 * i, info_wave, police_1, MLV_COLOR_WHITE);
+	MLV_draw_text_with_font(340, 40 + 60 * i, info_duree, police_1, MLV_COLOR_WHITE);
+	break;
+      case 1: MLV_draw_text_with_font(50, 40 + 60 * i, "Partie 2", police_1, MLV_COLOR_WHITE);
+	/* obtenir les infos de la wave sauvegardée */
+	obtenir_info_save(2, &wave_nb, &second);
+        info_wave[5] = '0' + (wave_nb + 1) / 10;
+	info_wave[6] = '0' + (wave_nb + 1) % 10;
+	sprintf(info_duree, "%d : %02d", second/60, second%60);
+	MLV_draw_text_with_font(200, 40 + 60 * i, info_wave, police_1, MLV_COLOR_WHITE);
+	MLV_draw_text_with_font(340, 40 + 60 * i, info_duree, police_1, MLV_COLOR_WHITE);
+	break;
+      case 2: MLV_draw_text_with_font(50, 40 + 60 * i, "Partie 3", police_1, MLV_COLOR_WHITE);
+	/* obtenir les infos de la wave sauvegardée */
+	obtenir_info_save(3, &wave_nb, &second);
+        info_wave[5] = '0' + (wave_nb + 1) / 10;
+	info_wave[6] = '0' + (wave_nb + 1) % 10;
+	sprintf(info_duree, "%d : %02d", second/60, second%60);
+	MLV_draw_text_with_font(200, 40 + 60 * i, info_wave, police_1, MLV_COLOR_WHITE);
+	MLV_draw_text_with_font(340, 40 + 60 * i, info_duree, police_1, MLV_COLOR_WHITE);
+	break;
       case 3: MLV_draw_text_with_font(50, 40 + 60 * i, "... Revenir", police_1, MLV_COLOR_WHITE); break;
         /* REVENIR doit avoir la possibilité de revenir soit à l'écran titre, soit à l'écran de pause (dans le main?
            recevoir les fonctions des menus dans la boucle while (!quitter) pour les gérer et changer de game.etat_ecran? */
@@ -177,7 +238,7 @@ void afficher_attendre_high_scores(game *game) {
   MLV_Font* police_2 = MLV_load_font("font/pixelated.ttf", 34);
   MLV_Keyboard_button touche; /* touche pressée */
 
-  MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(3, 40, 5,255));
+  MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(21, 41, 26, 255));
 
   afficher_highscore(police_1, police_2);
 

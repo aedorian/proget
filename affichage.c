@@ -2,6 +2,7 @@
 #include "headers/affichage.h"
 #include "headers/creation.h"
 #include <MLV/MLV_all.h>
+#include <time.h>
 
 void creer_fenetre() {
   MLV_create_window("proget", "keyboard events", ECRAN_W, ECRAN_H);
@@ -79,40 +80,45 @@ void afficher_balles(game* game, MLV_Image* images[]) {
 
 /* afficher un fond particulier en fonction de la wave actuelle */
 void afficher_fond(game* game) {
+  struct timespec t_debut;
+  clock_gettime(CLOCK_REALTIME, &t_debut);
+
+  /* MLV_draw_image(game -> img_fonds[(game -> wave_act) / 4], 0, 0); */
+  
   if (game -> wave_act < 4) { /* PLAINES */
     MLV_draw_image(game -> img_fonds[0], 0, 0);
-    MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(29, 122, 55, 255));
+    MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(29, 112, 55, 180));
   } else
     if (game -> wave_act < 8) { /* FORET E0571E */
       MLV_draw_image(game -> img_fonds[1], 0, 0);
-      MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(79, 50, 13, 255));
+      MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(69, 40, 13, 180));
     } else
       if (game -> wave_act < 12) { /* CAVE */
-	MLV_draw_image(game -> img_fonds[1], 0, 0);
-	MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(65, 61, 69, 255));
+	MLV_draw_image(game -> img_fonds[2], 0, 0);
+	MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(55, 51, 59, 180));
       }
       else
       if (game -> wave_act < 16) { /* ILE DESERTE */
-	MLV_draw_image(game -> img_fonds[1], 0, 0);
-	MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(201, 149, 52, 255));
+	MLV_draw_image(game -> img_fonds[3], 0, 0);
+	MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(181, 129, 32, 180));
       }
   else
-      if (game -> wave_act < 20) { /* VOLCAN */
-	MLV_draw_image(game -> img_fonds[1], 0, 0);
-	MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(166, 51, 33, 255));
+      if (game -> wave_act < 19) { /* VOLCAN */
+	MLV_draw_image(game -> img_fonds[4], 0, 0);
+	MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(110, 21, 13, 180));
       }
   else
-      if (game -> wave_act < 24) { /* ESPACE */
-	MLV_draw_image(game -> img_fonds[1], 0, 0);
-	MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(129, 84, 171, 255));
+      if (game -> wave_act < 21) { /* ESPACE */
+	MLV_draw_image(game -> img_fonds[5], 0, 0);
+	MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(79, 34, 121, 180));
       }
   
 }
 
 /* afficher l'interface utilisateur: scores, vie... */
 void afficher_ui(game* game) {
-  int ratio_j1;
-  int ratio_j2;
+  float ratio_j1;
+  float ratio_j2;
   char nom_wave[8] = "Wave 01";
   char score_tmp[10]; /* pour afficher le score */
 
@@ -122,23 +128,33 @@ void afficher_ui(game* game) {
   MLV_draw_filled_rectangle(0, 630, ECRAN_W, ECRAN_H, MLV_COLOR_BLACK);
   
   /* afficher la vie du joueur 1*/
-  MLV_draw_filled_rectangle(0, 630, J_VIE_INIT * 9, 10, MLV_rgba(108, 5, 3, 255));
-  MLV_draw_filled_rectangle(0, 630, ratio_j1 * 27, 10, MLV_rgba(223, 34, 59, 255));
+  MLV_draw_filled_rectangle(-1, 630, J_VIE_INIT * 9, 10, MLV_rgba(70, 5, 3, 255));
+  MLV_draw_filled_rectangle(-1, 630, ratio_j1 * 27, 10, MLV_rgba(223, 34, 59, 255));
 
   if (game -> n_joueurs > 1) {
     ratio_j2 = (game -> joueurs[1].vie) / (J_VIE_INIT * 1.0) * 10;
 
     /* afficher la vie du joueur 2*/
-    MLV_draw_filled_rectangle(ECRAN_W - J_VIE_INIT * 9, 630, ECRAN_W, 10, MLV_rgba(108, 5, 3, 255));
+    MLV_draw_filled_rectangle(ECRAN_W - J_VIE_INIT * 9, 630, ECRAN_W + 1, 10, MLV_rgba(70, 5, 3, 255));
     MLV_draw_filled_rectangle(ECRAN_W - ratio_j2 * 27, 630,
-			      ECRAN_W, 10, MLV_rgba(223, 34, 59, 255));
+			      ECRAN_W + 1, 10, MLV_rgba(223, 34, 59, 255));
   }
 
   /* afficher le numéro de la wave si il doit être affiché */
   if (game -> wc < 0) {
-    nom_wave[5] = '0' + (game -> wave_act + 1) / 10;
-    nom_wave[6] = '0' + (game -> wave_act + 1) % 10;
-    MLV_draw_text_with_font(260, 290, nom_wave, game -> police_nom_wave, MLV_COLOR_WHITE);
+    if (game -> n_joueurs == 0) {
+      MLV_draw_text_with_font(240, 290, "Game over", game -> police_nom_wave, MLV_COLOR_WHITE);
+    }
+    else {
+      if (game -> wave_act == 20) {
+	MLV_draw_text_with_font(260, 290, "You win !", game -> police_nom_wave, MLV_COLOR_WHITE);
+      }
+      else {
+	nom_wave[5] = '0' + (game -> wave_act + 1) / 10;
+	nom_wave[6] = '0' + (game -> wave_act + 1) % 10;
+	MLV_draw_text_with_font(260, 290, nom_wave, game -> police_nom_wave, MLV_COLOR_WHITE);
+      }
+    }
   }
 
   /* afficher le score */
@@ -157,7 +173,7 @@ void afficher_et_actualiser(game* game, MLV_Image* img_balles[], MLV_Image* img_
   afficher_joueurs(game, img_joueurs);
   afficher_ennemis(game, img_ennemis);
 
-  /* debug_hitbox(game); */
+  debug_hitbox(game);
 
   afficher_ui(game);
 
@@ -165,6 +181,10 @@ void afficher_et_actualiser(game* game, MLV_Image* img_balles[], MLV_Image* img_
   if (game -> etat_ecran == 2) {
     MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(114, 47, 55, 180));
   }
+
+  /* FOCUS MODE */
+  if (MLV_get_keyboard_state(MLV_KEYBOARD_RCTRL) == MLV_PRESSED)
+    MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(0, 0, 0, 10));
 
   MLV_actualise_window();
 }

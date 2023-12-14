@@ -2,6 +2,7 @@
 #define _COLLISION_H_
 
 #define DAMAGE_COLLISION 2
+#define POWERUP_VIE 2
 
 int collision_rectangles(vect* hitbox1, vect* pos1, vect* hitbox2, vect* pos2);
 

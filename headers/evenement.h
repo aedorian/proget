@@ -28,5 +28,6 @@ void set_balle_angle_dir(balle* balle, float angle);
 void set_balle_vise_dir(balle* balle, ennemi* e, game* game);
 void tirer_arme_joueur(game* game, joueur* joueur);
 void tirer_arme_ennemi(game* game, ennemi* ennemi);
+void drop_powerup(game *game, int x, int y);
 
 #endif

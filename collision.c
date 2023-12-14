@@ -4,6 +4,9 @@
 #include "headers/types.h"
 #include "headers/collision.h"
 #include "headers/gamemanager.h"
+#include "headers/affichage.h"
+#include "headers/evenement.h"
+#include "headers/creation.h"
 
 /* Retourne 1 s'il y a collision entre 2 rectangles
    hitbox.x = largeur, hitbox.y = hauteur */
@@ -66,6 +69,7 @@ void resolution_collisions(game* game){
   joueur *jou_prop;
   ennemi *enn_prop;
   balle *bal_prop;
+  int arme_random;
 
   /* collisions joueurs <-> ennemis */
   for (jou = 0; jou < game -> n_joueurs; jou++){ /* pour tous les joueurs */
@@ -115,6 +119,8 @@ void resolution_collisions(game* game){
                               
 	      /* ennemi meurt */
 	      if (enn_prop -> vie <= 0){
+	        /* drop un powerup à la position de l'ennemi */
+		drop_powerup(game, enn_prop -> pos.x, enn_prop -> pos.y);
 		(enn_prop -> existe) = 0;
 		reduction_tableau(game, 0);
 		/* ajouter au score */
@@ -130,8 +136,23 @@ void resolution_collisions(game* game){
 	  jou_prop = &(game -> joueurs[jou]);
 
 	  if (collision_rectangles(&(bal_prop -> hitbox), &(bal_prop -> pos), &(jou_prop -> hitbox), &(jou_prop -> pos)) && jou_prop -> existe){
-	    jou_prop -> vie -= bal_prop -> damage;
-	    printf("joueur vie: %d\n", jou_prop -> vie);
+	    
+	    if (bal_prop -> powerup == 1) { /* vie */
+	      jou_prop -> vie += POWERUP_VIE;
+	      if (jou_prop -> vie > J_VIE_INIT) {
+		jou_prop -> vie = J_VIE_INIT;
+	      }
+	      
+	    } else if (bal_prop -> powerup == 2) { /* arme */
+	      /* sélectionner une arme différente */
+	      do {
+		arme_random = rand() % 5;
+	      } while (arme_random == jou_prop -> arme.id_arme);
+	      jou_prop -> arme = game -> armes_obj[arme_random];
+	    } else { /* balle normale */
+	      jou_prop -> vie -= bal_prop -> damage;
+	      printf("joueur vie: %d\n", jou_prop -> vie);
+	    }
 	    bal_prop -> existe = 0; /* supprimer la balle */
 	    reduction_tableau(game, 1);
 
@@ -140,6 +161,11 @@ void resolution_collisions(game* game){
 	      (jou_prop -> existe) = 0;
 	      reduction_tableau(game, 2); /* réduire le tableau des joueurs */
 	      printf("Mort\n");
+	      if (game -> n_joueurs == 0) {
+		printf("Tout le monde est dead\n");
+		arreter_temps_game(game);
+		game -> wc = NOM_WAVE_T;
+	      }
 	    }
 	  }
 	}   

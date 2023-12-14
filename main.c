@@ -12,7 +12,7 @@
 #include "headers/menu.h"
 #include "headers/manip_fich.h"
 
-#define FPS 40                /* frames par seconde */
+#define FPS 45                /* frames par seconde */
 #define NANO_S 1000000000     /* valeurs à utiliser dans les calculs de temps
 				 ici le nombre de nanosecondes en 1 seconde */
 #define MILLI_S 1000000       /* nombre de millisecondes en 1 seconde */
@@ -49,21 +49,9 @@ int main() {
 
   printf("game cree\n");
 
-  /* switch (debug_ennemi) {
-  case 0:
-    creer_ennemi(&game.ennemis_obj[4], &game, new_vect(50, 10));
-    break;
-  case 1:
-    creer_ennemi(&game.ennemis_obj[5], &game, new_vect(320, 10));
-    break;
-  case 2:
-    creer_ennemi(&game.ennemis_obj[0], &game, new_vect(320, 10));
-    break;
-  }
-  creer_ennemi(&game.ennemis_obj[0], &game, new_vect(320, 10));
-  creer_ennemi(&game.ennemis_obj[2], &game, new_vect(320, 100));
-  creer_ennemi(&game.ennemis_obj[3], &game, new_vect(120, 0));
-  creer_ennemi(&game.ennemis_obj[3], &game, new_vect(640 - 120, 0)); */
+  /* écran de chargement */
+  MLV_draw_text_with_font(210, 290, "Chargement...", game.police_nom_wave, MLV_COLOR_WHITE);
+  MLV_actualise_window();
   
   /* chargement de toutes les vagues dans la liste */
   charger_waves_dans_tab(&game, game.waves);
@@ -83,6 +71,12 @@ int main() {
 
       /* AFFICHAGE IMAGE COURANTE */
       afficher_et_actualiser(&game, images_balles, images_joueurs, images_ennemis);
+
+      /* FOCUS MODE */
+      if (MLV_get_keyboard_state(MLV_KEYBOARD_RCTRL) == MLV_PRESSED)
+	tpf = (1.0 * NANO_S) / 30;
+      else
+	tpf = (1.0 * NANO_S) / 45;
 
       /* RECUPERATION EVENEMENT CLAVIER */
       gerer_evenements_clavier(&game); /* déplacements et tirs */
@@ -107,13 +101,13 @@ int main() {
       resolution_collisions(&game);
 
       /* gestion de la mort */
-      if (game.n_joueurs == 0) {
+      /* if (game.n_joueurs == 0) { */
 	/* on ajoute aux secondes */
-        arreter_temps_game(&game);
+        /* arreter_temps_game(&game); } */
         /* sauvegarde du score seulement lorsqu'on meurt */
-	sauvegarde_highscore(game.score_act.score, game.score_act.second);
-        game.etat_ecran = 4;
-      }
+	/* game.wc = NOM_WAVE_T; */
+	/* sauvegarde_highscore(game.score_act.score, game.score_act.second);
+	   game.etat_ecran = 4; */
 
       
 
@@ -148,6 +142,7 @@ int main() {
       break;
 
     case 2: /* MENU PAUSE */
+      printf("EST DANS MENU PAUSE\n");
       afficher_et_actualiser(&game, images_balles, images_joueurs, images_ennemis);
       faire_evenements_menu(&game);
       break;

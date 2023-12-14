@@ -28,7 +28,8 @@ void move_pos_balle(vect* pos, vect* dir, vect* hitbox, balle* balle, game *game
 }
 void move_pos_ennemi(vect* pos, vect* dir, vect* hitbox, ennemi* ennemi, game *game) {
   pos -> x += dir -> x;
-  if (pos -> x < 0 || pos -> x > ECRAN_W - hitbox -> x) { /* si ça dépasse */
+  /* peut dépasser de 10 pixels sur les côtés */
+  if (pos -> x < -10 || pos -> x > ECRAN_W + 20 - hitbox -> x) { /* si ça dépasse */
     pos -> x -= dir -> x;
   }
   

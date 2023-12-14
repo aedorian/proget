@@ -235,8 +235,59 @@ void tirer_arme_ennemi(game* game, ennemi* ennemi) {
 	  set_balle_vise_dir(&balle_arme, ennemi, game);
 	  creer_balle(&balle_arme, game);
 	  break;
+
+	case PUMP:
+	  set_balle_angle_dir(&balle_arme, 4.712);
+	  creer_balle(&balle_arme, game);
+	  set_balle_angle_dir(&balle_arme, 4.512);
+	  creer_balle(&balle_arme, game);
+	  set_balle_angle_dir(&balle_arme, 4.312);
+	  creer_balle(&balle_arme, game);
+	  set_balle_angle_dir(&balle_arme, 4.912);
+	  creer_balle(&balle_arme, game);
+	  set_balle_angle_dir(&balle_arme, 5.112);
+	  creer_balle(&balle_arme, game);
+	  break;
+
+	case MULTI:
+	  set_balle_angle_dir(&balle_arme, 0.0); creer_balle(&balle_arme, game);
+	  set_balle_angle_dir(&balle_arme, 0.392); creer_balle(&balle_arme, game);
+	  set_balle_angle_dir(&balle_arme, 0.785); creer_balle(&balle_arme, game);
+	  set_balle_angle_dir(&balle_arme, 1.177); creer_balle(&balle_arme, game);
+	  set_balle_angle_dir(&balle_arme, 1.570); creer_balle(&balle_arme, game);
+	  set_balle_angle_dir(&balle_arme, 1.963); creer_balle(&balle_arme, game);
+	  set_balle_angle_dir(&balle_arme, 2.355); creer_balle(&balle_arme, game);
+	  set_balle_angle_dir(&balle_arme, 2.748); creer_balle(&balle_arme, game);
+	  set_balle_angle_dir(&balle_arme, 3.141); creer_balle(&balle_arme, game);
+	  set_balle_angle_dir(&balle_arme, 3.533); creer_balle(&balle_arme, game);
+	  set_balle_angle_dir(&balle_arme, 3.926); creer_balle(&balle_arme, game);
+	  set_balle_angle_dir(&balle_arme, 4.318); creer_balle(&balle_arme, game);
+	  set_balle_angle_dir(&balle_arme, 4.711); creer_balle(&balle_arme, game);
+	  set_balle_angle_dir(&balle_arme, 5.104); creer_balle(&balle_arme, game);
+	  set_balle_angle_dir(&balle_arme, 5.496); creer_balle(&balle_arme, game);
+	  set_balle_angle_dir(&balle_arme, 5.889); creer_balle(&balle_arme, game);
+	  
 	default:
 	  break;
         }
     }
+}
+
+void drop_powerup(game *game, int x, int y) {
+  int random;
+  balle powerup;
+  random = rand() % 10; /* entre 0 et 9 */
+  if (random > 5) {
+    if (random < 8) {
+      powerup = game -> balles_obj[19]; /* plus de vie */
+      powerup.powerup = 1;
+    } else {
+      powerup = game -> balles_obj[20]; /* arme aléatoire */
+      powerup.powerup = 2;
+    }
+    powerup.pos.x = x + 8;
+    powerup.pos.y = y + 8;
+    powerup.dir = new_vect(0, -3);
+    creer_balle(&powerup, game);
+  }
 }

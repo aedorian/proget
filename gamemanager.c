@@ -3,6 +3,7 @@
 #include "headers/types.h"
 #include "headers/mouvement.h"
 #include "headers/affichage.h"
+#include "headers/manip_fich.h"
 #include <MLV/MLV_all.h>
 #include <string.h>
 
@@ -61,6 +62,7 @@ void ajouter_balle_obj(game* game, balle balle) {
 
 void ajouter_arme_obj(game* game, arme arme) {
     game -> armes_obj[game -> n_armes_obj] = arme;
+    game -> armes_obj[game -> n_armes_obj].id_arme = game -> n_armes_obj;
     (game -> n_armes_obj)++;
 }
 
@@ -83,7 +85,7 @@ void init_partie(game* game, int nb_joueurs) {
   creer_joueur(&joueur1, game);
   if (nb_joueurs == 2) {
     joueur2 = new_joueur(new_vect(480, 550), new_vect(0, 0), 5,
-			 game -> armes_obj[2], VACHE_2);
+			 game -> armes_obj[0], VACHE_2);
     creer_joueur(&joueur2, game);
   }
 
@@ -114,7 +116,28 @@ void reprendre_temps_game(game *game) {
 void gerer_waves(game *game, wave_instr waves[WAVES_MAX][WAVES_INSTR_MAX]) {
   wave_instr* instr_act;
   int i; /* pour itérer sur les joueurs */
-  
+
+  /* gestion de la mort */
+  if (game -> n_joueurs == 0) {
+    if (game -> wc < 0) {
+      (game -> wc)++;
+    } else {
+      sauvegarde_highscore(game -> score_act.score, game -> score_act.second);
+      game -> etat_ecran = 4;
+    }
+  }
+
+  /* fin du jeu */
+  if (game -> wave_act == 20) {
+    if (game -> wc < 0) {
+      (game -> wc)++;
+    } else {
+      sauvegarde_highscore(game -> score_act.score, game -> score_act.second);
+      game -> etat_ecran = 4;
+    }
+  }
+  else {
+    
   if (game -> wave_act_est_finie) {
     /* on continue seulement si il n'y a plus d'ennemis (ils sont tous morts) */
     if (game -> n_ennemis == 0) {
@@ -125,7 +148,7 @@ void gerer_waves(game *game, wave_instr waves[WAVES_MAX][WAVES_INSTR_MAX]) {
       printf("DEBUT WAVE %d ----------------------\n", game -> wave_act + 1);
 
       /* remettre les vies des joueurs au max à chaque changement de zone */
-      if (game -> wave_act % 4 == 0) {
+      if (game -> wave_act % 4 == 0 || game -> wave_act == 19) {
 	for (i=0; i < game -> n_joueurs; i++) {
 	  if (game -> joueurs[i].existe) {
 	    game -> joueurs[i].vie = J_VIE_INIT;
@@ -138,7 +161,7 @@ void gerer_waves(game *game, wave_instr waves[WAVES_MAX][WAVES_INSTR_MAX]) {
 
   /* wave_act_est_finie = 0, donc on s'occupe de gérer la wave (spawns, attente...) */
   if (game -> wc == 0) {
-
+      
     /* traiter l'évènement */
     /* printf("%d %d %d\n", game -> wc, game -> wave_act, game -> w_i); */
     switch (waves[game -> wave_act][game -> w_i].type_instr) {
@@ -175,6 +198,8 @@ void gerer_waves(game *game, wave_instr waves[WAVES_MAX][WAVES_INSTR_MAX]) {
     else {
       (game -> wc)--; /* on décrémente wc pour avancer */
     }
+  }
+
   }
 }
 

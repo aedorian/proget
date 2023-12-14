@@ -29,6 +29,7 @@ typedef struct {
   int image; /* identifiant de l'image dans la liste des images balles */
 
   int existe; /* 1 si la balle existe (affichée à l'écran et collisions gérées), 0 si elle a touché quelque chose et qu'elle n'existe plus */
+  int powerup; /* 0 si ce n'est pas une balle, 1 si c'est un coeur, 2 une arme */
 } balle;
 
 enum type_tir {
@@ -41,7 +42,9 @@ enum type_tir {
     RANDOM,
     RANDOWN,
     CROSS,
-    DOUBLE
+    DOUBLE,
+    PUMP,
+    MULTI
 };
 typedef enum type_tir type_tir;
 
@@ -50,11 +53,7 @@ typedef struct {
     type_tir type_tir;
     int cadence; /* en frames, temps à attendre avant de pouvoir tirer */
     int cadence_act; /* cadence actuelle */
-
-  /* POUR TIRS EN RAFALE AVEC UNE PETITE PAUSE */
-  int rafale_max_tirs;
-  int rafale_tirs_act;
-  int rafale_cadence_max;
+    int id_arme; /* juste utilisé pour savoir si on change sur la même arme ou non */
 } arme;
 
 /* mouvement: couple char (représentant la direction) et durée en frames */
@@ -152,7 +151,7 @@ typedef struct {
   int n_ennemis;
   
   /* objets possibles dans le jeu */
-  balle balles_obj[20];
+  balle balles_obj[30];
   arme armes_obj[20];
   ennemi ennemis_obj[20];
   int n_balles_obj;
