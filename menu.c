@@ -81,7 +81,7 @@ void attendre_clavier_menu(game* game, menu* menu) {
 	  /* recharger les polices et les images, sinon segfault */
 	  game -> img_fonds[0] = MLV_load_image("img/back1.png");
 	  game -> img_fonds[1] = MLV_load_image("img/fond_foret.png");
-	  game -> police_nom_wave = MLV_load_font("font/pixelated.ttf", 40);
+	  game -> police_nom_wave = MLV_load_font("font/ka1.ttf", 40);
 	  game -> police_score = MLV_load_font("font/pixelated.ttf", 16);
 	}
 	else {
