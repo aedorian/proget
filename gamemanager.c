@@ -147,14 +147,13 @@ void gerer_waves(game *game, wave_instr waves[WAVES_MAX][WAVES_INSTR_MAX]) {
       game -> wc = NOM_WAVE_T; /* attend 100 frames en affichant le nom de la wave */
       printf("DEBUT WAVE %d ----------------------\n", game -> wave_act + 1);
 
-      /* remettre les vies des joueurs au max à chaque changement de zone */
-      if (game -> wave_act % 4 == 0 || game -> wave_act == 19) {
-	for (i=0; i < game -> n_joueurs; i++) {
+      /* remettre les vies des joueurs au max à chaque changement de wave */
+      for (i=0; i < game -> n_joueurs; i++) {
 	  if (game -> joueurs[i].existe) {
 	    game -> joueurs[i].vie = J_VIE_INIT;
 	  }
 	}
-      }
+      /* if (game -> wave_act % 4 == 0 || game -> wave_act == 19) */
     }
     return; /* mais sinon, on s'arrête là */
   }
