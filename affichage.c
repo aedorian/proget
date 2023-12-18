@@ -19,7 +19,6 @@ void debug_hitbox(game* game) {
     ennemi* e;
     int i, n;
 
-    int nb_paexiste = 0;
     n = game -> n_joueurs;
 
     for (i=0; i < n; i++) {
@@ -38,7 +37,6 @@ void debug_hitbox(game* game) {
     for (i=0; i < n; i++) {
         b = &(game -> balles[i]);
 	if (b -> existe == 0) {
-	  nb_paexiste++;
 	  if (b -> estJoueur) {
 	    MLV_draw_filled_rectangle(b -> pos.x, b -> pos.y, b -> hitbox.x, b -> hitbox.y, MLV_COLOR_GREEN);
 	  } else {
@@ -53,8 +51,6 @@ void debug_hitbox(game* game) {
 	}
 	
     }
-
-    printf("balles existent pas à la fin d'affichage: %d\n", nb_paexiste);
 }
 
 void afficher_joueurs(game* game, MLV_Image* images[]) {
@@ -101,8 +97,6 @@ void afficher_balles(game* game, MLV_Image* images[]) {
 void afficher_fond(game* game) {
   struct timespec t_debut;
   clock_gettime(CLOCK_REALTIME, &t_debut);
-
-  /* MLV_draw_image(game -> img_fonds[(game -> wave_act) / 4], 0, 0); */
   
   if (game -> wave_act < 4) { /* PLAINES */
     MLV_draw_image(game -> img_fonds[0], 0, 0);
@@ -167,9 +161,7 @@ void afficher_ui(game* game) {
 void afficher_et_actualiser(game* game, MLV_Image* img_balles[], MLV_Image* img_joueurs[], MLV_Image* img_ennemis[]) {
     char nom_wave[8] = "Wave 01";
 
-  /* affichage du fond 94,120,140 */
   afficher_fond(game);
-  /* afficher_fond(game); */
 
     /* afficher le numéro de la wave si il doit être affiché */
   /* pas dans une fonction pour l'afficher sous le joueur, les balles et les ennemis */
@@ -194,6 +186,7 @@ void afficher_et_actualiser(game* game, MLV_Image* img_balles[], MLV_Image* img_
   afficher_joueurs(game, img_joueurs);
   afficher_ennemis(game, img_ennemis);
 
+  /* décommenter cette ligne pour montrer les hitbox */
   /* debug_hitbox(game); */
 
   afficher_ui(game);
