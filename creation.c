@@ -5,8 +5,7 @@
 #include "headers/affichage.h"
 #include <MLV/MLV_all.h>
 
-/* crée tous les objets qui vont être utilisables dans le jeu:
-   différentes balles, ennemis, les deux joueurs... */
+/* crée tous les objets qui vont être utilisables dans le jeu: différentes balles, ennemis... */
 void creer_tous_objets(game* game) {
   /* balles du joueur */
   ajouter_balle_obj(game, new_balle(new_vect(9, 18), 2, 10, 1, B_VACHE)); /* 0 : tir jaune normal */
@@ -14,7 +13,7 @@ void creer_tous_objets(game* game) {
   ajouter_balle_obj(game, new_balle(new_vect(15, 21), 4, 10, 1, B_VACHE_GRANDE)); /* 2 : tir jaune grand */
   ajouter_balle_obj(game, new_balle(new_vect(12, 12), 2, 10, 1, B_VACHE)); /* 3 */
   ajouter_balle_obj(game, new_balle(new_vect(9, 9), 2, 10, 1, B_VACHE)); /* 4 */
-    /* balles des ennemis (défini par le 0) */
+    /* balles des ennemis (définies par le 0 avant la macro) */
     ajouter_balle_obj(game, new_balle(new_vect(15, 24), 2, 5, 0, B_PIG)); /* 5 : cochon */
     ajouter_balle_obj(game, new_balle(new_vect(18, 18), 2, 5, 0, B_SHEEP)); /* 6 : sheep */
     ajouter_balle_obj(game, new_balle(new_vect(9, 9), 2, 6, 0, B_BLAIREAU)); /* 7 : blaireau */
@@ -29,11 +28,11 @@ void creer_tous_objets(game* game) {
     ajouter_balle_obj(game, new_balle(new_vect(18, 18), 2, 5, 0, B_TAUREAU)); /* 16 */
     ajouter_balle_obj(game, new_balle(new_vect(15, 24), 2, 8, 0, B_ICEPIG)); /* 17 */
     ajouter_balle_obj(game, new_balle(new_vect(18, 18), 2, 7, 0, B_MEDUSE)); /* 18 */
-    /* power-ups */
+    /* power-ups (définis comme des balles ennemies pour simplifier) */
     ajouter_balle_obj(game, new_balle(new_vect(21, 18), 1, 5, 0, PW_COEUR)); /* 19 */
     ajouter_balle_obj(game, new_balle(new_vect(30, 18), 1, 5, 0, PW_ARME)); /* 20 */
 
-    /* armes, 5 armes */
+    /* armes joueur: 5 armes */
     ajouter_arme_obj(game, new_arme(game -> balles_obj[0], STRAIGHT, 8)); /* 0 : tir normal jaune 8 */
     ajouter_arme_obj(game, new_arme(game -> balles_obj[0], CONE, 15)); /* 1 : tir en cône, 3 balles */
     ajouter_arme_obj(game, new_arme(game -> balles_obj[0], DOUBLE, 12)); /* 2 : double tir */
@@ -47,16 +46,15 @@ void creer_tous_objets(game* game) {
     ajouter_arme_obj(game, new_arme(game -> balles_obj[6], PUMP, 25)); /* 9 : tir icepig */
     ajouter_arme_obj(game, new_arme(game -> balles_obj[18], MULTI, 20)); /* 10 */
     ajouter_arme_obj(game, new_arme(game -> balles_obj[7], RANDOM, 5)); /* 11 : tir blaireau aléatoire */
-    ajouter_arme_obj(game, new_arme(game -> balles_obj[12], RANDOWN, 4)); /* 12 : tir golsheep vers le bas */
+    ajouter_arme_obj(game, new_arme(game -> balles_obj[12], RANDOWN, 4)); /* 12 : tir goldsheep vers le bas */
     ajouter_arme_obj(game, new_arme(game -> balles_obj[13], CROSS, 30)); /* 13 : tir coq sur tous les côtés */
     ajouter_arme_obj(game, new_arme(game -> balles_obj[8], STRAIGHT, 40)); /* 14 : tir VERT BARRE vers le bas */
     ajouter_arme_obj(game, new_arme(game -> balles_obj[14], VISE, 30)); /* 15 : tir ours vers le joueur */
 
-    /* ennemis de BASE: une arme et un sprite */
-    printf("ennemi add...\n");
-    ajouter_ennemi_obj(game, /* 0 : taureau, BOMB */
+    /* ennemis de BASE: une arme et un sprite (le mouvement sera ajouté plus tard dans le chargement des vagues) */
+    ajouter_ennemi_obj(game, /* 0 : taureau */
 		       new_ennemi(new_vect(33, 33), 3, 20, game -> armes_obj[7], TAUREAU));
-    ajouter_ennemi_obj(game, /* 1 : cochon droit */
+    ajouter_ennemi_obj(game, /* 1 : cochon */
 		       new_ennemi(new_vect(27, 42), 5, 10, game -> armes_obj[5], COCHON));
     ajouter_ennemi_obj(game, /* 2 : poule côtés */
 		       new_ennemi(new_vect(24, 30), 3, 4, game -> armes_obj[8], POULE));
@@ -74,8 +72,6 @@ void creer_tous_objets(game* game) {
 		       new_ennemi(new_vect(27, 42), 3, 8, game -> armes_obj[9], ICEPIG));
     ajouter_ennemi_obj(game, /* 9 : meduse */
 		       new_ennemi(new_vect(57, 45), 5, 40, game -> armes_obj[10], MEDUSE));
-    /* ENNEMI BOSS QUI TOURNE EN CARRE AU MILIEU ET QUI ENVOIE DU RANDOM */
-
 }
 
 /* charger toutes les images du jeu */
@@ -113,7 +109,6 @@ void charger_images(MLV_Image* img_balles[], MLV_Image* img_joueurs[], MLV_Image
 }
 
 game new_game(game* g) {
-    printf("ok\n");
   /* initialiser le nombre d'élément des listes d'entités */
   g -> n_balles = 0;
   g -> n_joueurs = 0;
@@ -141,15 +136,12 @@ game new_game(game* g) {
   g -> wc = NOM_WAVE_T; /* pour que le jeu puisse commencer sur l'affichage de la wave 01 */
   g -> wave_act = 0; /* commencer à la première vague */
   g -> w_i = 0;
-
-  /* 16, 17, 19 */
-
+	
   /* score */
   g -> score_act.score = 0;
   g -> score_act.second = 0;
 
   /* chargement des images à afficher en fond */
-  /* A TRANSFERER DANS LES RESSOURCES? */
   g -> img_fonds[0] = MLV_load_image("img/back1.png");
   g -> img_fonds[1] = MLV_load_image("img/back2.png");
   g -> img_fonds[2] = MLV_load_image("img/back3.png");
@@ -160,12 +152,8 @@ game new_game(game* g) {
   /* charger les polices une seule fois au début */
   g -> police_nom_wave = MLV_load_font("font/pixelated.ttf", 40);
   g -> police_score = MLV_load_font("font/pixelated.ttf", 16);
-
-  printf("ok\n");
 	
   creer_tous_objets(g);
-
-  printf("ok\n");
   
   return *g;
 }
