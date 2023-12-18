@@ -127,7 +127,8 @@ void afficher_fond(game* game) {
 	MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(110, 21, 13, 180));
       }
   else
-      if (game -> wave_act < 21) { /* ESPACE */
+
+    if (game -> wave_act < 21) { /* ESPACE */
 	MLV_draw_image(game -> img_fonds[5], 0, 0);
 	MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(79, 34, 121, 180));
       }
@@ -138,7 +139,6 @@ void afficher_fond(game* game) {
 void afficher_ui(game* game) {
   float ratio_j1;
   float ratio_j2;
-  char nom_wave[8] = "Wave 01";
   char score_tmp[10]; /* pour afficher le score */
 
   ratio_j1 = (game -> joueurs[0].vie) / (J_VIE_INIT * 1.0) * 10;
@@ -159,10 +159,23 @@ void afficher_ui(game* game) {
 			      ECRAN_W + 1, 10, MLV_rgba(223, 34, 59, 255));
   }
 
-  /* afficher le numéro de la wave si il doit être affiché */
+  /* afficher le score */
+  sprintf(score_tmp, "%d", game -> score_act.score);
+  MLV_draw_text_with_font(300, 626, score_tmp, game -> police_score, MLV_COLOR_WHITE);
+}
+
+void afficher_et_actualiser(game* game, MLV_Image* img_balles[], MLV_Image* img_joueurs[], MLV_Image* img_ennemis[]) {
+    char nom_wave[8] = "Wave 01";
+
+  /* affichage du fond 94,120,140 */
+  afficher_fond(game);
+  /* afficher_fond(game); */
+
+    /* afficher le numéro de la wave si il doit être affiché */
+  /* pas dans une fonction pour l'afficher sous le joueur, les balles et les ennemis */
   if (game -> wc < 0) {
     if (game -> n_joueurs == 0) {
-      MLV_draw_text_with_font(240, 290, "Game over", game -> police_nom_wave, MLV_COLOR_WHITE);
+      MLV_draw_text_with_font(180, 290, "Game over", game -> police_nom_wave, MLV_COLOR_WHITE);
     }
     else {
       if (game -> wave_act == 20) {
@@ -171,21 +184,10 @@ void afficher_ui(game* game) {
       else {
 	nom_wave[5] = '0' + (game -> wave_act + 1) / 10;
 	nom_wave[6] = '0' + (game -> wave_act + 1) % 10;
-	MLV_draw_text_with_font(260, 290, nom_wave, game -> police_nom_wave, MLV_COLOR_WHITE);
+	MLV_draw_text_with_font(215, 280, nom_wave, game -> police_nom_wave, MLV_COLOR_WHITE);
       }
     }
   }
-
-  /* afficher le score */
-  sprintf(score_tmp, "%d", game -> score_act.score);
-  MLV_draw_text_with_font(300, 626, score_tmp, game -> police_score, MLV_COLOR_WHITE);
-}
-
-void afficher_et_actualiser(game* game, MLV_Image* img_balles[], MLV_Image* img_joueurs[], MLV_Image* img_ennemis[]) {
-
-  /* affichage du fond 94,120,140 */
-  afficher_fond(game);
-  /* afficher_fond(game); */
 
   /* afficher les entités */
   afficher_balles(game, img_balles);
@@ -207,3 +209,4 @@ void afficher_et_actualiser(game* game, MLV_Image* img_balles[], MLV_Image* img_
 
   MLV_actualise_window();
 }
+
