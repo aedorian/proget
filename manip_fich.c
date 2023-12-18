@@ -99,14 +99,11 @@ void charger_sauvegarde(game *game, int num_slot){
         exit(EXIT_FAILURE);
     }
 
-    /* game = malloc(sizeof(*game)); */
     s = fread(game, sizeof(*game), 1, fich);
 
     if (s != 1){
         printf("Fichier vide\n");
     }
-
-    /* teste ? */
 
     fclose(fich);
 }
