@@ -48,15 +48,21 @@ void obtenir_deplacement_joueur(joueur* joueur, int numJoueur) {
         
     }
     else {  /* joueur 2 */
-        if (MLV_get_keyboard_state(J2_UP) == MLV_PRESSED)
+	    if (MLV_get_keyboard_state(J2_UP) == MLV_PRESSED)
             joueur -> dir.y = 1;
         else
-            joueur -> dir.y = -(MLV_get_keyboard_state(J2_DOWN) == MLV_PRESSED);
+	  if (MLV_get_keyboard_state(J2_DOWN) == MLV_PRESSED)
+            joueur -> dir.y = -1;
+	  else
+            joueur -> dir.y = 0;
 	
         if (MLV_get_keyboard_state(J2_RIGHT) == MLV_PRESSED)
             joueur -> dir.x = 1;
         else
-            joueur -> dir.x = -(MLV_get_keyboard_state(J2_LEFT) == MLV_PRESSED);
+	  if (MLV_get_keyboard_state(J2_LEFT) == MLV_PRESSED)
+            joueur -> dir.x = -1;
+	  else
+            joueur -> dir.x = 0;
     }
 
     /* appliquer la vitesse */
@@ -65,7 +71,6 @@ void obtenir_deplacement_joueur(joueur* joueur, int numJoueur) {
 }
 
 void obtenir_tir_joueur(game* game, joueur* joueur, int numJoueur) {
-    /* REMPLACER PAR OU? */
     if (numJoueur == 1) {
         if (MLV_get_keyboard_state(J1_TIR) == MLV_PRESSED) {
             tirer_arme_joueur(game, joueur);
@@ -103,7 +108,7 @@ void update_cadence_arme(arme* arme) {
 
 /* définit une direction pour la balle en fonction de sa vitesse et d'un vecteur normalisé */
 void set_balle_dir(balle* balle, vect dir) {
-    balle -> dir = dir; /* METTRE DES POINTEURS POUR OPTI */
+    balle -> dir = dir;
     balle -> dir.x *= balle -> vitesse;
     balle -> dir.y *= balle -> vitesse;
 }
@@ -111,14 +116,15 @@ void set_balle_dir(balle* balle, vect dir) {
 /* définit la direction de la balle en fonction d'un angle entre 0 et 2*pi */
 void set_balle_angle_dir(balle* balle, float angle) {
   balle -> dir = new_vect(floor(cos(angle) * balle -> vitesse),
-			  floor(sin(angle) * balle -> vitesse)); /* METTRE DES POINTEURS POUR OPTI */
+			  floor(sin(angle) * balle -> vitesse));
 }
 
 void set_balle_vise_dir(balle* balle, ennemi* e, game* game) {
   joueur* j; /* joueur à viser */
   float angle;
   int x, y;
-  /* sélectionner un joueur */
+	
+  /* sélectionner un joueur à viser */
   if (game -> n_joueurs == 1) {
     j = &(game -> joueurs[0]);
   } else {
@@ -133,13 +139,11 @@ void set_balle_vise_dir(balle* balle, ennemi* e, game* game) {
 }
 
 void tirer_arme_joueur(game* game, joueur* joueur) {
-  /* balle balle_arme = joueur -> arme.balle; */
   balle balle_arme;
 
     if (joueur -> arme.cadence_act <= 0) {
         joueur -> arme.cadence_act = joueur -> arme.cadence;
-        /* balle_arme.pos.x = joueur -> pos.x + (joueur -> hitbox.x)/2;
-	   balle_arme.pos.y = joueur -> pos.y + (joueur -> hitbox.y)/2; */
+	    
 	balle_arme.pos.x = joueur -> pos.x + 11;
 	balle_arme.pos.y = joueur -> pos.y;
 	balle_arme.hitbox.x = joueur -> arme.balle.hitbox.x;
