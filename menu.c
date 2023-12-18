@@ -24,12 +24,11 @@ void faire_evenements_menu(game* game) {
     printf("Erreur: mauvais etat_ecran\n");
     break;
   }
-
-  /* obtenir les déplacements avec les flèches dans le menu actuel du game */
   
   /* afficher le menu */
   afficher_menu_actuel(menu_act);
 
+  /* obtenir les déplacements avec les flèches dans le menu actuel du game */
   attendre_clavier_menu(game, menu_act);
 }
 
@@ -87,7 +86,6 @@ void attendre_clavier_menu(game* game, menu* menu) {
 	else {
 	  /* sinon, on était en pause */
 	  opt_act = menu -> opt_act;
-	  /* init_partie(game, 1); */
 	  ecrire_sauvegarde(game, menu -> opt_act + 1);
 	  game -> etat_ecran = 2;
 	}
@@ -108,11 +106,12 @@ void attendre_clavier_menu(game* game, menu* menu) {
 	game -> etat_ecran_precedent = 2;
 	game -> etat_ecran = 1; /* bascule sur l'écran de save */
 	break;
-      case 2: game -> etat_ecran = 0; break; /* on revient à l'écran titre */
+      case 2:
+	game -> etat_ecran = 0; break; /* on revient à l'écran titre */
       }
       break;
     default:
-      printf("Erreur: mauvais etat_ecran. Ceci n'est pas censé arriver\n");
+      printf("Erreur: mauvais etat_ecran. Ceci n'est pas censé arriver et la réalité n'existe pas\n");
       break;
     }
   }
@@ -127,8 +126,7 @@ void afficher_menu_actuel(menu* menu) {
   MLV_Image* curseur = MLV_load_image("img/curseur.png");
   MLV_Image* ecran_titre;
 
-  /* afficher le fond seulement si l'on est pas en pause
-     (on affiche le jeu si on est en pause) */
+  /* afficher le fond seulement si l'on est pas en pause (on affiche le jeu en fond si on est en pause) */
   if (menu -> type_menu != 2) {
     MLV_draw_filled_rectangle(0, 0, ECRAN_W, ECRAN_H, MLV_rgba(21, 41, 26, 255));
   }
@@ -146,9 +144,9 @@ void afficher_menu_actuel(menu* menu) {
       case 2: MLV_draw_text_with_font(50, 40 + 60 * i, "Charger partie...", police_1, MLV_COLOR_WHITE); break;
       case 3: MLV_draw_text_with_font(50, 40 + 60 * i, "High scores", police_1, MLV_COLOR_WHITE); break;
       case 4: MLV_draw_text_with_font(50, 40 + 60 * i, "Quitter", police_1, MLV_COLOR_WHITE);
-	/* MLV_draw_text_with_font(50, 520, "Projet L2 Info", police_1, MLV_COLOR_WHITE);
+	MLV_draw_text_with_font(50, 520, "Projet L2 Info", police_1, MLV_COLOR_WHITE);
 	MLV_draw_text_with_font(50, 550, "Tom YUNGMANN", police_1, MLV_COLOR_WHITE);
-	MLV_draw_text_with_font(50, 580, "Adrian AUBE", police_1, MLV_COLOR_WHITE); */
+	MLV_draw_text_with_font(50, 580, "Adrian AUBE", police_1, MLV_COLOR_WHITE);
 	break;
       }
       break;
@@ -199,9 +197,8 @@ void afficher_menu_actuel(menu* menu) {
 	  MLV_draw_text_with_font(450, 40 + 60 * i, "2 joueurs", police_1, MLV_COLOR_WHITE);
 	}
 	break;
-      case 3: MLV_draw_text_with_font(50, 40 + 60 * i, "... Revenir", police_1, MLV_COLOR_WHITE); break;
-        /* REVENIR doit avoir la possibilité de revenir soit à l'écran titre, soit à l'écran de pause (dans le main?
-           recevoir les fonctions des menus dans la boucle while (!quitter) pour les gérer et changer de game.etat_ecran? */
+      case 3: 
+	MLV_draw_text_with_font(50, 40 + 60 * i, "... Revenir", police_1, MLV_COLOR_WHITE); break;
       }
       break;
 
@@ -266,6 +263,5 @@ void afficher_attendre_high_scores(game *game) {
     MLV_wait_event(&touche, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
   }
   printf("retour\n");
-  /* MLV_wait_keyboard(NULL, NULL, NULL); */
   game -> etat_ecran = 0;
 }
