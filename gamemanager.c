@@ -19,7 +19,6 @@ void creer_balle(balle* balle, game* game) {
   for (i=0; i < n; i++) { /* on itère balles */
     if (game -> balles[i].existe == 0) { /* jusqu'à en trouver une qui n'existe plus
 					    (donc un emplacement libre) */
-      /* printf("ESSAI D'AJOUT LA OU C'EST LIBRE en i = %d sur nb_balles = %d\n", i, n); */
       game -> balles[i] = *balle;
       return; /* pour ne pas continuer l'itération */
     }
@@ -27,7 +26,6 @@ void creer_balle(balle* balle, game* game) {
   
   /* sinon, tous les emplacements sont déjà pris, alors on en crée un */
   if (game -> n_balles < BALLES_MAX) {
-    /* printf("nb balles: %d\n", game -> n_balles); */
     game -> balles[game -> n_balles] = *balle;
     (game -> n_balles)++; /* et on ajoute 1 à la taille du tableau balles */
   }
@@ -54,7 +52,6 @@ void creer_ennemi(ennemi* ennemi, game* game, vect pos) {
   (game -> n_ennemis)++;
 }
 
-/* DEPLACER DANS CREATION.C? */
 void ajouter_balle_obj(game* game, balle balle) {
     game -> balles_obj[game -> n_balles_obj] = balle;
     (game -> n_balles_obj)++;
@@ -79,7 +76,6 @@ void init_partie(game* game, int nb_joueurs) {
   new_game(game);
 
   /* créer les joueurs */
-  /* voir arme par défaut? */
   joueur1 = new_joueur(new_vect(150, 550), new_vect(0, 0), 5,
 		       game -> armes_obj[0], VACHE_1);
   creer_joueur(&joueur1, game);
@@ -145,7 +141,6 @@ void gerer_waves(game *game, wave_instr waves[WAVES_MAX][WAVES_INSTR_MAX]) {
       game -> wave_act_est_finie = 0;
       (game -> wave_act)++;
       game -> wc = NOM_WAVE_T; /* attend 100 frames en affichant le nom de la wave */
-      printf("DEBUT WAVE %d ----------------------\n", game -> wave_act + 1);
 
       /* remettre les vies des joueurs au max à chaque changement de wave */
       for (i=0; i < game -> n_joueurs; i++) {
@@ -153,7 +148,6 @@ void gerer_waves(game *game, wave_instr waves[WAVES_MAX][WAVES_INSTR_MAX]) {
 	    game -> joueurs[i].vie = J_VIE_INIT;
 	  }
 	}
-      /* if (game -> wave_act % 4 == 0 || game -> wave_act == 19) */
     }
     return; /* mais sinon, on s'arrête là */
   }
@@ -162,22 +156,17 @@ void gerer_waves(game *game, wave_instr waves[WAVES_MAX][WAVES_INSTR_MAX]) {
   if (game -> wc == 0) {
       
     /* traiter l'évènement */
-    /* printf("%d %d %d\n", game -> wc, game -> wave_act, game -> w_i); */
     switch (waves[game -> wave_act][game -> w_i].type_instr) {
     case 'S':
       /* spawn ennemi */
-      printf("debut spawn (de la wave %d)\n", game -> wave_act + 1);
       instr_act = &(waves[game -> wave_act][game -> w_i]);
       creer_ennemi(&(instr_act -> ennemi),
 		   game,
 		   new_vect(instr_act -> pos_x, instr_act -> pos_y));
-      printf("ennemi spawné\n");
       
       break;
     case 'W':
-      printf("evenement wait %c\n", waves[game -> wave_act][game -> w_i].type_instr);
       game -> wc = waves[game -> wave_act][game -> w_i].pos_x; /* pos_x est aussi utilisé pour le temps */
-      printf("wc = %d\n", game -> wc);
       break;
     case 'E':
       /* fin de la vague, on passe à la suivante */
@@ -186,7 +175,6 @@ void gerer_waves(game *game, wave_instr waves[WAVES_MAX][WAVES_INSTR_MAX]) {
       break;
     }
 
-    /* printf("incrémente w_i\n"); */
     (game -> w_i)++; /* passer au prochain évènement */
   }
   else {
@@ -214,12 +202,10 @@ void analyser_ligne_suivante(char ligne[100], char *type_instr, int *pos_x, int 
   char parse_tmp[100]; /* pour la ligne */
 
   /* variables temporaires à utiliser pour la création de l'ennemi plus tard */
-  int id_t_tmp = 0; /* 0 seulement pour éviter le warning */
+  int id_t_tmp = 0; /* = 0 seulement pour éviter le warning de non-initialisation */
   char mouvements_tmp[200];
 
   ennemi *e_base;
-
-  /* printf("ligne reçue: %s", ligne); */
 
   /* analyse de la ligne */
   *type_instr = ligne[0]; /* instruction */
@@ -239,7 +225,6 @@ void analyser_ligne_suivante(char ligne[100], char *type_instr, int *pos_x, int 
 	strcpy(mouvements_tmp, parse_tmp);
 	break;
       case 4:
-	/* printf("WAVE WAIT: %d\n", atoi(parse_tmp)); */
         *pos_x = atoi(parse_tmp);
 	break;
       case 5:
@@ -260,7 +245,6 @@ void analyser_ligne_suivante(char ligne[100], char *type_instr, int *pos_x, int 
   }
   /* la suite s'occupe seulement de l'instruction spawn, avec les ennemis */
 
-  /* printf("%d\n", id_t_tmp); */
   e_base = &(game -> ennemis_obj[id_t_tmp]);
 
   /* recopier le contenu de l'ennemi de base dans l'ennemi de l'instruction */
@@ -273,12 +257,6 @@ void analyser_ligne_suivante(char ligne[100], char *type_instr, int *pos_x, int 
   e -> existe = 1;
   /* puis extraire ses mouvements à partir de la chaîne mouvements_tmp */
   charger_mouvement_ennemi(e, mouvements_tmp);
-
-  /* printf("DEBUG ENNEMI\n");
-
-  for (i=0; i < e -> n_mouvements; i++) {
-    printf("%d: %c %d\n", i, e -> mouvements[i].movetype, e -> mouvements[i].duree);
-    } */
 }
 
 
@@ -292,66 +270,33 @@ void charger_waves_dans_tab(game *game, wave_instr waves[WAVES_MAX][WAVES_INSTR_
 						    commence à 00 pour pouvoir l'incrémenter juste après*/
   char ligne_tmp[200];
 
-  printf("DEBUT CHARGER WAVES --------------\n");
-
   /* FORMAT A LIRE: instruction;id;mouvements;posx;posy; */
 
-  /* NB_WAVES défini dans headers/gamemanager.h */
+  /* NB_WAVES est définie dans headers/gamemanager.h */
   for (wave_act = 0; wave_act < NB_WAVES; wave_act++) {
     /* génération du prochain chemin d'accès */
-    printf("normal: %d %d\n", (wave_act + 1) / 10, (wave_act + 1) % 10);
     chemin_fich_wave[10] = '0' + (wave_act + 1) / 10;
     chemin_fich_wave[11] = '0' + (wave_act + 1) % 10;
-    printf("chars: %c %c\n", chemin_fich_wave[10], chemin_fich_wave[11]);
     
-    printf("wave_act = %d\n", wave_act);
     if ((fich_wave = fopen(chemin_fich_wave, "r")) == NULL){ /* chemin_fich_wave */
-        printf("Erreur ouverture fichier de vague, fichier corrompu\n");
         exit(EXIT_FAILURE);
     }
 
     i_w = 0;
     while (fgets(ligne_tmp, 200, fich_wave)) { /* ATTENTION: il y a un \n à la fin */
-      /* while (fscanf(fich_wave, "%c;%d;",
-	 &type_instr_tmp, &id_t_tmp) >= 2) { */
-
       /* parse la chaîne obtenue */
       analyser_ligne_suivante(ligne_tmp, &waves[wave_act][i_w].type_instr,
 			      &waves[wave_act][i_w].pos_x,
 			      &waves[wave_act][i_w].pos_y,
 			      &waves[wave_act][i_w].ennemi, game);
-      
-      printf("char: %c;pos_x: %d;pos_y: %d;\n", waves[wave_act][i_w].type_instr,
-	 waves[wave_act][i_w].pos_x, waves[wave_act][i_w].pos_y);
 
       i_w++; /* on passe à la prochaine instruction */
     }
 
-    printf("---> instructions chargées: %d dans waves[%d]\n", i_w, wave_act);
-
     fclose(fich_wave);
   }
 
-  printf("GROS DEBUG\n");
-  for (wave_act = 0; wave_act < NB_WAVES; wave_act++) {
-    
-  }
-
   /* on a obtenu toutes les instructions dans waves[][] */
-  /* appliquer le mouvement? */
-
-  printf("CHARGEMENT VAGUES TERMINE -------------\n");
-
-  
-  /* recopier les données de l'ennemi de la vague analysée dans e_act
-  e_tmp = &(game -> ennemis_obj[i_e]);
-  e.hitbox.x = hitbox.x; e.hitbox.y = hitbox.y;
-  e.vitesse = vitesse;
-  e.vie = vie;
-  e.arme = arme;
-  e.image = MLV_load_image(img_path);
-  e_act = new_ennemi(e_tmp -> hitbox, e_tmp -> vitesse, e_tmp -> vie,
-  e_tmp -> arme, e_tmp -> img_path); */
 }
 
 
@@ -362,7 +307,6 @@ void charger_mouvement_ennemi(ennemi *e, char* mouvements) {
   int n_mouvements = 0; /* nombre de mouvements différents, donc d'éléments dans e.mouvements */
   mouvement m_tmp; /* mouvement temporaire à insérer dans le tableau e.mouvements */
   char duree_tmp[3]; /* durée (2 chiffres, plus 1 pour le '\0') à extraire de mouvements */
-  /* pos d'où le mettre? */
 
   /* la chaîne mouvements est sous la forme "R 10 L 30 U 10 R 40", c'est à dire
      un caractère et un entier. la suite de la fonction parcourt la chaîne.
