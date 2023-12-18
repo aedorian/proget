@@ -35,23 +35,12 @@ int main() {
   tpf_normal = (1.0 * NANO_S) / FPS;
   tpf_focus = (1.0 * NANO_S) / FPS_FOCUS;
   tpf = tpf_normal;
-  
-
-  printf("Début exec %ld\n", tpf);
-  
-  /* création des joueurs */
 
   creer_fenetre();
 
   charger_images(images_balles, images_joueurs, images_ennemis);
 
   new_game(&game);
-  /* game = new_game();
-     game.wave_act = 5; */
-
-  /* PROBLEME: QUAND ON MEURT, REFAIRE UN GAME DANS INIT_PARTIE */
-
-  printf("game cree\n");
 
   /* écran de chargement */
   MLV_draw_text_with_font(210, 290, "Chargement...", game.police_nom_wave, MLV_COLOR_WHITE);
@@ -59,11 +48,7 @@ int main() {
   
   /* chargement de toutes les vagues dans la liste */
   charger_waves_dans_tab(&game, game.waves);
-
-  printf("waves chargées\n");
-
-  /* exit(EXIT_SUCCESS); */
-
+					 
 
   /* boucle principale */
   while (!quitter) {
@@ -74,7 +59,7 @@ int main() {
       /* AFFICHAGE IMAGE COURANTE */
       afficher_et_actualiser(&game, images_balles, images_joueurs, images_ennemis);
 
-      /* FOCUS MODE */
+      /* FOCUS MODE: plus lent pour éviter les balles */
       if (MLV_get_keyboard_state(MLV_KEYBOARD_RCTRL) == MLV_PRESSED)
 	tpf = tpf_focus;
       else
@@ -82,52 +67,32 @@ int main() {
 
       /* RECUPERATION EVENEMENT CLAVIER */
       gerer_evenements_clavier(&game); /* déplacements et tirs */
-
       faire_tirer_ennemis(&game);
-
       gerer_waves(&game, game.waves); /* avancement des vagues */
 
       /* RESOLUTION EVENEMENTS */
 
       /* DEPLACEMENT DES OBJETS (en fonction de dir) */
       move_entites(&game);
-
       /* RESOLUTION DES COLLISIONS */
-
       resolution_collisions(&game);
-
-
       
       clock_gettime(CLOCK_REALTIME, &t_fin);
 
       t_diff = t_fin.tv_nsec - t_debut.tv_nsec; /* temps qu'a prit une frame */
-      /* printf("temps:\t\t %ld \t soit %ld sur \t\t%f\n", t_diff, tpf, (t_diff*1.0)/tpf); */
       if (t_diff < tpf && t_diff > 0) {
-	/* printf("%ld\n", (tpf - t_diff) / MILLI_S); */
-	MLV_wait_milliseconds((tpf - t_diff) / MILLI_S); /* pour l'avoir en millisecondes */
+	MLV_wait_milliseconds((tpf - t_diff) / MILLI_S); /* conversion pour l'avoir en millisecondes */
       }
       
       break;
 
-
-
-
-
-
-
-
-
       
     case 0: /* ECRAN TITRE */
-      faire_evenements_menu(&game);
-      break;
-
     case 1: /* MENU SAVE */
-      faire_evenements_menu(&game);
+      faire_evenements_menu(&game); /* même fonction à appeler pour les deux */
       break;
 
     case 2: /* MENU PAUSE */
-      printf("EST DANS MENU PAUSE\n");
       afficher_et_actualiser(&game, images_balles, images_joueurs, images_ennemis);
       faire_evenements_menu(&game);
       break;
@@ -139,9 +104,5 @@ int main() {
     
   }
   
-
-  
-
-  printf("Fin exec\n");
   exit(EXIT_SUCCESS);
 }
