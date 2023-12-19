@@ -150,7 +150,7 @@ game new_game(game* g) {
   g -> img_fonds[5] = MLV_load_image("img/back6.png");
 
   /* charger les polices une seule fois au début */
-  g -> police_nom_wave = MLV_load_font("font/pixelated.ttf", 40);
+  g -> police_nom_wave = MLV_load_font("font/ka1.ttf", 40);
   g -> police_score = MLV_load_font("font/pixelated.ttf", 16);
 	
   creer_tous_objets(g);
