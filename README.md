@@ -1,6 +1,6 @@
 Shoot 'em up project made in C for a 2nd year computer science programming class\
 With a custom engine handling:
-- multiple bullets at the same time (up to 250)
+- multiple bullets at the same time (up to... probably a lot)
 - a scriptable wave system with customisable enemy movement
 
 ### How to run?
